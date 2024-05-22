@@ -30,7 +30,7 @@ export const siteConfig = {
     },
     {
       label: "Chat",
-      href: "/Chat",
+      href: "/chat",
     }
   ],
   navMenuItems: [
