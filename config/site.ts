@@ -9,6 +9,10 @@ export const siteConfig = {
       href: "/",
     },
     {
+      label: "gestionStock",
+      href: "/gestionStock",
+    },
+    {
       label: "Docs",
       href: "/docs",
     },
@@ -26,7 +30,7 @@ export const siteConfig = {
     },
     {
       label: "Chat",
-      href: "/Chat",
+      href: "/chat",
     }
   ],
   navMenuItems: [
