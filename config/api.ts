@@ -33,12 +33,12 @@ export const getArticles = async () => {
 export const getIngredients = async (id?: number) => {
     try {
         const response = await getArticles();
-
-        if (id) {
-            return response.find((article: any) => article.id === id).ingredients;
+        if (id) {            
+            const idFiltred = response.filter((article: any) => article.typeIngredient === id);            
+            return idFiltred.map((article: any) => article.nom);
         }
-
-        return response.map((article: any) => article.ingredients);
+        
+        return response.map((article: any) => article.nom);
     } catch (error) {
         console.error('Error fetching ingredients:', error);
         throw error;
