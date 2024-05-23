@@ -1,12 +1,14 @@
 'use client';
+import React, { useState, useEffect } from 'react';
 import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
-import { useState, useEffect } from "react";
-import { getCartes } from "@/config/api";
+import { getCartes, getIngredients } from "@/config/api";
 import { Carte, Repas, ChatLayoutProps, ChatMenuProps } from "@/types/index";
+import DetailCommandeModal from "@/components/DetailCommandeModal";
 
 export default function ChatPage() {
   const [cartes, setCartes] = useState<Carte[]>([]);
+  const [ingredients, setIngredients] = useState<string[]>([]);
   const [repas, setRepas] = useState<Repas>({
     menu: [] as string[],
     plat: [] as string[],
@@ -16,6 +18,8 @@ export default function ChatPage() {
     join: "" as any,
   });
   const [currentStep, setCurrentStep] = useState("menu");
+  const [isModalOpen, setIsModalOpen] = useState(false);  // État pour le modal
+  const [modalResponse, setModalResponse] = useState("");  // État pour la réponse du modal
 
   useEffect(() => {
     async function fetchCartes() {
@@ -23,20 +27,39 @@ export default function ChatPage() {
       setCartes(fetchedCartes);
     }
     fetchCartes();
+
+    async function fetchIngredients() {
+      const fetchedIngredients = await getIngredients();
+      console.log(fetchedIngredients);
+      setIngredients(fetchedIngredients);
+    }
+    fetchIngredients();
+
   }, []);
 
+  useEffect(() => {
+    if (modalResponse) {
+      const newRepas = { ...repas };
+      newRepas.plat.push(modalResponse);
+      setRepas(newRepas);
+      setCurrentStep(getNextStep("plat", newRepas));
+    }
+  }, [modalResponse]);
+
   const handleSetRepasItem = (type: keyof Repas, item: string) => {
-    const newRepas = { ...repas };
-    if (type === "menu" || type === "plat" || type === "snack" || type === "boisson") {
-      newRepas[type].push(item);
+    if (type === "plat") {
+      setIsModalOpen(true);  // Ouvrir le modal
+    } else {
+      const newRepas = { ...repas };
+      if (type === "menu" || type === "plat" || type === "snack" || type === "boisson") {
+        newRepas[type].push(item);
+      }
+      if (type === "boisson") {
+        newRepas.complete = true;
+      }
+      setRepas(newRepas);
+      setCurrentStep(getNextStep(type, newRepas));
     }
-    if (type === "boisson" ) {
-      newRepas.complete = true;
-      console.log("TOUPYOUPI");
-      
-    }
-    setRepas(newRepas);
-    setCurrentStep(getNextStep(type, newRepas));
   };
 
   const getNextStep = (type: keyof Repas, repas: Repas) => {
@@ -61,16 +84,18 @@ export default function ChatPage() {
     <div className="flex">
       <div className="w-2/3">
         <h1 className={title()}>Commande !</h1>
-        <ChatNext 
-          repas={repas} 
-          cartes={cartes} 
-          setRepasItem={handleSetRepasItem} 
+        <ChatNext
+          repas={repas}
+          cartes={cartes}
+          setRepasItem={handleSetRepasItem}
           currentStep={currentStep}
-          setCurrentStep={setCurrentStep} 
+          setCurrentStep={setCurrentStep}
         />
       </div>
-      <div className="w-1/3 p-4">
+      <div className="">
         <RecapComponent repas={repas} />
+        {/* Inclure DetailCommandeModal ici */}
+        <DetailCommandeModal isOpen={isModalOpen} onClose={(value) => (setIsModalOpen(false), setModalResponse(value))} options={["ingredients", "caca"]} />
       </div>
     </div>
   );
@@ -101,11 +126,11 @@ function ChatNext({ repas, cartes, setRepasItem, currentStep, setCurrentStep }: 
     case "boisson":
       return <ChatBoisson cartes={cartes} setRepas={item => setRepasItem("boisson", item)} repas={repas} />;
     case "other":
-      return <ChatOther cartes={cartes} setCurrentStep={setCurrentStep} />;
+      return <ChatOther setCurrentStep={setCurrentStep} />;
     case "end":
       return <ChatEnd repas={repas} cartes={[]} setRepas={function (repas: string): void {
         throw new Error("Function not implemented.");
-      } } />;
+      }} />;
     default:
       return null;
   }
