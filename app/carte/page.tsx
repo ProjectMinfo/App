@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Document, Page } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import FlipPage from 'react-flip-page';
-import pdfFile from './path/to/your/menu.pdf'; // Remplacez par le chemin réel de votre fichier PDF
+import pdfFile from './path/to/your/menu.pdf'; // Remplacez par le chemin du pdf
 
 const Carte = () => {
   const [numPages, setNumPages] = useState(null);

@@ -1,35 +1,41 @@
-'use client';
-import React, { useState } from 'react';
+'use client';  // Indique que ce composant doit être rendu côté client.
+import React, { useState } from 'react';  // Import de React et du hook useState.
 
 const Settings = () => {
-  const [eventMode, setEventMode] = useState(false);
-  const [orderTaking, setOrderTaking] = useState(false);
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [openingTime, setOpeningTime] = useState('08:00');
-  const [closingTime, setClosingTime] = useState('20:00');
+  const [eventMode, setEventMode] = useState(false);  // État pour le mode événement.
+  const [orderTaking, setOrderTaking] = useState(false);  // État pour la prise de commande.
+  const [pdfFile, setPdfFile] = useState<File | null>(null);  // État pour stocker le fichier PDF sélectionné.
+  const [openingTime, setOpeningTime] = useState('08:00');  // État pour l'heure d'ouverture des commandes.
+  const [closingTime, setClosingTime] = useState('20:00');  // État pour l'heure de fermeture des commandes.
 
+  // Fonction pour gérer le changement du mode événement.
   const handleEventModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEventMode(event.target.value === 'enabled');
   };
 
+  // Fonction pour gérer le changement de la prise de commande.
   const handleOrderTakingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOrderTaking(event.target.value === 'enabled');
   };
 
+  // Fonction pour gérer le changement du fichier PDF.
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setPdfFile(event.target.files[0]);
     }
   };
 
+  // Fonction pour gérer le changement de l'heure d'ouverture.
   const handleOpeningTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOpeningTime(event.target.value);
   };
 
+  // Fonction pour gérer le changement de l'heure de fermeture.
   const handleClosingTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setClosingTime(event.target.value);
   };
 
+  // Fonction pour gérer la soumission du formulaire.
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // Logic to handle settings submission
@@ -146,4 +152,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default Settings;  // Exporte le composant Settings par défaut.
