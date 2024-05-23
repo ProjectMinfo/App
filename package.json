@@ -9,6 +9,7 @@
 		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
 	},
 	"dependencies": {
+		"@emotion/styled": "^11.11.5",
 		"@nextui-org/button": "^2.0.31",
 		"@nextui-org/code": "^2.0.27",
 		"@nextui-org/input": "^2.1.21",
@@ -28,7 +29,7 @@
 		"@typescript-eslint/eslint-plugin": "^7.10.0",
 		"@typescript-eslint/parser": "^7.10.0",
 		"autoprefixer": "10.4.19",
-		"clsx": "^2.0.0",
+		"clsx": "^2.1.1",
 		"eslint": "^8.56.0",
 		"eslint-config-next": "14.2.1",
 		"eslint-config-prettier": "^8.2.0",
@@ -43,11 +44,12 @@
 		"intl-messageformat": "^10.5.0",
 		"next": "14.2.3",
 		"next-themes": "^0.2.1",
+		"node": "^18.20.3",
 		"postcss": "8.4.38",
 		"react": "18.3.1",
 		"react-dom": "18.3.1",
 		"tailwind-variants": "^0.1.20",
-		"tailwindcss": "3.4.3",
+		"tailwindcss": "^3.4.3",
 		"typescript": "5.0.4"
 	}
 }

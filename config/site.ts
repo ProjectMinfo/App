@@ -9,58 +9,54 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Commander",
+      href: "/",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Prise commande",
+      href: "/",
     },
     {
-      label: "Blog",
-      href: "/blog",
+      label: "Affichage cuisine",
+      href: "/",
     },
     {
-      label: "About",
-      href: "/about",
+      label: "Planing serveur",
+      href: "/",
     },
     {
-      label: "Chat",
-      href: "/Chat",
+      label: "Modifications carte",
+      href: "/",
+    },
+    {
+      label: "Trésorerie",
+      href: "/",
+    },
+    {
+      label: "Compte",
+      href: "/",
+    },
+    {
+      label: "Paramètres",
+      href: "/",
     }
   ],
-  navMenuItems: [
+  navGestionItems: [
     {
-      label: "Profile",
-      href: "/profile",
+      label: "Gestion des stocks",
+      href: "/",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "Gestion des achats",
+      href: "/",
     },
     {
-      label: "Projects",
-      href: "/projects",
+      label: "Gestion des compte",
+      href: "/",
     },
     {
-      label: "Team",
-      href: "/team",
-    },
-    {
-      label: "Calendar",
-      href: "/calendar",
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
+      label: "Gestion des températures",
+      href: "/",
     },
   ],
   links: {
