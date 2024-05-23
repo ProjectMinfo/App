@@ -9,24 +9,34 @@ export const siteConfig = {
       href: "/",
     },
     {
+      label: "Commander",
+      href: "/",
+    },
+    {
       label: "gestionStock",
       href: "/gestionStock",
     },
     {
       label: "Docs",
       href: "/docs",
+
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Prise commande",
+      href: "/",
     },
     {
-      label: "Blog",
-      href: "/blog",
+      label: "Affichage cuisine",
+      href: "/",
     },
     {
-      label: "About",
-      href: "/about",
+      label: "Planing serveur",
+      href: "/",
+    },
+    {
+
+      label: "Modifications carte",
+      href: "/",
     },
     {
       label: "Chat",
@@ -39,32 +49,34 @@ export const siteConfig = {
       href: "/profile",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "Trésorerie",
+      href: "/",
     },
     {
-      label: "Projects",
-      href: "/projects",
+      label: "Compte",
+      href: "/",
     },
     {
-      label: "Team",
-      href: "/team",
+      label: "Paramètres",
+      href: "/",
+    }
+  ],
+  navGestionItems: [
+    {
+      label: "Gestion des stocks",
+      href: "/",
     },
     {
-      label: "Calendar",
-      href: "/calendar",
+      label: "Gestion des achats",
+      href: "/",
     },
     {
-      label: "Settings",
-      href: "/settings",
+      label: "Gestion des compte",
+      href: "/",
     },
     {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
+      label: "Gestion des températures",
+      href: "/",
     },
   ],
   links: {

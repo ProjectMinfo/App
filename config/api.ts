@@ -18,3 +18,29 @@ export const getCartes = async () => {
         throw error;
     }
 };
+
+export const getArticles = async () => {
+    try {
+        const response = await api.get('/articles');
+        return (response.data);
+
+    } catch (error) {
+        console.error('Error fetching article:', error);
+        throw error;
+    }
+}
+
+export const getIngredients = async (id?: number) => {
+    try {
+        const response = await getArticles();
+
+        if (id) {
+            return response.find((article: any) => article.id === id).ingredients;
+        }
+
+        return response.map((article: any) => article.ingredients);
+    } catch (error) {
+        console.error('Error fetching ingredients:', error);
+        throw error;
+    }
+}
