@@ -13,6 +13,15 @@ export const siteConfig = {
       href: "/",
     },
     {
+      label: "gestionStock",
+      href: "/gestionStock",
+    },
+    {
+      label: "Docs",
+      href: "/docs",
+
+    },
+    {
       label: "Prise commande",
       href: "/",
     },
@@ -25,8 +34,19 @@ export const siteConfig = {
       href: "/",
     },
     {
+
       label: "Modifications carte",
       href: "/",
+    },
+    {
+      label: "Chat",
+      href: "/chat",
+    }
+  ],
+  navMenuItems: [
+    {
+      label: "Profile",
+      href: "/profile",
     },
     {
       label: "Trésorerie",
