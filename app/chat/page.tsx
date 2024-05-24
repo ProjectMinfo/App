@@ -5,6 +5,7 @@ import { Button } from "@nextui-org/button";
 import { getCartes, getIngredients } from "@/config/api";
 import { Carte, Repas, ChatLayoutProps, ChatMenuProps } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
+import Paiement from '../paiement/page';
 
 export default function ChatPage() {
   const [cartes, setCartes] = useState<Carte[]>([]);
@@ -19,7 +20,7 @@ export default function ChatPage() {
   });
   const [currentStep, setCurrentStep] = useState("menu");
   const [isModalOpen, setIsModalOpen] = useState(false);  // État pour le modal
-  const [modalResponse, setModalResponse] = useState("");  // État pour la réponse du modal
+  const [modalResponse, setModalResponse] = useState<string[]>([]);  // État pour la réponse du modal
 
   useEffect(() => {
     async function fetchCartes() {
@@ -29,8 +30,7 @@ export default function ChatPage() {
     fetchCartes();
 
     async function fetchIngredients() {
-      const fetchedIngredients = await getIngredients();
-      console.log(fetchedIngredients);
+      const fetchedIngredients = await getIngredients(1);
       setIngredients(fetchedIngredients);
     }
     fetchIngredients();
@@ -38,28 +38,30 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => {
-    if (modalResponse) {
+    if (modalResponse.length > 0) {
       const newRepas = { ...repas };
-      newRepas.plat.push(modalResponse);
+      newRepas.plat.push(...modalResponse);
       setRepas(newRepas);
       setCurrentStep(getNextStep("plat", newRepas));
     }
   }, [modalResponse]);
 
   const handleSetRepasItem = (type: keyof Repas, item: string) => {
+    const newRepas = { ...repas };
     if (type === "plat") {
+      newRepas[type].push(item);
       setIsModalOpen(true);  // Ouvrir le modal
     } else {
-      const newRepas = { ...repas };
       if (type === "menu" || type === "plat" || type === "snack" || type === "boisson") {
         newRepas[type].push(item);
       }
       if (type === "boisson") {
         newRepas.complete = true;
       }
-      setRepas(newRepas);
-      setCurrentStep(getNextStep(type, newRepas));
+
     }
+    setRepas(newRepas);
+    setCurrentStep(getNextStep(type, newRepas));
   };
 
   const getNextStep = (type: keyof Repas, repas: Repas) => {
@@ -81,22 +83,26 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex">
-      <div className="w-2/3">
-        <h1 className={title()}>Commande !</h1>
-        <ChatNext
-          repas={repas}
-          cartes={cartes}
-          setRepasItem={handleSetRepasItem}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-        />
-      </div>
-      <div className="">
-        <RecapComponent repas={repas} />
-        {/* Inclure DetailCommandeModal ici */}
-        <DetailCommandeModal isOpen={isModalOpen} onClose={(value) => (setIsModalOpen(false), setModalResponse(value))} options={["ingredients", "caca"]} />
-      </div>
+    <div className=" flex justify-center min-h-screen">
+      <div className="flex w-3/4 h-3/4 ">
+
+        <div className="flex-1 m-4">
+          <h1 className={title()}>Commande !</h1>
+          <ChatNext
+            repas={repas}
+            cartes={cartes}
+            setRepasItem={handleSetRepasItem}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+          />
+        </div>
+        <div className="w-1 border-r-2 mx-2"></div>
+        <div className="flex-1-500 m-4 justify-end  text-right">
+          <RecapComponent repas={repas} />
+          {/* Inclure DetailCommandeModal ici */}
+          <DetailCommandeModal isOpen={isModalOpen} onClose={(values) => (setIsModalOpen(false), setModalResponse(values))} options={ingredients} />
+        </div>
+      </div >
     </div>
   );
 }
@@ -114,6 +120,9 @@ function RecapComponent({ repas }: { repas: Repas }) {
     </div>
   );
 }
+
+// Les autres composants restent inchangés...
+
 
 function ChatNext({ repas, cartes, setRepasItem, currentStep, setCurrentStep }: ChatMenuProps & { currentStep: string, setCurrentStep: (step: string) => void }) {
   switch (currentStep) {
@@ -209,13 +218,8 @@ function ChatEnd({ repas }: ChatMenuProps) {
   return (
     <div>
       <h2>Lancelot</h2>
-      <p>Parfait ! Ta commande est bientôt prête ! Voici ta commande :</p>
-      <ul>
-        <li><b>Menu:</b> {repas.menu.join(", ") || "Pas de menu"}</li>
-        <li><b>Plat:</b> {repas.plat.join(", ") || "Pas de plat"}</li>
-        <li><b>Snack:</b> {repas.snack.join(", ") || "Pas de snack"}</li>
-        <li><b>Boisson:</b> {repas.boisson.join(", ") || "Pas de boisson"}</li>
-      </ul>
+      <p>Parfait ! Comment veux-tu régler ta commande ? </p>
+      <Paiement />
     </div>
   );
 }
@@ -229,7 +233,7 @@ function ChatLayout({ who, mainSentence, buttons, setRepas }: ChatLayoutProps) {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       <div>
         <h2 className="text-lg font-bold">{who}</h2>
       </div>

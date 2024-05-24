@@ -3,27 +3,29 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from
 
 interface DetailCommandeModalProps {
   isOpen: boolean;
-  onClose: (data: string) => any;
+  onClose: (data: string[]) => any; // Modifié pour renvoyer un tableau de chaînes
   options: string[];
 }
 
 export default function DetailCommandeModal({ isOpen, onClose, options }: DetailCommandeModalProps) {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   const handleOptionClick = (option: string) => {
-    setSelectedOption(option);
+    setSelectedOptions((prevSelected) =>
+      prevSelected.includes(option)
+        ? prevSelected.filter((opt) => opt !== option)
+        : [...prevSelected, option]
+    );
   };
 
   const handleValidateClick = () => {
-    if (selectedOption) {
-      onClose(selectedOption);
-    }
+    onClose(selectedOptions);
   };
 
   return (
     <Modal
       isOpen={isOpen}
-      onOpenChange={() => onClose("")} // Close modal without selected data
+      onOpenChange={() => onClose([])} // Close modal without selected data
       placement="top-center"
     >
       <ModalContent>
@@ -34,7 +36,7 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
               {options.map((option) => (
                 <Button
                   color="primary"
-                  variant={selectedOption === option ? "flat" : "ghost"}
+                  variant={selectedOptions.includes(option) ? "flat" : "ghost"}
                   key={option}
                   onPress={() => handleOptionClick(option)}
                 >
