@@ -4,11 +4,10 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
-// Fix pour les importations Webpack 
-//pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+// Fix pour les importations Webpack (si nécessaire)
+pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.js`;
 
-// Utilisez un chemin relatif pour le fichier PDF
-const pdfUrl = "./TD_BDD_1.pdf";
+const pdfUrl = "./TD_BDD_1.pdf"; // Remplacez par le chemin réel de votre PDF
 
 const Carte = () => {
   const [numPages, setNumPages] = useState<number | null>(null);
@@ -20,7 +19,7 @@ const Carte = () => {
 
   const onDocumentLoadError = (error: Error) => {
     console.error('Failed to load PDF document:', error);
-  };  
+  };
 
   return (
     <div className="container mx-auto py-8">
