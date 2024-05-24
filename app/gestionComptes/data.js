@@ -8,7 +8,7 @@ const columns = [
 ];
 
 // Récuperer la liste des comptes dans la BDD
-const users = [
+const listeUtilisateurs  = [
     {
       id: 652,
       name: "CHARPENTIER",
@@ -44,6 +44,13 @@ const users = [
         solde: 3.30,
         access: "user",
       },
+    {
+        id: 828,
+        name: "T'SERSTEVENS",
+        firstname: "Eva",
+        solde: 0.40,
+        access: "user",
+      },
 ];
 
-export {columns, users};
+export {columns, listeUtilisateurs };
