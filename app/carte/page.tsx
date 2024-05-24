@@ -1,38 +1,38 @@
+'use client';
 import React, { useState } from 'react';
-import { Document, Page } from '@react-pdf-viewer/core';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import FlipPage from 'react-flip-page';
-import pdfFile from './path/to/your/menu.pdf'; // Remplacez par le chemin du pdf
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+
+// Fix pour les importations Webpack (si nécessaire)
+pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.js`;
+
+const pdfUrl = "./TD_BDD_1.pdf"; // Remplacez par le chemin réel de votre PDF
 
 const Carte = () => {
-  const [numPages, setNumPages] = useState(null);
+  const [numPages, setNumPages] = useState<number | null>(null);
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
+    console.log(`Document loaded with ${numPages} pages.`);
   };
 
-  const renderPages = () => {
-    const pages = [];
-    for (let i = 1; i <= numPages; i++) {
-      pages.push(
-        <div key={i} className="pdf-page">
-          <Page pageNumber={i} />
-        </div>
-      );
-    }
-    return pages;
+  const onDocumentLoadError = (error: Error) => {
+    console.error('Failed to load PDF document:', error);
   };
 
   return (
-    <div className="flipbook-container">
-      <h2>Menu</h2>
-      <div className="flipbook">
-        <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
-          {numPages && (
-            <FlipPage orientation="horizontal" showSwipeHint>
-              {renderPages()}
-            </FlipPage>
-          )}
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-semibold text-center mb-8">Menu</h1>
+      <div className="pdf-container">
+        <Document
+          file={pdfUrl}
+          onLoadSuccess={onDocumentLoadSuccess}
+          onLoadError={onDocumentLoadError}
+        >
+          {numPages && Array.from(new Array(numPages), (el, index) => (
+            <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+          ))}
         </Document>
       </div>
     </div>
