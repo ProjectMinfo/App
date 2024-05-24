@@ -20,7 +20,7 @@ const Navbarr = () => {
 
   
   return (
-    <Navbar className="h-screen bg-dark-700 text-white py-4 px-4">
+    <Navbar className="h-screen bg-dark-700 text-white py-4 px-4 w-1/6">
       {/* <div className="flex flex-col"> */}
         <div className="flex flex-col space-y-4">
           

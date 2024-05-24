@@ -41,7 +41,7 @@ export default function RootLayout({
             {/* Sidebar */}
             <Navbar />
             <div className="flex flex-col flex-grow">
-              <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+              <main className="container mx-auto max-w-7xl mt-16 px-6 flex-grow">
                 {children}
               </main>
               {/* <footer className="w-full flex items-center justify-center py-3">

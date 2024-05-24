@@ -25,7 +25,7 @@ export interface Carte {
 
 export interface Repas {
   menu: string[];
-  plat: string[];
+  plat: string[], 
   snack: string[];
   boisson: string[];
   complete: boolean;

@@ -6,6 +6,7 @@ import { getCartes, getIngredients } from "@/config/api";
 import { Carte, Repas, ChatLayoutProps, ChatMenuProps } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from '../paiement/page';
+import { Card, CardHeader, Divider, CardBody, CardFooter } from '@nextui-org/react';
 
 export default function ChatPage() {
   const [cartes, setCartes] = useState<Carte[]>([]);
@@ -48,11 +49,11 @@ export default function ChatPage() {
 
   const handleSetRepasItem = (type: keyof Repas, item: string) => {
     const newRepas = { ...repas };
-    if (type === "plat") {
+    if (type === "plat" && item.length > 1) {
       newRepas[type].push(item);
       setIsModalOpen(true);  // Ouvrir le modal
     } else {
-      if (type === "menu" || type === "plat" || type === "snack" || type === "boisson") {
+      if (type === "menu" || type === "snack" || type === "boisson") {
         newRepas[type].push(item);
       }
       if (type === "boisson") {
@@ -86,7 +87,7 @@ export default function ChatPage() {
     <div className=" flex justify-center min-h-screen">
       <div className="flex w-3/4 h-3/4 ">
 
-        <div className="flex-1 m-4">
+        <div className="flex-1 m-4 grid">
           <h1 className={title()}>Commande !</h1>
           <ChatNext
             repas={repas}
@@ -98,7 +99,9 @@ export default function ChatPage() {
         </div>
         <div className="w-1 border-r-2 mx-2"></div>
         <div className="flex-1-500 m-4 justify-end  text-right">
-          <RecapComponent repas={repas} />
+          <RecapComponent repas={repas} cartes={cartes} setRepas={function (repas: string): void {
+            throw new Error('Function not implemented.');
+          }} />
           {/* Inclure DetailCommandeModal ici */}
           <DetailCommandeModal isOpen={isModalOpen} onClose={(values) => (setIsModalOpen(false), setModalResponse(values))} options={ingredients} />
         </div>
@@ -107,21 +110,95 @@ export default function ChatPage() {
   );
 }
 
-function RecapComponent({ repas }: { repas: Repas }) {
+function RecapComponent({ repas, cartes }: ChatMenuProps) {
+  // Filtrer et obtenir les noms des plats
+  const plats: string[] = cartes.filter((carte) => carte.ref === "Plat").map((carte) => carte.nom);
+
+  // Définir le type pour le résultat final
+  type PlatsAvecIngredients = {
+    [key: string]: string[];
+  };
+
+  // Créer un objet pour stocker les plats et leurs ingrédients
+  const platsAvecIngredients: PlatsAvecIngredients = {};
+
+  let currentPlat: string | null = null;
+  repas.plat.forEach((item) => {
+    if (plats.includes(item)) {
+      currentPlat = item;
+      platsAvecIngredients[currentPlat] = [];
+    } else if (currentPlat) {
+      platsAvecIngredients[currentPlat].push(item);
+    }
+  });
+
   return (
-    <div>
-      <h2 className="text-lg font-bold gap-4 mb-4">Récapitulatif de la commande :</h2>
-      <ul>
-        <li><b>Menu:</b> {repas.menu.join(", ") || "Pas de menu"}</li>
-        <li><b>Plat:</b> {repas.plat.join(", ") || "Pas de plat"}</li>
-        <li><b>Snack:</b> {repas.snack.join(", ") || "Pas de snack"}</li>
-        <li><b>Boisson:</b> {repas.boisson.join(", ") || "Pas de boisson"}</li>
-      </ul>
+    <div className="flex flex-col gap-4 max-w-[300px] min-w-[300px] text-justify">
+      <h2 className="text-lg font-bold gap-4">Récapitulatif de la commande :</h2>
+
+      <Card className="max-w-[400px]">
+        <CardHeader className="flex gap-3">
+          <div className="flex flex-col">
+            <p className="text-lg font-semibold">Menu 🍱</p>
+          </div>
+        </CardHeader>
+        <Divider />
+        <CardBody>
+          <p className='text-default-500 font-bold'>{repas.menu.join(", ") || "Pas de menu"}</p>
+        </CardBody>
+        <Divider />
+      </Card>
+      <Card className="max-w-[400px]">
+        <CardHeader className="flex gap-3">
+          <div className="flex flex-col">
+            <p className="text-lg font-semibold">Plat 🌭</p>
+          </div>
+        </CardHeader>
+        <Divider />
+        {repas.plat.length === 0 && (
+          <CardBody>
+            <p className='text-default-500 font-bold'>Pas de plat</p>
+          </CardBody>
+        )}
+        {Object.entries(platsAvecIngredients).map(([plat, ingredients]) => (
+          <CardBody key={plat}>
+            <p className='text-default-500 font-bold'>{plat}</p>
+            <ul>
+              {ingredients.map((ingredient, index) => (
+                <li className='text-default-500' key={index}>{ingredient}</li>
+              ))}
+            </ul>
+          </CardBody>
+        ))}
+        <Divider />
+      </Card>
+      <Card className="max-w-[400px]">
+        <CardHeader className="flex gap-3">
+          <div className="flex flex-col">
+            <p className="text-lg font-semibold">Snack 🍪</p>
+          </div>
+        </CardHeader>
+        <Divider />
+        <CardBody>
+          <p className='text-default-500 font-bold'>{repas.snack.join(", ") || "Pas de snack"}</p>
+        </CardBody>
+        <Divider />
+      </Card>
+      <Card className="max-w-[400px]">
+        <CardHeader className="flex gap-3">
+          <div className="flex flex-col">
+            <p className="text-lg font-semibold">Boisson 🥤</p>
+          </div>
+        </CardHeader>
+        <Divider />
+        <CardBody>
+          <p className='text-default-500 font-bold'>{repas.boisson.join(", ") || "Pas de boisson"}</p>
+        </CardBody>
+        <Divider />
+      </Card>
     </div>
   );
 }
-
-// Les autres composants restent inchangés...
 
 
 function ChatNext({ repas, cartes, setRepasItem, currentStep, setCurrentStep }: ChatMenuProps & { currentStep: string, setCurrentStep: (step: string) => void }) {
@@ -240,8 +317,15 @@ function ChatLayout({ who, mainSentence, buttons, setRepas }: ChatLayoutProps) {
       <p className="text-default-900">{mainSentence}</p>
       {buttons && buttons.length > 0 && (
         <div className="grid grid-cols-2 gap-4">
-          {buttons.map((button) => (
-            <Button key={button} onClick={() => handleButtonClick(button)} isDisabled={buttonClicked}>
+          {buttons.map((button, index) => (
+            <Button
+              key={button}
+              color={index === buttons.length - 1 ? "danger" : "default"}
+              variant={index === buttons.length - 1 ? "bordered" : "solid"}
+              className={index === buttons.length - 1 ? "text-color-default bg-color-default" : ""}
+              onClick={() => handleButtonClick(button)}
+              isDisabled={buttonClicked}
+            >
               {button}
             </Button>
           ))}
