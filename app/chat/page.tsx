@@ -5,7 +5,7 @@ import { Button } from "@nextui-org/button";
 import { getCartes, getIngredients } from "@/config/api";
 import { Carte, Repas, ChatLayoutProps, ChatMenuProps } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
-import Paiement from '../paiement/page';
+import Paiement from './paiement/page';
 import { Card, CardHeader, Divider, CardBody, CardFooter } from '@nextui-org/react';
 
 export default function ChatPage() {
