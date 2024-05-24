@@ -49,7 +49,7 @@ export default function ChatPage() {
 
   const handleSetRepasItem = (type: keyof Repas, item: string) => {
     const newRepas = { ...repas };
-    if (type === "plat" && item.length > 1) {
+    if (type === "plat" && item !== "Pas de plat") {
       newRepas[type].push(item);
       setIsModalOpen(true);  // Ouvrir le modal
     } else {
