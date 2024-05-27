@@ -11,7 +11,7 @@ import GestionBoissons from "./boissons/page";
 export default function App() {
   const [selectedPage, setSelectedPage] = useState<React.ReactElement | null>(null);
 
-  
+
   const actions = [
     { nom: "Menus", page: <GestionMenus /> },
     { nom: "Plats", page: <GestionPlats /> },
@@ -20,15 +20,24 @@ export default function App() {
   ];
 
   return (
-    <div className="flex flex-col gap-16">
-      <div>
+    <div>
+      <div className="flex flex-col justify-center items-center">
         <h1 className={title()}>Modifier la carte</h1>
+        {selectedPage && (
+          <Card className=" mt-2 w-[100%] max-w-[100px]" isPressable onPress={() => setSelectedPage(null)}>
+            <CardHeader className="justify-center">
+              <p className="text-lg">Retour</p>
+            </CardHeader>
+          </Card>
+        )}
       </div>
-      <div>
+      <div className="mt-2">
         {selectedPage ? (
-          selectedPage
+          <>
+            {selectedPage}
+          </>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 mt-12">
             {actions.map((action) => (
               <Card
                 key={action.nom}
