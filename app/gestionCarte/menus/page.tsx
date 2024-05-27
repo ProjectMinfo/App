@@ -3,22 +3,12 @@ import ModifyCard from "@/components/modifyCard";
 import { getMenus } from "@/config/api";
 import { useEffect, useState } from "react";
 
-type Menu = {
-  commentaire: string;
-  dispo: boolean;
-  id: number;
-  nom: string;
-  prix: number;
-  prixServeur: number;
-  quantiteBoisson: number;
-  quantitePlat: number;
-  quantiteSnack: number;
-};
+import { Menus } from '@/types/index';
 
 
 export default function GestionMenus() {
 
-  const [menus, setMenus] = useState([] as Menu[]);
+  const [menus, setMenus] = useState([] as Menus[]);
 
   useEffect(() => {
     async function fetchMenus() {
@@ -31,10 +21,10 @@ export default function GestionMenus() {
   
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-
-      {menus?.map((menu: any) => (
-        <ModifyCard key={menu.id} menu={menu}
+    <div className="flex flex-col gap-4">
+      
+      {menus?.map((item: any) => (
+        <ModifyCard key={item.id} item={item}
         />
       ))}
 
