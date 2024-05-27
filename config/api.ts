@@ -29,6 +29,24 @@ export const getArticles = async () => {
     }
 }
 
+export const getComptes = async () => {
+    const token = "DEV_TOKEN";
+
+    try {
+        const response = await api.get('/users', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return (response.data);
+
+    }
+    catch (error) {
+        console.error('Error fetching users', error);
+        throw error;
+    }
+}
+
 export const getIngredients = async (id?: number) => {
     try {
         const response = await getArticles();
@@ -44,6 +62,30 @@ export const getIngredients = async (id?: number) => {
     }
 }
 
+
+export const postComptes = async (data: any) => {
+    const token = 'DEV_TOKEN'; // Add your token here
+
+    data = {
+        "commentaire": "CACA",
+        "dispo": true,
+        "id" : 0,
+        "nom": "CACA",
+        "quantite": 1239,
+    }
+    try {
+        const response = await api.post('/viandes', data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type" : "application/json"
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error posting viandes:', error);
+        throw error;
+    }
+}
 
 export const postViandes = async (data: any) => {
     const token = 'DEV_TOKEN'; // Add your token here

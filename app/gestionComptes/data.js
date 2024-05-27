@@ -1,56 +1,92 @@
 const columns = [
-    {name: "IDENTIFIANT", uid: "id"},
-    {name: "NOM", uid: "name"},
-    {name: "PRENOM", uid: "firstname"},
-    {name: "SOLDE", uid: "solde"},
-    {name: "ACCES", uid: "access"},
-    {name: "MODIFIER", uid: "modifier"}
+  {name: "IDENTIFIANT", uid: "idCompte"},
+  {name: "NOM", uid: "nom"},
+  {name: "PRENOM", uid: "prenom"},
+  {name: "SOLDE", uid: "montant"},
+  {name: "ACCES", uid: "acces"},
+  {name: "MODIFIER", uid: "modifier"}
 ];
 
-// Récuperer la liste des comptes dans la BDD
-const listeUtilisateurs  = [
-    {
-      id: 652,
-      name: "CHARPENTIER",
-      firstname: "Clovis",
-      solde: 40,
-      access: "user",
-    },
-    {
-      id: 478,
-      name: "HAGE",
-      firstname: "Rémi",
-      solde: -10,
-      access: "serveur",
-    },
-    {
-      id: 622,
-      name: "MONTUORI",
-      firstname: "Milo",
-      solde: 3.20,
-      access: "user",
-    },
-    {
-      id: 587,
-      name: "LAMBERT",
-      firstname: "Edouard",
-      solde: 0,
-      access: "admin",
-    },
-    {
-        id: 423,
-        name: "HOSTE",
-        firstname: "Matthos",
-        solde: 3.30,
-        access: "user",
-      },
-    {
-        id: 828,
-        name: "T'SERSTEVENS",
-        firstname: "Eva",
-        solde: 0.40,
-        access: "user",
-      },
+
+const listeUtilisateurs = [
+  {
+      idCompte: 652,
+      nom: "CHARPENTIER",
+      prenom: "Clovis",
+      montant: 40,
+      acces: 0, // user
+      email: "clovis.charpentier@example.com",
+      mdp: "password123",
+      numCompte: 12345,
+      promo: 2024,
+      resetToken: "",
+      tokenExpiration: ""
+  },
+  {
+      idCompte: 478,
+      nom: "HAGE",
+      prenom: "Rémi",
+      montant: -10,
+      acces: 1, // serveur
+      email: "remi.hage@example.com",
+      mdp: "password123",
+      numCompte: 12346,
+      promo: 2024,
+      resetToken: "",
+      tokenExpiration: ""
+  },
+  {
+      idCompte: 622,
+      nom: "MONTUORI",
+      prenom: "Milo",
+      montant: 3.20,
+      acces: 0, // user
+      email: "milo.montuori@example.com",
+      mdp: "password123",
+      numCompte: 12347,
+      promo: 2024,
+      resetToken: "",
+      tokenExpiration: ""
+  },
+  {
+      idCompte: 587,
+      nom: "LAMBERT",
+      prenom: "Edouard",
+      montant: 0,
+      acces: 2, // admin
+      email: "edouard.lambert@example.com",
+      mdp: "password123",
+      numCompte: 12348,
+      promo: 2024,
+      resetToken: "",
+      tokenExpiration: ""
+  },
+  {
+      idCompte: 423,
+      nom: "HOSTE",
+      prenom: "Matthos",
+      montant: 3.30,
+      acces: 0, // user
+      email: "matthos.hoste@example.com",
+      mdp: "password123",
+      numCompte: 12349,
+      promo: 2024,
+      resetToken: "",
+      tokenExpiration: ""
+  },
+  {
+      idCompte: 828,
+      nom: "T'SERSTEVENS",
+      prenom: "Eva",
+      montant: 0.40,
+      acces: 0, // user
+      email: "eva.tserstevens@example.com",
+      mdp: "password123",
+      numCompte: 12350,
+      promo: 2024,
+      resetToken: "",
+      tokenExpiration: ""
+  }
 ];
 
-export {columns, listeUtilisateurs };
+export { columns, listeUtilisateurs };
