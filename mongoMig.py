@@ -119,7 +119,8 @@ def getPlats():
             "nom": x["nom"],
             # récupérer la quantité de l'article depuis db.articles avec le nom de l'article
             "prix" : round(x["prix"],2),
-            "prixServeur": round(x["prixServeur"],2)
+            "prixServeur": round(x["prixServeur"],2),
+            "ingredients" : [{"id" : 0, "qmin" : 0, "qmax" : 0}],
         })
         
         keyId += 1
@@ -154,5 +155,5 @@ def getMenu():
 # getIngredients()
 # getSnacks()
 # getBoissons()
-# getPlats()
-getMenu()
+getPlats()
+# getMenu()

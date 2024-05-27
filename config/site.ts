@@ -36,7 +36,7 @@ export const siteConfig = {
     {
 
       label: "Modifications carte",
-      href: "/",
+      href: "/gestionCarte",
     },
     {
       label: "Chat",

@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const baseURL = 'https://minfoapi.fly.dev';
-const basePORT = '8000';
 
 const api = axios.create({
     // baseURL: `${baseURL}:${basePORT}`,
@@ -41,6 +40,31 @@ export const getIngredients = async (id?: number) => {
         return response.map((article: any) => article.nom);
     } catch (error) {
         console.error('Error fetching ingredients:', error);
+        throw error;
+    }
+}
+
+
+export const postViandes = async (data: any) => {
+    const token = 'dev_token'; // Add your token here
+
+    data = {
+        "commentaire": "CACA",
+        "dispo": true,
+        "id" : 0,
+        "nom": "CACA",
+        "quantite": 1239,
+    }
+    try {
+        const response = await api.post('/viandes', data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type" : "application/json"
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error posting viandes:', error);
         throw error;
     }
 }
