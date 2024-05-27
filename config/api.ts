@@ -45,6 +45,17 @@ export const getIngredients = async (id?: number) => {
 }
 
 
+export const getMenus = async () => {
+    try {
+        const response = await api.get('/menus');
+        return (response.data);
+    } catch (error) {
+        console.error('Error fetching menus:', error);
+        throw error;
+    }
+}
+
+
 export const postViandes = async (data: any) => {
     const token = 'DEV_TOKEN'; // Add your token here
 
