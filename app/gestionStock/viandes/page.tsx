@@ -1,82 +1,103 @@
-import { Button } from "@nextui-org/button";  // Import du composant Button de NextUI.
-import { useState } from "react";  // Import du hook useState de React pour gérer l'état.
-import EditQuantityModal from "@/components/EditQuantityModal";  // Import du composant EditQuantityModal.
-import AddItemModal from "@/components/AddItemModal";  // Import du composant AddItemModal.
-import { useDisclosure } from "@nextui-org/modal";  // Import du hook useDisclosure de NextUI pour gérer l'ouverture et la fermeture des modals.
+import { Button } from "@nextui-org/button";
+import { useState, useEffect } from "react";
+import EditQuantityModal from "@/components/EditQuantityModal";
+import AddItemModal from "@/components/AddItemModal";
+import { useDisclosure } from "@nextui-org/modal";
+import { getViandes, postViandes } from "@/config/api"; // Assurez-vous que le chemin est correct
 
 interface Meat {
   id: number;
-  name: string;
-  quantity: number;
+  commentaire: string;
+  dispo: boolean;
+  nom: string;
+  quantite: number;
 }
 
-// Données initiales pour les viandes.
-const initialMeats: Meat[] = [
-  { id: 1, name: "Chicken", quantity: 20 },
-  { id: 2, name: "Beef", quantity: 15 },
-  { id: 3, name: "Pork", quantity: 10 },
-];
-
 interface ViandesProps {
-  onValidate: (updatedMeats: Meat[]) => void;  // Fonction de validation pour mettre à jour les viandes.
+  onValidate: (updatedMeats: Meat[]) => void;
 }
 
 const Viandes = ({ onValidate }: ViandesProps) => {
-  const [meats, setMeats] = useState<Meat[]>(initialMeats);  // État pour stocker les viandes.
-  const [selectedMeat, setSelectedMeat] = useState<Meat | null>(null);  // État pour stocker la viande sélectionnée pour modification.
-  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();  // Gestion de l'état du modal d'édition.
-  const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();  // Gestion de l'état du modal d'ajout.
+  const [meats, setMeats] = useState<Meat[]>([]);
+  const [selectedMeat, setSelectedMeat] = useState<Meat | null>(null);
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
+  const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
 
-  // Fonction pour gérer la modification d'une viande.
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const viandes = await getViandes();
+        setMeats(viandes);
+      } catch (error) {
+        console.error('Error fetching viandes:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const handleModify = (meat: Meat) => {
     setSelectedMeat(meat);
     onEditOpen();
   };
 
-  // Fonction pour gérer la suppression d'une viande.
   const handleDelete = (id: number) => {
     setMeats(meats.filter(meat => meat.id !== id));
   };
 
-  // Fonction pour gérer la soumission du formulaire de modification.
-  const handleEditSubmit = (quantity: number) => {
+  const handleEditSubmit = async (quantite: number) => {
     if (selectedMeat) {
-      setMeats(
-        meats.map(meat =>
-          meat.id === selectedMeat.id ? { ...meat, quantity } : meat
-        )
-      );
+      const updatedMeat = { ...selectedMeat, quantite };
+      try {
+        await postViandes(updatedMeat); // Appel à l'API pour mettre à jour la viande
+        setMeats(
+          meats.map(meat =>
+            meat.id === selectedMeat.id ? updatedMeat : meat
+          )
+        );
+      } catch (error) {
+        console.error('Error updating meat:', error);
+      }
+      onEditClose(); // Fermer la modal après la soumission
     }
   };
 
-  // Fonction pour gérer la soumission du formulaire d'ajout.
-  const handleAddSubmit = (name: string, quantity: number) => {
-    const newMeat: Meat = { id: meats.length + 1, name, quantity };
-    setMeats([...meats, newMeat]);
+  const handleAddSubmit = async (nom: string, quantite: number) => {
+    const newMeat: Meat = { id: -1, nom, quantite, dispo: true, commentaire: ""};
+    try {
+      await postViandes(newMeat); // Appel à l'API pour ajouter la nouvelle viande
+      setMeats([...meats, newMeat]);
+    } catch (error) {
+      console.error('Error adding meat:', error);
+    }
+    onAddClose(); // Fermer la modal après l'ajout
   };
 
-  // Fonction pour valider les modifications et mettre à jour les données.
-  const handleValidate = () => {
-    onValidate(meats);
+  const handleValidate = async () => {
+    try {
+      await Promise.all(meats.map(meat => postViandes(meat))); // Appel à l'API pour mettre à jour toutes les viandes
+      onValidate(meats); // Redirection vers la page GestionStock
+    } catch (error) {
+      console.error('Error validating meats:', error);
+    }
   };
 
   return (
     <div>
       <h2>Liste des Viandes</h2>
       <div className="flex justify-between mb-4">
-        <Button onClick={handleValidate}>Valider</Button>  // Bouton pour valider les modifications.
-        <Button onClick={onAddOpen}>+</Button>  // Bouton pour ajouter une nouvelle viande.
+        <Button onClick={handleValidate}>Valider</Button>
+        <Button onClick={onAddOpen}>+</Button>
       </div>
-      <div className="flex justify-center mt-4  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  justify-center gap-4">
+      <div className="flex justify-center mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {meats.map(meat => (
           <div key={meat.id} className="border p-4 flex flex-col justify-between gap-4 rounded-2xl">
             <div>
-              <h3>{meat.name}</h3>
-              <p>Quantité: {meat.quantity}</p>
+              <h3>{meat.nom}</h3>
+              <p>Quantité: {meat.quantite}</p>
             </div>
-            <div className="flex justify-center mt-4">
-              <Button onClick={() => handleModify(meat)}>Modifier</Button>  // Bouton pour modifier une viande.
-              <Button color="warning" onClick={() => handleDelete(meat.id)}>Supprimer</Button>  // Bouton pour supprimer une viande.
+            <div className="flex justify-center mt-4 gap-2">
+              <Button onClick={() => handleModify(meat)}>Modifier</Button>
+              <Button color="warning" onClick={() => handleDelete(meat.id)}>Supprimer</Button>
             </div>
           </div>
         ))}
@@ -86,7 +107,7 @@ const Viandes = ({ onValidate }: ViandesProps) => {
           isOpen={isEditOpen}
           onClose={onEditClose}
           onSubmit={handleEditSubmit}
-          currentQuantity={selectedMeat.quantity}
+          currentQuantity={selectedMeat.quantite}
         />
       )}
       <AddItemModal
@@ -98,4 +119,4 @@ const Viandes = ({ onValidate }: ViandesProps) => {
   );
 };
 
-export default Viandes;  // Exporte le composant Viandes par défaut.
+export default Viandes;
