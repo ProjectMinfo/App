@@ -46,7 +46,7 @@ export const getIngredients = async (id?: number) => {
 
 
 export const postViandes = async (data: any) => {
-    const token = 'dev_token'; // Add your token here
+    const token = 'DEV_TOKEN'; // Add your token here
 
     data = {
         "commentaire": "CACA",
