@@ -2,6 +2,8 @@ import axios from 'axios';
 
 const baseURL = 'https://minfoapi.fly.dev';
 
+
+
 const api = axios.create({
     // baseURL: `${baseURL}:${basePORT}`,
     baseURL: `${baseURL}`,
@@ -25,24 +27,6 @@ export const getArticles = async () => {
 
     } catch (error) {
         console.error('Error fetching article:', error);
-        throw error;
-    }
-}
-
-export const getComptes = async () => {
-    const token = "DEV_TOKEN";
-
-    try {
-        const response = await api.get('/users', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        return (response.data);
-
-    }
-    catch (error) {
-        console.error('Error fetching users', error);
         throw error;
     }
 }
@@ -103,51 +87,33 @@ export const getSnacks = async () => {
     }
 }
 
-export const postComptes = async (data: any) => {
-    const token = 'DEV_TOKEN'; // Add your token here
-
-    data = {
-        "commentaire": "CACA",
-        "dispo": true,
-        "id" : 0,
-        "nom": "CACA",
-        "quantite": 1239,
-    }
-    try {
-        const response = await api.post('/viandes', data, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type" : "application/json"
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error posting viandes:', error);
-        throw error;
-    }
-}
-
 
 export const postViandes = async (data: any) => {
     const token = 'DEV_TOKEN'; // Add your token here
 
-    data = {
-        "commentaire": "CACA",
-        "dispo": true,
-        "id" : 0,
-        "nom": "CACA",
-        "quantite": 1239,
-    }
     try {
-        const response = await api.post('/viandes', data, {
+        const response = await api.post('/viandes', JSON.stringify(data), {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type" : "application/json"
             }
         });
         return response.data;
+
     } catch (error) {
         console.error('Error posting viandes:', error);
         throw error;
     }
 }
+
+export const getViandes = async () => {
+    try {
+        const response = await api.get('/viandes');
+        return (response.data);
+
+    } catch (error) {
+        console.error('Error fetching viandes:', error);
+        throw error;
+    }
+}
+
