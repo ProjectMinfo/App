@@ -73,6 +73,36 @@ export const getMenus = async () => {
     }
 }
 
+export const getBoissons = async () => {
+    try {
+        const response = await api.get('/boissons');
+        return (response.data);
+    } catch (error) {
+        console.error('Error fetching boissons:', error);
+        throw error;
+    }
+}
+
+export const getPlats = async () => {
+    try {
+        const response = await api.get('/plats');
+        return (response.data);
+    } catch (error) {
+        console.error('Error fetching plats:', error);
+        throw error;
+    }
+}
+
+export const getSnacks = async () => {
+    try {
+        const response = await api.get('/snacks');
+        return (response.data);
+    } catch (error) {
+        console.error('Error fetching snacks:', error);
+        throw error;
+    }
+}
+
 export const postComptes = async (data: any) => {
     const token = 'DEV_TOKEN'; // Add your token here
 
