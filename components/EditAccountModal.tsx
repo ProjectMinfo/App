@@ -4,11 +4,11 @@ import { Checkbox, CheckboxGroup, Modal, ModalContent, ModalHeader, ModalBody, M
 interface EditAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (nom: string, prenom: string, montant: number, acces: number) => void;
+  onSubmit: (name: string, firstname: string, solde: number, access: string) => void;
   currentName: string;
   currentFirstname: string;
   currentSolde: number;
-  currentAccess: number;
+  currentAccess: string;
 }
 
 export default function EditAccountModal({
@@ -23,18 +23,18 @@ export default function EditAccountModal({
   const [name, setName] = useState<string>(currentName);
   const [firstname, setFirstname] = useState<string>(currentFirstname);
   const [solde, setSolde] = useState<number>(currentSolde);
-  const [access, setAccess] = useState<number>(currentAccess);
-  const [selectedAccess, setSelectedAccess] = useState<number[]>([currentAccess]);
+  const [access, setAccess] = useState<string>(currentAccess);
+  const [selectedAccess, setSelectedAccess] = useState(["user", "serveur", "admin"]);
   const [isInvalidAccess, setIsInvalidAccess] = useState<boolean>(false);
 
-  // Initialize variables with the values from the database on startup
+  // Initialise les variables avec les valeurs de la BDD au démarage
   useEffect(() => {
     setName(currentName);
     setFirstname(currentFirstname);
     setSolde(currentSolde);
     setAccess(currentAccess);
-    setSelectedAccess([currentAccess]);
   }, [currentName, currentFirstname, currentSolde, currentAccess]);
+
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -49,9 +49,9 @@ export default function EditAccountModal({
   }
 
   const isAccessSelected = (accessSelected: string[]) => {
-    setIsInvalidAccess(accessSelected.length !== 1); // If more than one access is selected, invalidate
-    if (accessSelected.length === 1) {
-      setAccess(Number(accessSelected[0])); // Update the selected access
+    setIsInvalidAccess(accessSelected.length !== 1); // S'il y'a plus d'un accès sélectionné, on invalide
+    if (accessSelected.length === 1) { 
+      setAccess(accessSelected[0]); // On met à jour l'accès sélectionné
     }
   }
 
@@ -59,6 +59,8 @@ export default function EditAccountModal({
     onSubmit(name, firstname, solde, access);
     onClose();
   };
+ 
+
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose} placement="top-center">
@@ -108,12 +110,12 @@ export default function EditAccountModal({
           <CheckboxGroup
             isRequired
             isInvalid={isInvalidAccess}
-            defaultValue={[String(currentAccess)]}
+            defaultValue={[currentAccess]} 
             onValueChange={isAccessSelected}
           >
-            <Checkbox value="0"> User </Checkbox>
-            <Checkbox value="1"> Serveur </Checkbox>
-            <Checkbox value="2"> Admin </Checkbox>
+            <Checkbox value="user"> User </Checkbox>
+            <Checkbox value="serveur"> Serveur </Checkbox>
+            <Checkbox value="admin"> Admin </Checkbox>
           </CheckboxGroup>
         </ModalBody>
 
@@ -121,7 +123,7 @@ export default function EditAccountModal({
           <Button color="danger" variant="flat" onPress={onClose}>
             Annuler
           </Button>
-
+          
           <Button color="primary" onPress={handleSubmit} isDisabled={isInvalidAccess}>
             Valider
           </Button>
