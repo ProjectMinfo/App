@@ -1,8 +1,8 @@
 'use client';
 import React, { Key, useState } from "react";
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Tooltip} from "@nextui-org/react";
-import {columns, listeUtilisateurs } from "./data.js";
-import {EditIcon} from "../../public/EditIcon.jsx";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Tooltip } from "@nextui-org/react";
+import { columns, listeUtilisateurs } from "./data.js";
+import { EditIcon } from "../../public/EditIcon.jsx";
 import EditAccountModal from "@/components/EditAccountModal"
 
 // Define types for users
@@ -17,7 +17,7 @@ interface UserType {
 }
 
 
-function accessColorMap(quelleCouleurPourLUtilisateur:UserType) {
+function accessColorMap(quelleCouleurPourLUtilisateur: UserType) {
   switch (quelleCouleurPourLUtilisateur.access) {
     case "user":
       return "success" // Affiche les clients en vert
@@ -30,10 +30,10 @@ function accessColorMap(quelleCouleurPourLUtilisateur:UserType) {
   }
 };
 
-function colorSolde(soldeDuCompte:number) {
+function colorSolde(soldeDuCompte: number) {
   return soldeDuCompte < 0 ? "text-danger" // Affiche le solde en rouge si dans le négatif,
-        : soldeDuCompte == 0 ? "text-default" // en gris si le compte est à 0,
-        : soldeDuCompte < 3.30 ? "text-warning" // en orange s'il passera dans le négatif à l'achat d'un menu à 3.30 €,
+    : soldeDuCompte == 0 ? "text-default" // en gris si le compte est à 0,
+      : soldeDuCompte < 3.30 ? "text-warning" // en orange s'il passera dans le négatif à l'achat d'un menu à 3.30 €,
         : "text-success" // en vert si largement dans le positif
 }
 
@@ -53,18 +53,18 @@ export default function gestionComptePage() {
     setCurrentUser(null);
   };
 
-  const onSubmit = (name: string) => {
+  const onSubmit = (name: string, firstname: string, solde:number, access:string) => {
     // Modification sur l'utilisateur
     if (currentUser) {
       const editedListeUtilisateurs = users.map((user) =>
-        user.id === currentUser.id ? { ...user, name } : user
+        user.id === currentUser.id ? { ...user, name, firstname, solde, access } : user
       );
-      setUsers(editedListeUtilisateurs); // Update users state
+      setUsers(editedListeUtilisateurs); // Update liste des utilisateurs
     }
     onEditClose();
   };
 
-  const renderCell = React.useCallback((user:UserType, columnKey:Key) => {
+  const renderCell = React.useCallback((user: UserType, columnKey: Key) => {
     const cellValue = user[columnKey as keyof UserType];
 
     switch (columnKey) {
@@ -87,65 +87,70 @@ export default function gestionComptePage() {
           </div>
         );
       case "access":
-        return (
-          <Chip
-            className="capitalize"
-            color={accessColorMap(user)}
-            size="sm"
-            variant="flat"
-          >
-            {cellValue}
-          </Chip>
-      );
+        if (cellValue == "user" || cellValue == "serveur" || cellValue == "admin") {
+          return (
+            <Chip
+              className="capitalize"
+              color={accessColorMap(user)}
+              size="sm"
+              variant="flat"
+            >
+              {cellValue}
+            </Chip>
+          )
+        }
       case "modifier":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Tooltip content="Modifier">
-              <span
-                onClick={() => onEditOpen(user)}
-                className="text-lg text-default-400 cursor-pointer active:opacity-50"
-              >
-                <EditIcon />
-              </span>
-            </Tooltip>
-          </div>
-      );
-      default:
-        return cellValue;
-    }
-  }, []);
-
   return (
-    <div>
-      <Table aria-label="Liste des comptes">
-
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.uid}>
-              {column.name}
-            </TableColumn> )}
-        </TableHeader>
-
-        <TableBody items={users}>
-          {(item) => (
-            <TableRow>
-              {(columnKey) =>
-                <TableCell>
-                  {renderCell(item, columnKey)}
-                </TableCell>}
-            </TableRow>
-          )}
-        </TableBody>
-
-      </Table>
-      {currentUser && (
-         <EditAccountModal
-           isOpen={isModalOpen}
-           onClose={onEditClose}
-           onSubmit={onSubmit}
-           currentName={currentUser.name}
-         />
-      )}
+    <div className="relative flex items-center gap-2">
+      <Tooltip content="Modifier">
+        <span
+          onClick={() => onEditOpen(user)}
+          className="text-lg text-default-400 cursor-pointer active:opacity-50"
+        >
+          <EditIcon />
+        </span>
+      </Tooltip>
     </div>
   );
+      default:
+  return cellValue;
+}
+  }, []);
+
+return (
+  <div>
+    <Table aria-label="Liste des comptes">
+
+      <TableHeader columns={columns}>
+        {(column) => (
+          <TableColumn key={column.uid}>
+            {column.name}
+          </TableColumn>)}
+      </TableHeader>
+
+      <TableBody items={users}>
+        {(item) => (
+          <TableRow>
+            {(columnKey) =>
+              <TableCell>
+                {renderCell(item, columnKey)}
+              </TableCell>}
+          </TableRow>
+        )}
+      </TableBody>
+
+    </Table>
+    {currentUser && currentUser.access && (
+      <EditAccountModal
+        isOpen={isModalOpen}
+        onClose={onEditClose}
+        onSubmit={onSubmit}
+        currentName={currentUser.name}
+        currentFirstname={currentUser.firstname}
+        currentSolde={currentUser.solde}
+        currentAccess={currentUser.access}
+      />
+    )}
+  </div>
+);
 }
