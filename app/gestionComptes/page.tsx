@@ -76,14 +76,24 @@ export default function GestionComptePage() {
     setCurrentUser(null);
   };
 
-  const onSubmit = (nom: string, prenom: string, montant: number, acces: number) => {
+  const onSubmit = async (nom: string, prenom: string, montant: number, acces: number) => {
     // Modification sur l'utilisateur
     if (currentUser && comptes) {
       const editedListeUtilisateurs = comptes.map((compte) =>
         compte.idCompte === currentUser.idCompte ? { ...compte, nom, prenom, montant, acces } : compte
       );
       setComptes(editedListeUtilisateurs);
-      postEditComptes(currentUser)
+
+      // Mettre à jour l'utilisateur courant avec les nouvelles données avant de l'envoyer à l'API
+      const updatedUser = { ...currentUser, nom, prenom, montant, acces };
+
+      try {
+        await postEditComptes(updatedUser); // Appel à l'API pour enregistrer les modifications
+        console.log("User updated successfully in the API");
+      }
+      catch (error) {
+        console.error("Error updating user:", error);
+      }
     }
     onEditClose();
   };
