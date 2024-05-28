@@ -56,7 +56,6 @@ export default function GestionComptePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [comptes, setComptes] = useState<User[]>([]);
-  const [sortOrderNumCompte, setSortOrderNumCompte] = useState<'asc' | 'desc'>('asc'); // Track sorting order
 
   useEffect(() => {
     async function fetchComptes() {
@@ -83,12 +82,8 @@ export default function GestionComptePage() {
       const editedListeUtilisateurs = comptes.map((compte) =>
         compte.idCompte === currentUser.idCompte ? { ...compte, nom, prenom, montant, acces } : compte
       );
-      // Sort after editing
-      editedListeUtilisateurs.sort((a: User, b: User) => {
-        return sortOrderNumCompte === 'asc' ? a.numCompte - b.numCompte : b.numCompte - a.numCompte;
-      });
       setComptes(editedListeUtilisateurs);
-      // postEditComptes(currentUser)
+      postEditComptes(currentUser)
     }
     onEditClose();
   };

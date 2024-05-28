@@ -88,11 +88,11 @@ export const getComptes = async () => {
 
 
 
-export const postEditComptes = async (data:any) => {
+export const postEditComptes = async (user:any) => {
     const token = 'DEV_TOKEN'; // Add your token here
 
     try {
-        const response = await api.post('/user/update', JSON.stringify(data), {
+        const response = await api.post('/user/update', JSON.stringify(user), {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type" : "application/json"
