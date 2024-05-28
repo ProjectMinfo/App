@@ -130,7 +130,7 @@ export default function GestionComptePage() {
         return (
           <div className="flex flex-col">
             <p className={`text-bold text-sm capitalize ${colorSolde(cellValue as number)}`}>
-              {cellValue + " €"}
+            {typeof cellValue === 'number' ? parseFloat(cellValue.toFixed(2)).toFixed(2) : cellValue} €
             </p>
           </div>
         );

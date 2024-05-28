@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Checkbox, CheckboxGroup, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
+import { Radio, RadioGroup, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
 
 interface EditAccountModalProps {
   isOpen: boolean;
@@ -48,7 +48,7 @@ export default function EditAccountModal({
     setSolde(Number(event.target.value));
   }
 
-  const isAccessSelected = (accessSelected: string[]) => {
+  const isAccessSelected = (accessSelected: string) => {
     setIsInvalidAccess(accessSelected.length !== 1); // If more than one access is selected, invalidate
     if (accessSelected.length === 1) {
       setAccess(Number(accessSelected[0])); // Update the selected access
@@ -105,16 +105,16 @@ export default function EditAccountModal({
 
         <ModalBody>
           Modifier l'accès
-          <CheckboxGroup
+          <RadioGroup
             isRequired
             isInvalid={isInvalidAccess}
-            defaultValue={[String(currentAccess)]}
+            defaultValue={String(currentAccess)}
             onValueChange={isAccessSelected}
           >
-            <Checkbox value="0"> User </Checkbox>
-            <Checkbox value="1"> Serveur </Checkbox>
-            <Checkbox value="2"> Admin </Checkbox>
-          </CheckboxGroup>
+            <Radio value="0"> User </Radio>
+            <Radio value="1"> Serveur </Radio>
+            <Radio value="2"> Admin </Radio>
+          </RadioGroup>
         </ModalBody>
 
         <ModalFooter>
