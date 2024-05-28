@@ -1,8 +1,7 @@
 'use client';
 import React, { Key, useState, useEffect } from "react";
-import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip } from "@nextui-org/react";
-import { getComptes } from "@/config/api";
-import { columns, listeUtilisateurs } from "./data.js";
+import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, User, user } from "@nextui-org/react";
+import { getComptes, postEditComptes } from "@/config/api";
 import { EditIcon } from "../../public/EditIcon.jsx";
 import EditAccountModal from "@/components/EditAccountModal"
 
@@ -20,6 +19,17 @@ type User = {
   resetToken: string;
   tokenExpiration: string;
 };
+
+type ColumnKeys = 'numCompte' | 'nom' | 'prenom' | 'montant' | 'acces' | 'modifier';
+
+const columns: { name: string, uid: ColumnKeys }[] = [
+  { name: "IDENTIFIANT", uid: "numCompte" },
+  { name: "NOM", uid: "nom" },
+  { name: "PRENOM", uid: "prenom" },
+  { name: "SOLDE", uid: "montant" },
+  { name: "ACCES", uid: "acces" },
+  { name: "MODIFIER", uid: "modifier" }
+];
 
 function accessColorMap(user: User) {
   switch (user.acces) {
@@ -45,18 +55,17 @@ export default function GestionComptePage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>(listeUtilisateurs); // State for users
   const [comptes, setComptes] = useState<User[]>([]);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Track sorting order
 
   useEffect(() => {
     async function fetchComptes() {
       const fetchedComptes = await getComptes();
+      fetchedComptes.sort((userTmp1: User, userTmp2: User) => userTmp1.numCompte - userTmp2.numCompte); // Trie par ordre de numero de compte
       setComptes(fetchedComptes);
     }
     fetchComptes();
-    
-    console.log(comptes);
-  }, []);
+  }, [comptes]);
 
   const onEditOpen = (user: User) => {
     setCurrentUser(user);
@@ -70,20 +79,21 @@ export default function GestionComptePage() {
 
   const onSubmit = (nom: string, prenom: string, montant: number, acces: number) => {
     // Modification sur l'utilisateur
-    if (currentUser) {
-      const editedListeUtilisateurs = users.map((user) =>
-        user.idCompte === currentUser.idCompte ? { ...user, nom, prenom, montant, acces } : user
+    if (currentUser && comptes) {
+      const editedListeUtilisateurs = comptes.map((compte) =>
+        compte.idCompte === currentUser.idCompte ? { ...compte, nom, prenom, montant, acces } : compte
       );
-      setUsers(editedListeUtilisateurs); // Update liste des utilisateurs
+      setComptes(editedListeUtilisateurs);
+      postEditComptes(currentUser)
     }
     onEditClose();
   };
 
-  const renderCell = React.useCallback((user: User, columnKey: Key) => {
-    const cellValue = user[columnKey as keyof User];
+  const renderCell = React.useCallback((compte: User, columnKey: ColumnKeys) => {
+    const cellValue = compte[columnKey as keyof User];
 
     switch (columnKey) {
-      case "idCompte":
+      case "numCompte":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
@@ -119,7 +129,7 @@ export default function GestionComptePage() {
         return (
           <Chip
             className="capitalize"
-            color={accessColorMap(user)}
+            color={accessColorMap(compte)}
             size="sm"
             variant="flat"
           >
@@ -131,7 +141,7 @@ export default function GestionComptePage() {
           <div className="relative flex items-center gap-2">
             <Tooltip content="Modifier">
               <span
-                onClick={() => onEditOpen(user)}
+                onClick={() => onEditOpen(compte)}
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"
               >
                 <EditIcon />
@@ -142,7 +152,7 @@ export default function GestionComptePage() {
       default:
         return cellValue;
     }
-  }, []);
+  }, [onEditOpen]);
 
   return (
     <div>
@@ -155,12 +165,12 @@ export default function GestionComptePage() {
             </TableColumn>)}
         </TableHeader>
 
-        <TableBody items={users}>
+        <TableBody items={comptes}>
           {(item) => (
-            <TableRow key={item.idCompte}>
+            <TableRow key={item.numCompte}>
               {(columnKey) =>
                 <TableCell>
-                  {renderCell(item, columnKey)}
+                  {renderCell(item, columnKey as ColumnKeys)}
                 </TableCell>}
             </TableRow>
           )}
