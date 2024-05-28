@@ -119,4 +119,5 @@ const Viandes = ({ onValidate }: ViandesProps) => {
   );
 };
 
+
 export default Viandes;
