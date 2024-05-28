@@ -1,8 +1,15 @@
-'user client';
-import ModifyCard from '@/components/modifyCard';
+'use client';
+import React, { useState } from "react";
+import { Card, CardHeader, CardBody, Divider } from "@nextui-org/react";
+import { title } from "@/components/primitives";
 
-export default async function GestionCarte() {
+import GestionMenus from "./menus/page";
+import GestionPlats from "./plats/page";
+import GestionSnacks from "./snacks/page";
+import GestionBoissons from "./boissons/page";
 
+export default function App() {
+  const [selectedPage, setSelectedPage] = useState<React.ReactElement | null>(null);
 
 
   const actions = [
@@ -53,4 +60,4 @@ export default async function GestionCarte() {
       </div>
     </div>
   );
-};
+}
