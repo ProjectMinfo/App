@@ -1,67 +1,60 @@
 'use client';
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/router';
 import {ChevronDown} from "./iconNavbar.jsx";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu } from "@nextui-org/react";
+import Link from 'next/link'; // Importation du bon Link
 
 
 
 const Navbarr = () => {
-  // const router = useRouter();
-  // const [activePath, setActivePath] = useState("");
-
-  // useEffect(() => {
-  //   setActivePath(router.pathname);
-  // }, [router.pathname]);
 
   const icons = {
     chevron: <ChevronDown fill="currentColor" size={16} height={undefined} width={undefined} />,
   };
-
-  
+ 
   return (
-    <Navbar className="h-screen bg-dark-700 text-white py-4 px-4 w-1/6">
-      {/* <div className="flex flex-col"> */}
-        <div className="flex flex-col space-y-4">
+    <div className="h-screen bg-gray-900 text-white py-4 px-4 w-1/5">
+        <div className="flex flex-col space-y-4 text-center">
           
-          <NavbarBrand>
-            <h2 className="text-white text-2xl font-semibold mb-4">CHTI'MI</h2>
-          </NavbarBrand>
+          <div className="relative h-32 w-32 flex items-center">
+            <img src="logo.png" alt="Logo" className="h-16 w-auto mb-2" /> 
+            <h2 className="text-white text-4xl font-semibold">CHTI'MI</h2>
+          </div>
           
-          <NavbarContent className="flex flex-col">
+          <div className="flex flex-col space-y-6" >
             
-            <NavbarItem>
-              <Link href="./" className="text-white">
+            <div>
+              <Link href="/">
                 Home
               </Link>
-            </NavbarItem>
+            </div>
 
-            <NavbarItem>
-              <Link href="./" className="text-white">
+            <div>
+              <Link href="/">
                 Commande
               </Link>
-            </NavbarItem>
+            </div>
 
-            <NavbarItem>
-              <Link href="./" className="text-white">
+            <div>
+              <Link href="/">
                 Prise commande
               </Link>
-            </NavbarItem>
+            </div>
 
-            <NavbarItem>
-              <Link href="./" className="text-white">
+            <div>
+              <Link href="/">
                 Affichage cuisine
               </Link>
-            </NavbarItem>
+            </div>
 
-            <NavbarItem>
-              <Link href="./" className="text-white">
+            <div>
+              <Link href="/">
                 Planning serveur
               </Link>
-            </NavbarItem>
+            </div>
 
             <Dropdown>
-              <NavbarItem>
+              <div>
                 <DropdownTrigger>
                   <Button
                     disableRipple
@@ -73,7 +66,7 @@ const Navbarr = () => {
                     Gestions
                   </Button>
                 </DropdownTrigger>
-              </NavbarItem>
+              </div>
               <DropdownMenu
                 aria-label="ACME features"
                 className="w-[340px]"
@@ -82,22 +75,22 @@ const Navbarr = () => {
                 }} 
               >
                 <DropdownItem>
-                  <Link href="./" className="text-white">
+                  <Link href="/">
                     Gestion des stocks
                   </Link>
                 </DropdownItem>
                 <DropdownItem>
-                  <Link href="./" className="text-white">
+                  <Link href="/">
                     Gestion des achats
                   </Link>
                 </DropdownItem>
                 <DropdownItem>
-                  <Link href="./gestionCompte" className="text-white">
+                  <Link href="/gestionCompte">
                     Gestion des comptes
                   </Link>
                 </DropdownItem>
                 <DropdownItem>
-                  <Link href="./" className="text-white">
+                  <Link href="/">
                     Gestion des températures
                   </Link>
                 </DropdownItem>
@@ -106,37 +99,36 @@ const Navbarr = () => {
 
 
 
-            <NavbarItem>
-              <Link href="./" className="text-white">
+            <div>
+              <Link href="/">
                 Modifications cartes
               </Link>
-            </NavbarItem>
+            </div>
 
-            <NavbarItem>
-              <Link href="./" className="text-white">
+            <div>
+              <Link href="/">
                 Trésorerie
               </Link>
-            </NavbarItem>
+            </div>
 
-            <NavbarItem>
-              <Link href="./" className="text-white">
+            <div>
+              <Link href="/">
                 Compte
               </Link>
-            </NavbarItem>
+            </div>
 
-            <NavbarItem>
-              <Link href="./" className="text-white">
+            <div>
+              <Link href="/">
                 Paramètres
               </Link>
-            </NavbarItem>
+            </div>
 
-          </NavbarContent>
+          </div>
 
         </div>
-      {/* </div> */}
-
-    </Navbar>
+    </div>
   );
 };
 
 export default Navbarr;
+
