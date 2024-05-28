@@ -7,10 +7,11 @@ import { getSnacks, postSnacks, deleteSnacks } from "@/config/api"; // Assurez-v
 
 interface Snack {
   id: number;
-  commentaire: string;
   dispo: boolean;
   nom: string;
   quantite: number;
+  prix: number;
+  prixServeur: number;
 }
 
 interface SnacksProps {

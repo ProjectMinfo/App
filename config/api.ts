@@ -8,6 +8,12 @@ const api = axios.create({
     // baseURL: `${baseURL}:${basePORT}`,
     baseURL: `${baseURL}`,
 });
+const token = 'DEV_TOKEN'; // Ajoutez votre token ici
+
+api.interceptors.request.use(config => {
+  config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 export const getCartes = async () => {
     try {
@@ -20,31 +26,6 @@ export const getCartes = async () => {
     }
 };
 
-export const getArticles = async () => {
-    try {
-        const response = await api.get('/articles');
-        return (response.data);
-
-    } catch (error) {
-        console.error('Error fetching article:', error);
-        throw error;
-    }
-}
-
-export const getIngredients = async (id?: number) => {
-    try {
-        const response = await getArticles();
-        if (id) {            
-            const idFiltred = response.filter((article: any) => article.typeIngredient === id);            
-            return idFiltred.map((article: any) => article.nom);
-        }
-        
-        return response.map((article: any) => article.nom);
-    } catch (error) {
-        console.error('Error fetching ingredients:', error);
-        throw error;
-    }
-}
 
 
 export const getMenus = async () => {
@@ -135,3 +116,103 @@ export const getViandes = async () => {
     }
 
 }
+
+// Fonctions pour Viandes
+  
+  
+  export const deleteViandes = async (id : number) => {
+    try {
+      const response = await api.delete(`/viandes/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting viandes:', error);
+      throw error;
+    }
+  };
+  
+  // Fonctions pour Ingredients
+
+  export const getIngredients = async () => {
+    try {
+        const response = await api.get('/ingredients');
+        return (response.data);
+    } catch (error) {
+        console.error('Error fetching ingredients:', error);
+        throw error;
+    }
+}
+
+  
+  export const postIngredients = async (data : any) => {
+    try {
+      const response = await api.post('/ingredients', data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error posting ingredients:', error);
+      throw error;
+    }
+  };
+  
+  export const deleteIngredients = async (id : number) => {
+    try {
+      const response = await api.delete(`/ingredients/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting ingredients:', error);
+      throw error;
+    }
+  };
+  
+    // Fonctions pour Menus
+  export const postSnacks = async (data : any) => {
+    try {
+      const response = await api.post('/snacks', data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error posting snacks:', error);
+      throw error;
+    }
+  };
+  
+  export const deleteSnacks = async (id : number ) => {
+    try {
+      const response = await api.delete(`/snacks/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting snacks:', error);
+      throw error;
+    }
+  };
+  
+  
+  export const postBoissons = async (data: any) => {
+    try {
+      const response = await api.post('/boissons', data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error posting boissons:', error);
+      throw error;
+    }
+  };
+  
+  export const deleteBoissons = async (id : number) => {
+    try {
+      const response = await api.delete(`/boissons/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting boissons:', error);
+      throw error;
+    }
+  };

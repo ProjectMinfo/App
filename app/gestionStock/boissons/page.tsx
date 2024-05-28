@@ -7,10 +7,11 @@ import { getBoissons, postBoissons, deleteBoissons } from "@/config/api"; // Ass
 
 interface Boisson {
   id: number;
-  commentaire: string;
   dispo: boolean;
   nom: string;
   quantite: number;
+  prix: number;
+  prixServeur: number;
 }
 
 interface BoissonProps {
