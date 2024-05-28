@@ -40,7 +40,7 @@ def getIngredients():
     # suppression de tout les elements dans la collection "ingredients"
     db.ingredients.delete_many({})
     
-    for x in collection.find({"typeIngredient":2}):
+    for x in collection.find({"typeIngredient": {"$in": [0, 2]}}):
         print(x)
         
         # ajouter ces articles dans la collection "plats"
@@ -120,7 +120,17 @@ def getPlats():
             # récupérer la quantité de l'article depuis db.articles avec le nom de l'article
             "prix" : round(x["prix"],2),
             "prixServeur": round(x["prixServeur"],2),
-            "ingredients" : [{"id" : 0, "qmin" : 0, "qmax" : 0}],
+            "ingredients" : [{
+                "ingredient" : {
+                    "commentaire": "string",
+                    "dispo": True,
+                    "id": 0,
+                    "nom": "Oui",
+                    "quantite": 0,
+                },
+                "qmin" : 0, 
+                "qmax" : 0
+                }],
         })
         
         keyId += 1
@@ -151,9 +161,9 @@ def getMenu():
         keyId += 1
     
 
-# getViandes()
+getViandes()
 # getIngredients()
 # getSnacks()
 # getBoissons()
-getPlats()
+# getPlats()
 # getMenu()
