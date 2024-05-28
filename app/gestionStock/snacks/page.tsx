@@ -20,6 +20,8 @@ interface SnacksProps {
 
 const Snacks = ({ onValidate }: SnacksProps) => {
   const [snacks, setSnacks] = useState<Snack[]>([]);
+  const [newSnacks, setNewSnacks] = useState<Snack[]>([]); // Nouvel état pour les snacks ajoutés localement
+  const [modifiedSnacks, setModifiedSnacks] = useState<Snack[]>([]); // Nouvel état pour les snacks modifiés localement
   const [selectedSnack, setSelectedSnack] = useState<Snack | null>(null);
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
@@ -45,6 +47,8 @@ const Snacks = ({ onValidate }: SnacksProps) => {
     try {
       await deleteSnacks(id); // Appel à l'API pour supprimer le snack
       setSnacks(snacks.filter(snack => snack.id !== id));
+      setNewSnacks(newSnacks.filter(snack => snack.id !== id));
+      setModifiedSnacks(modifiedSnacks.filter(snack => snack.id !== id));
     } catch (error) {
       console.error('Error deleting snack:', error);
     }
@@ -58,19 +62,31 @@ const Snacks = ({ onValidate }: SnacksProps) => {
           snack.id === selectedSnack.id ? updatedSnack : snack
         )
       );
+      // Ajouter à modifiedSnacks si ce n'est pas un nouvel élément
+      if (!newSnacks.some(snack => snack.id === selectedSnack.id)) {
+        setModifiedSnacks([...modifiedSnacks, updatedSnack]);
+      }
       onEditClose(); // Fermer la modal après la soumission
     }
   };
 
   const handleAddSubmit = (nom: string, quantite: number) => {
-    const newSnack: Snack = { id: Date.now(), nom, quantite, dispo: true, commentaire: ""};
+    const newSnack: Snack = { id: -1, nom, quantite, dispo: true, prix: 0, prixServeur: 0 };
+    setNewSnacks([...newSnacks, newSnack]);
     setSnacks([...snacks, newSnack]);
     onAddClose(); // Fermer la modal après l'ajout
   };
 
   const handleValidate = async () => {
     try {
-      await Promise.all(snacks.map(snack => postSnacks(snack))); // Appel à l'API pour mettre à jour tous les snacks
+      // Envoyer les nouveaux produits et les produits modifiés à l'API
+      await Promise.all(newSnacks.map(snack => postSnacks(snack)));
+      await Promise.all(modifiedSnacks.map(snack => postSnacks(snack)));
+
+      // Réinitialiser les états des nouveaux produits et des produits modifiés après la validation
+      setNewSnacks([]);
+      setModifiedSnacks([]);
+      
       onValidate(snacks); // Redirection vers la page GestionStock
     } catch (error) {
       console.error('Error validating snacks:', error);

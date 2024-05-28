@@ -14,12 +14,14 @@ interface Boisson {
   prixServeur: number;
 }
 
-interface BoissonProps {
+interface BoissonsProps {
   onValidate: (updatedBoissons: Boisson[]) => void;
 }
 
-const Boissons = ({ onValidate }: BoissonProps) => {
+const Boissons = ({ onValidate }: BoissonsProps) => {
   const [boissons, setBoissons] = useState<Boisson[]>([]);
+  const [newBoissons, setNewBoissons] = useState<Boisson[]>([]); // Nouvel état pour les boissons ajoutées localement
+  const [modifiedBoissons, setModifiedBoissons] = useState<Boisson[]>([]); // Nouvel état pour les boissons modifiées localement
   const [selectedBoisson, setSelectedBoisson] = useState<Boisson | null>(null);
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
@@ -45,6 +47,8 @@ const Boissons = ({ onValidate }: BoissonProps) => {
     try {
       await deleteBoissons(id); // Appel à l'API pour supprimer la boisson
       setBoissons(boissons.filter(boisson => boisson.id !== id));
+      setNewBoissons(newBoissons.filter(boisson => boisson.id !== id));
+      setModifiedBoissons(modifiedBoissons.filter(boisson => boisson.id !== id));
     } catch (error) {
       console.error('Error deleting boisson:', error);
     }
@@ -58,19 +62,31 @@ const Boissons = ({ onValidate }: BoissonProps) => {
           boisson.id === selectedBoisson.id ? updatedBoisson : boisson
         )
       );
+      // Ajouter à modifiedBoissons si ce n'est pas un nouvel élément
+      if (!newBoissons.some(boisson => boisson.id === selectedBoisson.id)) {
+        setModifiedBoissons([...modifiedBoissons, updatedBoisson]);
+      }
       onEditClose(); // Fermer la modal après la soumission
     }
   };
 
   const handleAddSubmit = (nom: string, quantite: number) => {
-    const newBoisson: Boisson = { id: Date.now(), nom, quantite, dispo: true, commentaire: ""};
+    const newBoisson: Boisson = { id: -1, nom, quantite, dispo: true, prix: 0, prixServeur: 0 };
+    setNewBoissons([...newBoissons, newBoisson]);
     setBoissons([...boissons, newBoisson]);
     onAddClose(); // Fermer la modal après l'ajout
   };
 
   const handleValidate = async () => {
     try {
-      await Promise.all(boissons.map(boisson => postBoissons(boisson))); // Appel à l'API pour mettre à jour toutes les boissons
+      // Envoyer les nouveaux produits et les produits modifiés à l'API
+      await Promise.all(newBoissons.map(boisson => postBoissons(boisson)));
+      await Promise.all(modifiedBoissons.map(boisson => postBoissons(boisson)));
+
+      // Réinitialiser les états des nouveaux produits et des produits modifiés après la validation
+      setNewBoissons([]);
+      setModifiedBoissons([]);
+      
       onValidate(boissons); // Redirection vers la page GestionStock
     } catch (error) {
       console.error('Error validating boissons:', error);

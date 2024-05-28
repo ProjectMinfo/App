@@ -19,6 +19,8 @@ interface IngredientsProps {
 
 const Ingredients = ({ onValidate }: IngredientsProps) => {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [newIngredients, setNewIngredients] = useState<Ingredient[]>([]); // Nouvel état pour les ingrédients ajoutés localement
+  const [modifiedIngredients, setModifiedIngredients] = useState<Ingredient[]>([]); // Nouvel état pour les ingrédients modifiés localement
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null);
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
@@ -44,6 +46,8 @@ const Ingredients = ({ onValidate }: IngredientsProps) => {
     try {
       await deleteIngredients(id); // Appel à l'API pour supprimer l'ingrédient
       setIngredients(ingredients.filter(ingredient => ingredient.id !== id));
+      setNewIngredients(newIngredients.filter(ingredient => ingredient.id !== id));
+      setModifiedIngredients(modifiedIngredients.filter(ingredient => ingredient.id !== id));
     } catch (error) {
       console.error('Error deleting ingredient:', error);
     }
@@ -57,19 +61,31 @@ const Ingredients = ({ onValidate }: IngredientsProps) => {
           ingredient.id === selectedIngredient.id ? updatedIngredient : ingredient
         )
       );
+      // Ajouter à modifiedIngredients si ce n'est pas un nouvel élément
+      if (!newIngredients.some(ingredient => ingredient.id === selectedIngredient.id)) {
+        setModifiedIngredients([...modifiedIngredients, updatedIngredient]);
+      }
       onEditClose(); // Fermer la modal après la soumission
     }
   };
 
   const handleAddSubmit = (nom: string, quantite: number) => {
-    const newIngredient: Ingredient = { id: Date.now(), nom, quantite, dispo: true, commentaire: ""};
+    const newIngredient: Ingredient = { id: -1, nom, quantite, dispo: true, commentaire: ""};
+    setNewIngredients([...newIngredients, newIngredient]);
     setIngredients([...ingredients, newIngredient]);
     onAddClose(); // Fermer la modal après l'ajout
   };
 
   const handleValidate = async () => {
     try {
-      await Promise.all(ingredients.map(ingredient => postIngredients(ingredient))); // Appel à l'API pour mettre à jour tous les ingrédients
+      // Envoyer les nouveaux produits et les produits modifiés à l'API
+      await Promise.all(newIngredients.map(ingredient => postIngredients(ingredient)));
+      await Promise.all(modifiedIngredients.map(ingredient => postIngredients(ingredient)));
+
+      // Réinitialiser les états des nouveaux produits et des produits modifiés après la validation
+      setNewIngredients([]);
+      setModifiedIngredients([]);
+      
       onValidate(ingredients); // Redirection vers la page GestionStock
     } catch (error) {
       console.error('Error validating ingredients:', error);
