@@ -46,6 +46,66 @@ export const getIngredients = async (id?: number) => {
     }
 }
 
+
+export const getMenus = async () => {
+    try {
+        const response = await api.get('/menus');
+        return (response.data);
+    } catch (error) {
+        console.error('Error fetching menus:', error);
+        throw error;
+    }
+}
+
+export const getBoissons = async () => {
+    try {
+        const response = await api.get('/boissons');
+        return (response.data);
+    } catch (error) {
+        console.error('Error fetching boissons:', error);
+        throw error;
+    }
+}
+
+export const getPlats = async () => {
+    try {
+        const response = await api.get('/plats');
+        return (response.data);
+    } catch (error) {
+        console.error('Error fetching plats:', error);
+        throw error;
+    }
+}
+
+export const getSnacks = async () => {
+    try {
+        const response = await api.get('/snacks');
+        return (response.data);
+    } catch (error) {
+        console.error('Error fetching snacks:', error);
+        throw error;
+    }
+}
+
+export const postComptes = async (data: any) => {
+    const token = 'DEV_TOKEN'; // Add your token here
+
+    try {
+        const response = await api.post('/viandes', JSON.stringify(data), {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type" : "application/json"
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error posting viandes:', error);
+        throw error;
+    }
+}
+
+
+
 export const postViandes = async (data: any) => {
     const token = 'DEV_TOKEN'; // Add your token here
 
