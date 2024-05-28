@@ -133,5 +133,5 @@ export const getViandes = async () => {
         console.error('Error fetching viandes:', error);
         throw error;
     }
-}
 
+}
