@@ -1,86 +1,108 @@
 import { Button } from "@nextui-org/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EditQuantityModal from "@/components/EditQuantityModal";
 import AddItemModal from "@/components/AddItemModal";
 import { useDisclosure } from "@nextui-org/modal";
+import { getBoissons, postBoissons, deleteBoissons } from "@/config/api"; // Assurez-vous que le chemin est correct
 
-interface Beverage {
+interface Boisson {
   id: number;
-  name: string;
-  quantity: number;
+  commentaire: string;
+  dispo: boolean;
+  nom: string;
+  quantite: number;
 }
-
-const initialBeverages: Beverage[] = [
-  { id: 1, name: "Water", quantity: 200 },
-  { id: 2, name: "Soda", quantity: 150 },
-  { id: 3, name: "Juice", quantity: 100 },
-];
 
 interface BoissonProps {
-  onValidate: (updatedBeverages: Beverage[]) => void;
+  onValidate: (updatedBoissons: Boisson[]) => void;
 }
 
-const Boisson = ({ onValidate }: BoissonProps) => {
-  const [beverages, setBeverages] = useState<Beverage[]>(initialBeverages);
-  const [selectedBeverage, setSelectedBeverage] = useState<Beverage | null>(null);
+const Boissons = ({ onValidate }: BoissonProps) => {
+  const [boissons, setBoissons] = useState<Boisson[]>([]);
+  const [selectedBoisson, setSelectedBoisson] = useState<Boisson | null>(null);
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
 
-  const handleModify = (beverage: Beverage) => {
-    setSelectedBeverage(beverage);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const boissons = await getBoissons();
+        setBoissons(boissons);
+      } catch (error) {
+        console.error('Error fetching boissons:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleModify = (boisson: Boisson) => {
+    setSelectedBoisson(boisson);
     onEditOpen();
   };
 
-  const handleDelete = (id: number) => {
-    setBeverages(beverages.filter(beverage => beverage.id !== id));
-  };
-
-  const handleEditSubmit = (quantity: number) => {
-    if (selectedBeverage) {
-      setBeverages(
-        beverages.map(beverage =>
-          beverage.id === selectedBeverage.id ? { ...beverage, quantity } : beverage
-        )
-      );
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteBoissons(id); // Appel à l'API pour supprimer la boisson
+      setBoissons(boissons.filter(boisson => boisson.id !== id));
+    } catch (error) {
+      console.error('Error deleting boisson:', error);
     }
   };
 
-  const handleAddSubmit = (name: string, quantity: number) => {
-    const newBeverage: Beverage = { id: beverages.length + 1, name, quantity };
-    setBeverages([...beverages, newBeverage]);
+  const handleEditSubmit = (quantite: number) => {
+    if (selectedBoisson) {
+      const updatedBoisson = { ...selectedBoisson, quantite };
+      setBoissons(
+        boissons.map(boisson =>
+          boisson.id === selectedBoisson.id ? updatedBoisson : boisson
+        )
+      );
+      onEditClose(); // Fermer la modal après la soumission
+    }
   };
 
-  const handleValidate = () => {
-    onValidate(beverages);
+  const handleAddSubmit = (nom: string, quantite: number) => {
+    const newBoisson: Boisson = { id: Date.now(), nom, quantite, dispo: true, commentaire: ""};
+    setBoissons([...boissons, newBoisson]);
+    onAddClose(); // Fermer la modal après l'ajout
+  };
+
+  const handleValidate = async () => {
+    try {
+      await Promise.all(boissons.map(boisson => postBoissons(boisson))); // Appel à l'API pour mettre à jour toutes les boissons
+      onValidate(boissons); // Redirection vers la page GestionStock
+    } catch (error) {
+      console.error('Error validating boissons:', error);
+    }
   };
 
   return (
     <div>
       <h2>Liste des Boissons</h2>
       <div className="flex justify-between mb-4">
-      <Button onClick={handleValidate}>Valider</Button>
-      <Button onClick={onAddOpen}>+</Button>
+        <Button onClick={handleValidate}>Valider</Button>
+        <Button onClick={onAddOpen}>+</Button>
       </div>
-      <div className="flex justify-center mt-4  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  justify-center gap-4 ">
-        {beverages.map(beverage => (
-          <div key={beverage.id} className=" border p-4 flex flex-col justify-between  gap-4 rounded-2xl">
+      <div className="flex justify-center mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {boissons.map(boisson => (
+          <div key={boisson.id} className="border p-4 flex flex-col justify-between gap-4 rounded-2xl">
             <div>
-              <h3>{beverage.name}</h3>
-              <p>Quantité: {beverage.quantity}</p>
+              <h3>{boisson.nom}</h3>
+              <p>Quantité: {boisson.quantite}</p>
             </div>
-            <div className="flex justify-center mt-4 ">
-              <Button onClick={() => handleModify(beverage)}>Modifier</Button>
-              <Button color="warning" onClick={() => handleDelete(beverage.id)}>Supprimer</Button>
+            <div className="flex justify-center mt-4 gap-2">
+              <Button onClick={() => handleModify(boisson)}>Modifier</Button>
+              <Button color="warning" onClick={() => handleDelete(boisson.id)}>Supprimer</Button>
             </div>
           </div>
         ))}
       </div>
-      {selectedBeverage && (
+      {selectedBoisson && (
         <EditQuantityModal
           isOpen={isEditOpen}
           onClose={onEditClose}
           onSubmit={handleEditSubmit}
-          currentQuantity={selectedBeverage.quantity}
+          currentQuantity={selectedBoisson.quantite}
         />
       )}
       <AddItemModal
@@ -92,4 +114,4 @@ const Boisson = ({ onValidate }: BoissonProps) => {
   );
 };
 
-export default Boisson;
+export default Boissons;
