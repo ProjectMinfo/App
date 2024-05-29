@@ -175,8 +175,7 @@ export default function GestionComptePage() {
     <div>
       <div className="mb-4">
         <Input
-          clearable
-          underlined
+          isClearable
           placeholder="Rechercher..."
           onChange={(e) => setSearchTerm(e.target.value)}
         />
