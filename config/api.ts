@@ -15,6 +15,25 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+
+export const getAchats = async () => {
+  const token = "DEV_TOKEN";
+
+  try {
+      const response = await api.get('/achats', {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      })
+      return (response.data);
+
+  }
+  catch (error) {
+      console.error('Error fetching users', error);
+      throw error;
+  }
+}
+
 export const getCartes = async () => {
     try {
         const response = await api.get('/cartes');
@@ -87,8 +106,24 @@ export const getComptes = async () => {
 }
 
 
+export const postEditAchat = async (achat : any) => {
+  const token = 'DEV_TOKEN'; // Add your token here
 
-export const postEditComptes = async (user:any) => {
+    try {
+        const response = await api.post('/user/update', JSON.stringify(achat), {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type" : "application/json"
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error posting viandes:', error);
+        throw error;
+    }
+};
+
+export const postEditCompte = async (user:any) => {
     const token = 'DEV_TOKEN'; // Add your token here
 
     try {
