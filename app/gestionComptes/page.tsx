@@ -1,10 +1,9 @@
 'use client';
-import React, { Key, useState, useEffect } from "react";
-import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip } from "@nextui-org/react";
-import { getComptes } from "@/config/api";
-import { columns, listeUtilisateurs } from "./data.js";
+import React, { useState, useEffect } from "react";
+import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
+import { getComptes, postEditComptes } from "@/config/api";
 import { EditIcon } from "../../public/EditIcon.jsx";
-import EditAccountModal from "@/components/EditAccountModal"
+import EditAccountModal from "@/components/EditAccountModal";
 
 // Define types for users
 type User = {
@@ -20,6 +19,17 @@ type User = {
   resetToken: string;
   tokenExpiration: string;
 };
+
+type ColumnKeys = 'numCompte' | 'nom' | 'prenom' | 'montant' | 'acces' | 'modifier';
+
+const columns: { name: string, uid: ColumnKeys }[] = [
+  { name: "IDENTIFIANT", uid: "numCompte" },
+  { name: "NOM", uid: "nom" },
+  { name: "PRENOM", uid: "prenom" },
+  { name: "SOLDE", uid: "montant" },
+  { name: "ACCES", uid: "acces" },
+  { name: "MODIFIER", uid: "modifier" }
+];
 
 function accessColorMap(user: User) {
   switch (user.acces) {
@@ -45,17 +55,16 @@ export default function GestionComptePage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>(listeUtilisateurs); // State for users
   const [comptes, setComptes] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
 
   useEffect(() => {
     async function fetchComptes() {
       const fetchedComptes = await getComptes();
+      fetchedComptes.sort((a: User, b: User) => a.numCompte - b.numCompte); // Trie par ordre de numero de compte
       setComptes(fetchedComptes);
     }
     fetchComptes();
-    
-    console.log(comptes);
   }, []);
 
   const onEditOpen = (user: User) => {
@@ -68,22 +77,33 @@ export default function GestionComptePage() {
     setCurrentUser(null);
   };
 
-  const onSubmit = (nom: string, prenom: string, montant: number, acces: number) => {
+  const onSubmit = async (nom: string, prenom: string, montant: number, acces: number) => {
     // Modification sur l'utilisateur
-    if (currentUser) {
-      const editedListeUtilisateurs = users.map((user) =>
-        user.idCompte === currentUser.idCompte ? { ...user, nom, prenom, montant, acces } : user
+    if (currentUser && comptes) {
+      const editedListeUtilisateurs = comptes.map((compte) =>
+        compte.idCompte === currentUser.idCompte ? { ...compte, nom, prenom, montant, acces } : compte
       );
-      setUsers(editedListeUtilisateurs); // Update liste des utilisateurs
+      setComptes(editedListeUtilisateurs);
+
+      // Mettre à jour l'utilisateur courant avec les nouvelles données avant de l'envoyer à l'API
+      const updatedUser = { ...currentUser, nom, prenom, montant, acces };
+
+      try {
+        await postEditComptes(updatedUser); // Appel à l'API pour enregistrer les modifications
+        console.log("User updated successfully in the API");
+      }
+      catch (error) {
+        console.error("Error updating user:", error);
+      }
     }
     onEditClose();
   };
 
-  const renderCell = React.useCallback((user: User, columnKey: Key) => {
-    const cellValue = user[columnKey as keyof User];
+  const renderCell = React.useCallback((compte: User, columnKey: ColumnKeys) => {
+    const cellValue = compte[columnKey as keyof User];
 
     switch (columnKey) {
-      case "idCompte":
+      case "numCompte":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
@@ -111,7 +131,7 @@ export default function GestionComptePage() {
         return (
           <div className="flex flex-col">
             <p className={`text-bold text-sm capitalize ${colorSolde(cellValue as number)}`}>
-              {cellValue + " €"}
+            {typeof cellValue === 'number' ? parseFloat(cellValue.toFixed(2)).toFixed(2) : cellValue} €
             </p>
           </div>
         );
@@ -119,7 +139,7 @@ export default function GestionComptePage() {
         return (
           <Chip
             className="capitalize"
-            color={accessColorMap(user)}
+            color={accessColorMap(compte)}
             size="sm"
             variant="flat"
           >
@@ -131,7 +151,7 @@ export default function GestionComptePage() {
           <div className="relative flex items-center gap-2">
             <Tooltip content="Modifier">
               <span
-                onClick={() => onEditOpen(user)}
+                onClick={() => onEditOpen(compte)}
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"
               >
                 <EditIcon />
@@ -142,10 +162,25 @@ export default function GestionComptePage() {
       default:
         return cellValue;
     }
-  }, []);
+  }, [onEditOpen]);
+
+  // Filtrer les comptes en fonction du terme de recherche
+  const filteredComptes = comptes.filter((compte) =>
+    compte.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    compte.prenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    compte.numCompte.toString().includes(searchTerm)
+  );
 
   return (
     <div>
+      <div className="mb-4">
+        <Input
+          clearable
+          underlined
+          placeholder="Rechercher..."
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
       <Table aria-label="Liste des comptes">
 
         <TableHeader columns={columns}>
@@ -155,12 +190,12 @@ export default function GestionComptePage() {
             </TableColumn>)}
         </TableHeader>
 
-        <TableBody items={users}>
+        <TableBody items={filteredComptes}>
           {(item) => (
-            <TableRow key={item.idCompte}>
+            <TableRow key={item.numCompte}>
               {(columnKey) =>
                 <TableCell>
-                  {renderCell(item, columnKey)}
+                  {renderCell(item, columnKey as ColumnKeys)}
                 </TableCell>}
             </TableRow>
           )}

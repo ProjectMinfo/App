@@ -68,11 +68,31 @@ export const getSnacks = async () => {
     }
 }
 
-export const postComptes = async (data: any) => {
+export const getComptes = async () => {
+    const token = "DEV_TOKEN";
+
+    try {
+        const response = await api.get('/users', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return (response.data);
+
+    }
+    catch (error) {
+        console.error('Error fetching users', error);
+        throw error;
+    }
+}
+
+
+
+export const postEditComptes = async (user:any) => {
     const token = 'DEV_TOKEN'; // Add your token here
 
     try {
-        const response = await api.post('/viandes', JSON.stringify(data), {
+        const response = await api.post('/user/update', JSON.stringify(user), {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type" : "application/json"
@@ -84,8 +104,6 @@ export const postComptes = async (data: any) => {
         throw error;
     }
 }
-
-
 
 export const postViandes = async (data: any) => {
     const token = 'DEV_TOKEN'; // Add your token here
@@ -120,7 +138,7 @@ export const getViandes = async () => {
 // Fonctions pour Viandes
   
   
-  export const deleteViandes = async (id : number) => {
+export const deleteViandes = async (id : number) => {
     try {
       const response = await api.delete(`/viandes/${id}`);
       return response.data;

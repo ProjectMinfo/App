@@ -21,8 +21,7 @@ export default function GestionMenus() {
   
 
   return (
-    <div className="grid grid-cols-4 gap-4">
-      
+    <div className="grid grid-cols-4 gap-x-4">
       {menus?.map((item: any) => (
         <ModifyCard key={item.id} item={item}
         />

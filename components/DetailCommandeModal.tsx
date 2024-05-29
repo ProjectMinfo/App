@@ -1,52 +1,86 @@
 import React, { useState } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { Ingredients, Viandes } from "@/types";
 
 interface DetailCommandeModalProps {
   isOpen: boolean;
-  onClose: (data: string[]) => any; // Modifié pour renvoyer un tableau de chaînes
-  options: string[];
+  onClose: (data: {viandes: Viandes[], ingredients: Ingredients[]}) => any;
+  options: {
+    ingredients: Ingredients[];
+    viandes: Viandes[];
+  }
 }
 
 export default function DetailCommandeModal({ isOpen, onClose, options }: DetailCommandeModalProps) {
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedViande, setSelectedViande] = useState<Viandes[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<Ingredients[]>([]);
+  const [step, setStep] = useState(1);
 
-  const handleOptionClick = (option: string) => {
-    setSelectedOptions((prevSelected) =>
-      prevSelected.includes(option)
-        ? prevSelected.filter((opt) => opt !== option)
-        : [...prevSelected, option]
+  const handleViandeClick = (viande: Viandes) => {
+    setSelectedViande([viande]);
+  };
+
+  const handleIngredientClick = (ingredient: Ingredients) => {
+    setSelectedIngredients((prevSelected) =>
+      prevSelected.includes(ingredient)
+        ? prevSelected.filter((opt) => opt !== ingredient)
+        : [...prevSelected, ingredient]
     );
   };
 
   const handleValidateClick = () => {
-    onClose(selectedOptions);
+    if (step === 1 && selectedViande.length > 0) {
+      setStep(2);
+    } else if (step === 2) {
+      onClose({ viandes: selectedViande, ingredients: selectedIngredients });
+    }
+  };
+
+  const handleClose = () => {
+    setSelectedViande([]);
+    setSelectedIngredients([]);
+    setStep(1);
+    onClose({ viandes: [], ingredients: [] });
   };
 
   return (
     <Modal
       isOpen={isOpen}
-      onOpenChange={() => onClose([])} // Close modal without selected data
+      onOpenChange={handleClose}
       placement="top-center"
     >
       <ModalContent>
-        {(onCloseInternal) => (
+        {() => (
           <>
-            <ModalHeader className="flex flex-col gap-1">Log in</ModalHeader>
-            <ModalBody>
-              {options.map((option) => (
-                <Button
-                  color="primary"
-                  variant={selectedOptions.includes(option) ? "flat" : "ghost"}
-                  key={option}
-                  onPress={() => handleOptionClick(option)}
-                >
-                  {option}
-                </Button>
-              ))}
+            <ModalHeader className="flex flex-col gap-1">
+              {step === 1 ? "Sélectionnez une Viande" : "Sélectionnez des Ingrédients"}
+            </ModalHeader>
+            <ModalBody className="grid grid-cols-3 gap-2">
+              {step === 1
+                ? options.viandes.map((option) => (
+                    <Button
+                      color="primary"
+                      variant={selectedViande.includes(option) ? "flat" : "ghost"}
+                      key={option.id}
+                      onPress={() => handleViandeClick(option)}
+                    >
+                      {option.nom}
+                    </Button>
+                  ))
+                : options.ingredients.map((option) => (
+                    <Button
+                      color="primary"
+                      variant={selectedIngredients.includes(option) ? "flat" : "ghost"}
+                      key={option.id}
+                      onPress={() => handleIngredientClick(option)}
+                    >
+                      {option.nom}
+                    </Button>
+                  ))}
             </ModalBody>
             <ModalFooter>
               <Button color="success" variant="flat" onPress={handleValidateClick}>
-                Valider
+                {step === 1 ? "Suivant" : "Valider"}
               </Button>
             </ModalFooter>
           </>

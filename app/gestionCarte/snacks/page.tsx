@@ -34,7 +34,7 @@ export default function GestionSnacks() {
         className="mb-4 p-2 border rounded"
       />
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-x-4">
         {filteredSnacks.map((item: Snacks) => (
           <ModifyCard key={item.id} item={item} />
         ))}
