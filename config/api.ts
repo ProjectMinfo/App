@@ -77,6 +77,36 @@ export const getPlats = async () => {
     }
 }
 
+export const getUser=async(id: number)=>{
+  try{
+    const response = await api.get(`/user/${id}`);
+    return (response.data);
+  } catch(error){
+    console.error('Error fetching id:', error);
+    throw error;
+  }
+}
+
+export const getCommandeById=async(id:number)=>{
+  try{
+    const response=await api.get(`/commande/${id}`);
+    return (response.data);
+  } catch(error) {
+    console.error('Error fetching id:', error);
+    throw error;
+  }
+}
+
+export const getCommande=async()=>{
+  try{
+    const response=await api.get(`/commandes`);
+    return (response.data);
+  } catch(error) {
+    console.error('Error fetching id:', error);
+    throw error;
+  }
+}
+
 export const getSnacks = async () => {
     try {
         const response = await api.get('/snacks');
