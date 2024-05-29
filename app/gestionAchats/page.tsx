@@ -1,6 +1,6 @@
 'use client';
 import React, { Key, useState, useEffect } from "react";
-import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, User } from "@nextui-org/react";
+import { Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
 import { getAchats, postEditAchat } from "@/config/api";
 import { EditIcon } from "../../public/EditIcon.jsx";
 
@@ -33,14 +33,40 @@ const columns: { name: string, uid: ColumnKeys }[] = [
   { name: "ACTION", uid: "action" }
 ];
 
-function isDateExpired(dateLimite: Date) {
+function accessColorMap(achat: Achat) {
+  switch (achat.etat) {
+    case 0:
+      return "primary"; // Affiche les articles non consommés en bleu
+    case 1:
+      return "success"; // Affiche les articles ouverts en vert
+    case 2:
+      return "warning"; // Affiche les articles consommés en orange
+    case 3:
+      return "danger"; // Affiche les articles perimés en rouge
+    default:
+      return "secondary" // Affiche les articles imprévus en violet
+  }
+};
+
+const formatDate = (date: any) => {
+  if (date && date.$date) {
+    const timestamp = parseInt(date.$date.$numberLong); // récupère le timestamp de la date
+    const dateObj = new Date(timestamp); // crée une nouvelle date avec ce timestamp
+    return dateObj.toLocaleDateString("fr"); // affiche la date au format string
+  }
+  else {
+    return "-"
+  }
+};
+
+function isDateExpired(achat: any) {
+  const dlcTimestamp = parseInt(achat.dlc.$date.$numberLong);
+
   const today = new Date();
   today.setHours(0, 0, 0, 0); // On met à 0 les heures et les minutes (seul le jour nous interesse)
+  const todayTimestamp = today.getTime();
 
-  const targetDate = new Date(dateLimite);
-  targetDate.setHours(0, 0, 0, 0);
-
-  return today > targetDate;
+  return todayTimestamp >= dlcTimestamp;
 }
 
 
@@ -49,6 +75,8 @@ export default function GestionAchatsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentAchat, setCurrentAchat] = useState<Achat | null>(null);
   const [achats, setAchats] = useState<Achat[]>([]);
+  const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
+  const [isAfficherLesAchatsConsommes, setIsAfficherLesAchatsConsommes] = useState<boolean>(false)
 
   useEffect(() => {
     async function fetchAchats() {
@@ -69,6 +97,36 @@ export default function GestionAchatsPage() {
     setCurrentAchat(null);
   };
 
+  const onSubmit = async (nomArticle: string,
+    categorie: number,
+    numLot: string,
+    nbPortions: number,
+    dateOuverture: Date,
+    dateFermeture: Date,
+    dlc: Date,
+    etat: number) => {
+
+    // Modification sur l'utilisateur
+    if (currentAchat && achats) {
+      const editedListeAchats = achats.map((achat) =>
+        achat.idAchat === currentAchat.idAchat ? { ...achat, categorie, numLot, nbPortions, dateOuverture, dateFermeture, dlc, etat } : achat
+      );
+      setAchats(editedListeAchats);
+
+      // Mettre à jour l'utilisateur courant avec les nouvelles données avant de l'envoyer à l'API
+      const updatedAchat = { ...currentAchat, categorie, numLot, nbPortions, dateOuverture, dateFermeture, dlc, etat };
+
+      try {
+        await postEditAchat(updatedAchat); // Appel à l'API pour enregistrer les modifications
+        console.log("Achat updated successfully in the API");
+      }
+      catch (error) {
+        console.error("Error updating achat:", error);
+      }
+    }
+    onEditClose();
+  };
+
   const renderCell = React.useCallback((achat: Achat, columnKey: ColumnKeys) => {
     const cellValue = achat[columnKey as keyof Achat];
 
@@ -85,7 +143,11 @@ export default function GestionAchatsPage() {
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {String(cellValue)}
+              {cellValue === 0 ? "Ingrédient"
+                : cellValue === 1 ? "viande"
+                  : cellValue === 2 ? "Boisson"
+                    : cellValue === 3 ? "Snack"
+                      : "error"}
             </p>
           </div>
         )
@@ -109,7 +171,7 @@ export default function GestionAchatsPage() {
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {String(cellValue)}
+              {formatDate(cellValue)}
             </p>
           </div>
         )
@@ -117,25 +179,32 @@ export default function GestionAchatsPage() {
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {String(cellValue)}
+              {formatDate(cellValue)}
             </p>
           </div>
         )
       case "dlc":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {String(cellValue)}
+            <p className={`text-bold text-sm capitalize ${isDateExpired(achat) ? "text-danger" : "default"}`}>
+              {formatDate(cellValue)}
             </p>
           </div>
         )
       case "etat":
         return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {String(cellValue)}
-            </p>
-          </div>  
+          <Chip
+            className="capitalize"
+            color={accessColorMap(achat)}
+            size="sm"
+            variant="flat"
+          >
+            {cellValue === 0 ? "Non entamé"
+              : cellValue === 1 ? "Ouvert"
+                : cellValue === 2 ? "Consommé"
+                  : cellValue === 3 ? "Perimé"
+                    : "error"}
+          </Chip>
         )
       case "action":
         return (
@@ -152,10 +221,29 @@ export default function GestionAchatsPage() {
         );
     }
 
-  }, []);
+  }, [onEditOpen]);
+
+
+  const filteredAchats = achats.filter((achat) =>
+    (isAfficherLesAchatsConsommes
+      ? achat.etat === 0 || achat.etat === 1 || achat.etat === 2
+      : achat.etat === 0 || achat.etat === 1) &&
+    (achat.nomArticle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      achat.numLot.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
 
   return (
     <div>
+      <div className="mb-4">
+        <Input
+          isClearable
+          placeholder="Rechercher par article / numéro de lot"
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+      <Checkbox onValueChange={setIsAfficherLesAchatsConsommes}>Afficher les articles consommé</Checkbox>
+
       <Table aria-label="Liste des achats">
 
         <TableHeader columns={columns}>
@@ -165,7 +253,7 @@ export default function GestionAchatsPage() {
             </TableColumn>)}
         </TableHeader>
 
-        <TableBody items={achats}>
+        <TableBody items={filteredAchats}>
           {(item) => (
             <TableRow key={item.idAchat}>
               {(columnKey) =>
@@ -178,16 +266,16 @@ export default function GestionAchatsPage() {
 
       </Table>
       {/* {currentAchat && (
-        <EditAchatModal
-          isOpen={isModalOpen}
-          onClose={onEditClose}
-          onSubmit={onSubmit}
-          currentName={currentAchat.nom}
-          currentFirstname={currentAchat.prenom}
-          currentSolde={currentAchat.montant}
-          currentAccess={currentAchat.acces}
-        />
-      )} */}
+          <EditAchatModal
+            isOpen={isModalOpen}
+            onClose={onEditClose}
+            onSubmit={onSubmit}
+            currentName={currentAchat.nom}
+            currentFirstname={currentAchat.prenom}
+            currentSolde={currentAchat.montant}
+            currentAccess={currentAchat.acces}
+          />
+        )} */}
     </div>
   );
 }

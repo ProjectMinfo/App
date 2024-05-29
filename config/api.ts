@@ -45,8 +45,6 @@ export const getCartes = async () => {
     }
 };
 
-
-
 export const getMenus = async () => {
     try {
         const response = await api.get('/menus');
@@ -140,7 +138,7 @@ export const postEditAchat = async (achat : any) => {
   const token = 'DEV_TOKEN'; // Add your token here
 
     try {
-        const response = await api.post('/user/update', JSON.stringify(achat), {
+        const response = await api.post('/achats', JSON.stringify(achat), {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type" : "application/json"

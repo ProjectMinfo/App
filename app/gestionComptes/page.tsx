@@ -38,9 +38,9 @@ function accessColorMap(user: User) {
     case 1:
       return "primary"; // Affiche les serveurs en bleu
     case 2:
-      return "danger"; // Affiche les admin en rouge
+      return "danger"; // Affiche les admins en rouge
     default:
-      return "warning"; // Affiche les rôles imprévu en orange
+      return "warning"; // Affiche les rôles imprévus en orange
   }
 };
 
@@ -143,7 +143,10 @@ export default function GestionComptePage() {
             size="sm"
             variant="flat"
           >
-            {cellValue === 0 ? "user" : cellValue === 1 ? "serveur" : cellValue === 2 ? "admin" : "error"}
+            {cellValue === 0 ? "user"
+            : cellValue === 1 ? "serveur"
+            : cellValue === 2 ? "admin"
+            : "error"}
           </Chip>
         );
       case "modifier":
@@ -176,7 +179,7 @@ export default function GestionComptePage() {
       <div className="mb-4">
         <Input
           isClearable
-          placeholder="Rechercher..."
+          placeholder="Rechercher par utilisateur / numéro de compte"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
