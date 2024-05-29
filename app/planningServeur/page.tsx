@@ -226,7 +226,7 @@ function getWeekOptions(currentWeek: number) {
 export default PlanningServeur;
 
 
-'use client';
+//'use client';
 // import React, { useState, useEffect } from "react";
 // import { PlanningCourses, Plannings } from '@/types/index';
 // import { getPlanningServeurs, getPlanningCourses, addPlanningServeur, deletePlanningServeur, addPlanningCourse, deletePlanningCourse } from '@/config/api';
