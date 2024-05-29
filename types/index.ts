@@ -184,7 +184,7 @@ export interface Snacks {
 }
 
 
-export interface Temperatues {
+export interface Temperatures {
   temperatureId: number;
   date: string;
   nomMembre: string;
