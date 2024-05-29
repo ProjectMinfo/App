@@ -1,7 +1,7 @@
 'use client';
-import React, { useState, useEffect } from "react";
-import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
-import { getComptes, postEditComptes } from "@/config/api";
+import React, { Key, useState, useEffect } from "react";
+import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input, User } from "@nextui-org/react";
+import { getComptes, postEditCompte } from "@/config/api";
 import { EditIcon } from "../../public/EditIcon.jsx";
 import EditAccountModal from "@/components/EditAccountModal";
 
@@ -89,7 +89,7 @@ export default function GestionComptePage() {
       const updatedUser = { ...currentUser, nom, prenom, montant, acces };
 
       try {
-        await postEditComptes(updatedUser); // Appel à l'API pour enregistrer les modifications
+        await postEditCompte(updatedUser); // Appel à l'API pour enregistrer les modifications
         console.log("User updated successfully in the API");
       }
       catch (error) {
