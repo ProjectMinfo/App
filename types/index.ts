@@ -5,12 +5,6 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 };
 
 
-export interface ChatMenuProps {
-  cartes: Carte[];
-  repas: Repas;
-  setRepas: (repas: string) => void;
-}
-
 export interface ChatLayoutProps {
   who: string;
   mainSentence: string;
@@ -22,16 +16,6 @@ export interface Carte {
   ref: string;
   nom: string;
 }
-
-export interface Repas {
-  menu: string[];
-  plat: string[], 
-  snack: string[];
-  boisson: string[];
-  complete: boolean;
-  join: () => string;
-}
-
 
 
 // TOUT CE QUI EST DANS LA BASE DE DONNEES : 
@@ -178,7 +162,9 @@ export interface Plats {
   prix: number;
   prixServeur: number;
   quantite: number;
-  ingredients: { id: number, qmin: number, qmax: number }[];
+  ingredients: { ingredient: Ingredients,
+    qmin: number, 
+    qmax: number }[];
 }
 
 
@@ -223,4 +209,14 @@ export interface Viandes {
   id: number;
   nom: string;
   quantite: number;
+}
+
+
+export interface Repas {
+  menu: Menus[];
+  plat: Plats[];
+  snack: Snacks[];
+  boisson: Boissons[];
+  complete: boolean;
+  join: () => any;
 }

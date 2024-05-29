@@ -49,7 +49,7 @@ export default function ModifyCard({ item }: ModifyCardProps) {
                 <p className="text-gray-500"><strong>Ingrédients:</strong></p>
                 <ul className="text-gray-500 ml-4">
                   {currentItem.ingredients.map((ingredient) => (
-                    <li key={ingredient.id}>ID: {ingredient.id}, Qmin: {ingredient.qmin}, Qmax: {ingredient.qmax}</li>
+                    <li key={ingredient.ingredient.id}>ID: {ingredient.ingredient.id}, Qmin: {ingredient.qmin}, Qmax: {ingredient.qmax}</li>
                   ))}
                 </ul>
               </>
