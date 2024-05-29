@@ -1,9 +1,9 @@
 'use client';
-import React, { Key, useState, useEffect } from "react";
-import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, User, user } from "@nextui-org/react";
+import React, { useState, useEffect } from "react";
+import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
 import { getComptes, postEditComptes } from "@/config/api";
 import { EditIcon } from "../../public/EditIcon.jsx";
-import EditAccountModal from "@/components/EditAccountModal"
+import EditAccountModal from "@/components/EditAccountModal";
 
 // Define types for users
 type User = {
@@ -56,6 +56,7 @@ export default function GestionComptePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [comptes, setComptes] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
 
   useEffect(() => {
     async function fetchComptes() {
@@ -163,8 +164,23 @@ export default function GestionComptePage() {
     }
   }, [onEditOpen]);
 
+  // Filtrer les comptes en fonction du terme de recherche
+  const filteredComptes = comptes.filter((compte) =>
+    compte.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    compte.prenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    compte.numCompte.toString().includes(searchTerm)
+  );
+
   return (
     <div>
+      <div className="mb-4">
+        <Input
+          clearable
+          underlined
+          placeholder="Rechercher..."
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
       <Table aria-label="Liste des comptes">
 
         <TableHeader columns={columns}>
@@ -174,7 +190,7 @@ export default function GestionComptePage() {
             </TableColumn>)}
         </TableHeader>
 
-        <TableBody items={comptes}>
+        <TableBody items={filteredComptes}>
           {(item) => (
             <TableRow key={item.numCompte}>
               {(columnKey) =>
