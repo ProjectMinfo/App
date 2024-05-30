@@ -46,8 +46,6 @@ export const getCartes = async () => {
     }
 };
 
-
-
 export const getMenus = async () => {
     try {
         const response = await api.get('/menus');
@@ -174,6 +172,22 @@ export const getComptes = async () => {
 
 
 
+export const postEditAchat = async (achat : any) => {
+  const token = 'DEV_TOKEN'; // Add your token here
+
+    try {
+        const response = await api.post('/achats', JSON.stringify(achat), {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type" : "application/json"
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error posting viandes:', error);
+        throw error;
+    }
+};
 
 export const postEditCompte = async (user:any) => {
     const token = 'DEV_TOKEN'; // Add your token here
