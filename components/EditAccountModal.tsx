@@ -24,7 +24,6 @@ export default function EditAccountModal({
   const [firstname, setFirstname] = useState<string>(currentFirstname);
   const [solde, setSolde] = useState<number>(currentSolde);
   const [access, setAccess] = useState<number>(currentAccess);
-  const [selectedAccess, setSelectedAccess] = useState<number[]>([currentAccess]);
   const [isInvalidAccess, setIsInvalidAccess] = useState<boolean>(false);
 
   // Initialize variables with the values from the database on startup
@@ -33,7 +32,6 @@ export default function EditAccountModal({
     setFirstname(currentFirstname);
     setSolde(currentSolde);
     setAccess(currentAccess);
-    setSelectedAccess([currentAccess]);
   }, [currentName, currentFirstname, currentSolde, currentAccess]);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {

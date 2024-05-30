@@ -3,32 +3,62 @@ import React, { useState, useEffect } from 'react';
 import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
 import { getBoissons, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
-import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes, Repas } from "@/types/index";
+import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from './paiement/page';
 import { Card, CardHeader, Divider, CardBody } from '@nextui-org/react';
+import { prepareCommande } from './logic';
+
 
 type NewMenus = {
+  id: number;
   type: "menu";
   menu: Menus;
+  menuId: number;
 };
 
 type NewPlats = {
+  id: number;
   type: "plat";
   plat: Plats;
+  menuId?: number;
 };
 
 type NewSnacks = {
+  id: number;
   type: "snack";
   snack: Snacks;
+  menuId?: number;
 };
 
 type NewBoissons = {
+  id: number;
   type: "boisson";
   boisson: Boissons;
+  menuId?: number;
 };
 
-type AllType = NewMenus | NewPlats | NewSnacks | NewBoissons | { type: "end" };
+type NewRepas = {
+  menu: NewMenus[];
+  plat: NewPlats[];
+  snack: NewSnacks[];
+  boisson: NewBoissons[];
+  complete: boolean;
+  remainingPlats: number;
+  remainingBoissons: number;
+  remainingSnacks: number;
+  currentMenu?: NewMenus;
+};
+
+
+type IngredientsInPlat = {
+  ingredient: Ingredients;
+  qmin: number;
+  qmax: number;
+}
+
+
+type AllType = NewMenus | NewPlats | NewSnacks | NewBoissons | { type: "other" } | { type: "end" };
 
 export default function ChatPage() {
 
@@ -39,26 +69,27 @@ export default function ChatPage() {
   const [listSnacks, setListSnacks] = useState<Snacks[]>([]);
   const [listBoissons, setListBoissons] = useState<Boissons[]>([]);
 
-  const [repas, setRepas] = useState<Repas>({
+  const [repas, setRepas] = useState<NewRepas>({
     menu: [],
     plat: [],
     snack: [],
     boisson: [],
     complete: false,
-    join: () => {
-      return [
-        ...repas.menu.map((menu: Menus) => menu.nom),
-        ...repas.plat.map((plat: Plats) => plat.nom),
-        ...repas.snack.map((snack: Snacks) => snack.nom),
-        ...repas.boisson.map((boisson: Boissons) => boisson.nom),
-      ].join(", ");
-    },
+    remainingPlats: 0,
+    remainingBoissons: 0,
+    remainingSnacks: 0
   });
 
-  const [currentStep, setCurrentStep] = useState<string>("menu");
+  const [currentStep, setCurrentStep] = useState<string>("other");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalResponse, setModalResponse] = useState<any>([]);
 
+  const [isMenuDone, setIsMenuDone] = useState<boolean>(true);
+  const [currentPlat, setCurrentPlat] = useState<NewPlats>();
+  const [allViandes, setAllViandes] = useState<Viandes[]>([]);
+  const [currentMenuId, setCurrentMenuId] = useState<number>(0);
+
+  // Fetch data
   useEffect(() => {
     async function fetchData() {
       const [fetchedMenus, fetchedPlats, fetchedIngredients, fetchedViandes, fetchedSnacks, fetchedBoissons] = await Promise.all([
@@ -79,80 +110,116 @@ export default function ChatPage() {
     fetchData();
   }, []);
 
-
+  // Gestion des réponses du modal pour les plats
   useEffect(() => {
+
     if (modalResponse && modalResponse.viandes && modalResponse.ingredients) {
       const newRepas = { ...repas };
+      const resultIngredients = [...modalResponse.ingredients, ...modalResponse.viandes];
 
-      modalResponse.viandes.map((viande: Viandes) => (
-        newRepas.plat[newRepas.plat.length - 1].ingredients.push({
-          ingredient: viande,
-          qmin: 0,
-          qmax: 0,
-        })
-      ));
+      const newPlat = { ...currentPlat }; // Make a copy of the currentPlat object
 
-      modalResponse.ingredients.map((ingredient: Viandes) => (
-        newRepas.plat[newRepas.plat.length - 1].ingredients.push({
-          ingredient: ingredient,
-          qmin: 0,
-          qmax: 0,
-        })
-      ));
+      if (newPlat.plat) {
 
-      setRepas(newRepas);
-      setCurrentStep(getNextStep({ type: "plat" }, newRepas));
+        newPlat.plat.ingredients = resultIngredients; // Update the ingredients property of the newPlat object
+
+
+        newRepas.plat.push(newPlat); // Push the newPlat object to the plat array in newRepas
+
+
+        modalResponse.viandes.map((viande: Viandes) => (
+          allViandes.push(viande)
+        ));
+
+        setRepas(newRepas);
+        setAllViandes(allViandes);
+        setCurrentStep(getNextStep({ type: "plat" }, newRepas));
+      }
     }
   }, [modalResponse]);
 
-  const handleSetRepasItem = (type: keyof Repas, item: AllType) => {
-    const newRepas: Repas = { ...repas };
+  // Ajout des items dans le repas
+  const handleSetRepasItem = (type: keyof NewRepas, item: AllType) => {
+    const newRepas: NewRepas = { ...repas };
 
     switch (item.type) {
       case "menu":
-        newRepas.menu.push(item.menu);
+        newRepas.menu.push(item);
+        newRepas.currentMenu = item
+        newRepas.remainingPlats = item.menu.quantitePlat;
+        newRepas.remainingBoissons = item.menu.quantiteBoisson;
+        newRepas.remainingSnacks = item.menu.quantiteSnack;
+        setCurrentMenuId(Math.floor(Math.random() * 1000) + 1);
+        setIsMenuDone(false);
         break;
       case "plat":
-        newRepas.plat.push(item.plat);
-        setIsModalOpen(true);
+        if (!isMenuDone) {
+          newRepas.remainingPlats -= 1;
+          const platInMenu = item;
+          platInMenu.plat.prix = 0;
+          platInMenu.plat.prixServeur = 0;
+          platInMenu.menuId = currentMenuId;
+
+          setCurrentPlat(platInMenu);  // Set the current plat before opening the modal
+          setIsModalOpen(true);
+        }
+        else {
+          setCurrentPlat(item);  // Set the current plat before opening the modal
+          setIsModalOpen(true);
+        }
         break;
       case "snack":
-        newRepas.snack.push(item.snack);
+        if (!isMenuDone) {
+          newRepas.remainingSnacks -= 1;
+          const snackInMenu = item
+          snackInMenu.snack.prix = 0;
+          snackInMenu.snack.prixServeur = 0;
+          snackInMenu.menuId = currentMenuId;
+
+          newRepas.snack.push(snackInMenu);
+        }
+        else {
+          newRepas.snack.push(item);
+        }
         break;
       case "boisson":
-        newRepas.boisson.push(item.boisson);
-        newRepas.complete = true;
+        if (!isMenuDone) {
+          newRepas.remainingBoissons -= 1;
+          const boissonInMenu = item
+          boissonInMenu.boisson.prix = 0;
+          boissonInMenu.boisson.prixServeur = 0;
+          boissonInMenu.menuId = currentMenuId;
+
+          newRepas.boisson.push(boissonInMenu);
+        }
+        else {          
+          newRepas.boisson.push(item);
+        }
         break;
+    }
+
+    if (newRepas.menu.length > 0 && newRepas.remainingPlats === 0 && newRepas.remainingBoissons === 0 && newRepas.remainingSnacks === 0) {
+      setIsMenuDone(true);
     }
 
     setRepas(newRepas);
     setCurrentStep(getNextStep(item, newRepas));
   };
 
-  const getNextStep = (item: AllType, repas: Repas) => {
-    const type = item.type;
-
-    if (type !== "end" && repas.complete) {
+  const getNextStep = (item: AllType, repas: NewRepas): string => {
+    if (repas.remainingPlats > 0) {
+      return "plat";
+    } else if (repas.remainingBoissons > 0) {
+      return "boisson";
+    } else if (repas.remainingSnacks > 0) {
+      return "snack";
+    } else {
       return "other";
-    }
-    switch (type) {
-      case "menu":
-        return "plat";
-      case "plat":
-        return "snack";
-      case "snack":
-        return "boisson";
-      case "boisson":
-        return "other";
-      default:
-        return "end";
     }
   };
 
-  function RecapComponent({ repas }: { repas: Repas }) {
 
-    console.log(repas.plat);
-
+  function RecapComponent({ repas }: { repas: NewRepas }) {
 
     return (
       <div className="flex flex-col gap-4 max-w-[300px] min-w-[300px] text-justify">
@@ -164,10 +231,29 @@ export default function ChatPage() {
             </div>
           </CardHeader>
           <Divider />
-          <CardBody>
-            <p className="text-default-500 font-bold">
-              {repas.menu.map((menu: Menus) => menu.nom).join(", ") || "Pas de menu"}</p>
-          </CardBody>
+          <div className="max-h-[80px] h-[80px] overflow-scroll">
+            <CardBody>
+              <p className="text-default-500 font-bold">
+                {repas.menu.length > 0
+                  ? repas.menu.map((menu, index) => (
+                    <span key={menu.id}>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          console.log(menu.menu.nom);
+                        }}
+                        className="text-link"
+                      >
+                        {menu.menu.nom}
+                      </a>
+                      {index < repas.menu.length - 1 ? ", " : ""}
+                    </span>
+                  ))
+                  : "Pas de menu"}
+              </p>
+            </CardBody>
+          </div>
           <Divider />
         </Card>
         <Card className="max-w-[400px]">
@@ -177,22 +263,25 @@ export default function ChatPage() {
             </div>
           </CardHeader>
           <Divider />
-          {repas.plat.length === 0 ? (
-            <CardBody>
-              <p className="text-default-500 font-bold">Pas de plat</p>
-            </CardBody>
-          ) : (
-            repas.plat.map((plat: Plats) => (
-              <CardBody key={plat.nom}>
-                <p className="text-default-500 font-bold">{plat.nom}</p>
-                <ul>
-                  {plat.ingredients.map((ingredient, index) => (
-                    <li className="text-default-500" key={index}>{ingredient.ingredient.nom}</li>
-                  ))}
-                </ul>
+          <div className="max-h-[150px] h-[150px] overflow-scroll">
+            {repas.plat.length === 0 ? (
+              <CardBody>
+                <p className="text-default-500 font-bold">Pas de plat</p>
               </CardBody>
-            ))
-          )}
+            ) : (
+              repas.plat.map((currentPlat: NewPlats, index) => (
+                <CardBody key={currentPlat.plat.nom}>
+                  <p className="text-default-500 font-bold">{currentPlat.plat.nom}</p>
+                  <ul>
+                    {currentPlat.plat.ingredients.map((currentIngredient: IngredientsInPlat, index2) => (
+                      <li className="text-default-500" key={currentIngredient.nom} >{currentIngredient.nom}</li>
+                    ))}
+
+                  </ul>
+                </CardBody>
+              ))
+            )}
+          </div>
           <Divider />
         </Card>
         <Card className="max-w-[400px]">
@@ -202,9 +291,12 @@ export default function ChatPage() {
             </div>
           </CardHeader>
           <Divider />
-          <CardBody>
-            <p className="text-default-500 font-bold">{repas.snack.map((snack: Snacks) => snack.nom).join(", ") || "Pas de snack"}</p>
-          </CardBody>
+          <div className="max-h-[80px] h-[80px] overflow-scroll">
+
+            <CardBody>
+              <p className="text-default-500 font-bold">{repas.snack.map((snack: NewSnacks) => snack.snack.nom).join(", ") || "Pas de snack"}</p>
+            </CardBody>
+          </div>
           <Divider />
         </Card>
         <Card className="max-w-[400px]">
@@ -214,37 +306,52 @@ export default function ChatPage() {
             </div>
           </CardHeader>
           <Divider />
-          <CardBody>
-            <p className="text-default-500 font-bold">{repas.boisson.map((boisson: Boissons) => boisson.nom).join(", ") || "Pas de boisson"}</p>
-          </CardBody>
+          <div className="max-h-[80px] h-[80px] overflow-scroll">
+
+            <CardBody>
+              <p className="text-default-500 font-bold">{repas.boisson.map((boisson: NewBoissons) => boisson.boisson.nom).join(", ") || "Pas de boisson"}</p>
+            </CardBody>
+          </div>
           <Divider />
         </Card>
       </div>
     );
   }
 
-  function ChatNext({ repas, setRepasItem, currentStep, setCurrentStep }: { repas: Repas, setRepasItem: (type: keyof Repas, item: AllType) => void, currentStep: string, setCurrentStep: (step: string) => void }) {
-    switch (currentStep) {
-      case "menu":
+  function ChatNext({ repas, setRepasItem, currentStep, setCurrentStep }: { repas: NewRepas, setRepasItem: (type: keyof NewRepas, item: AllType) => void, currentStep: string, setCurrentStep: (step: string) => void }) {
+    if (repas.remainingPlats > 0) {
+      return <ChatPlat setRepas={item => setRepasItem("plat", item)} />;
+    }
+    else if (repas.remainingSnacks > 0) {
+      return <ChatSnack setRepas={item => setRepasItem("snack", item)} />;
+    }
+    else if (repas.remainingBoissons > 0) {
+      return <ChatBoisson setRepas={item => setRepasItem("boisson", item)} />;
+    }
+    else {
+      if (currentStep === "end") {
+        return <ChatEnd repas={repas} allViandes={allViandes} />;
+      }
+      else if (currentStep === "menu") {
         return <ChatMenu setRepas={item => setRepasItem("menu", item)} />;
-      case "plat":
+      }
+      else if (currentStep === "plat") {
         return <ChatPlat setRepas={item => setRepasItem("plat", item)} />;
-      case "snack":
+      }
+      else if (currentStep === "snack") {
         return <ChatSnack setRepas={item => setRepasItem("snack", item)} />;
-      case "boisson":
+      }
+      else if (currentStep === "boisson") {
         return <ChatBoisson setRepas={item => setRepasItem("boisson", item)} />;
-      case "other":
-        return <ChatOther setCurrentStep={setCurrentStep} />;
-      case "end":
-        return <ChatEnd />;
-      default:
-        return null;
+      }
+      else return <ChatOther setCurrentStep={setCurrentStep} />;
     }
   }
 
 
   function ChatMenu({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const menu: NewMenus[] = listMenus.map((menu) => ({ type: "menu", menu }));
+    const menuId = Math.floor(Math.random() * 1000) + 1;
+    const menu: NewMenus[] = listMenus.map((menu) => ({ id: menu.id, type: "menu", menu, menuId }));
 
     return (
       <ChatLayout
@@ -257,7 +364,7 @@ export default function ChatPage() {
   }
 
   function ChatPlat({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const plat: NewPlats[] = listPlats.map((plat) => ({ type: "plat", plat }));
+    const plat: NewPlats[] = listPlats.map((plat) => ({ id: plat.id, type: "plat", plat }));
 
     return (
       <ChatLayout
@@ -270,7 +377,7 @@ export default function ChatPage() {
   }
 
   function ChatSnack({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const snack: NewSnacks[] = listSnacks.map((snack) => ({ type: "snack", snack }));
+    const snack: NewSnacks[] = listSnacks.map((snack) => ({ id: snack.id, type: "snack", snack }));
 
     return (
       <ChatLayout
@@ -283,7 +390,7 @@ export default function ChatPage() {
   }
 
   function ChatBoisson({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const boisson: NewBoissons[] = listBoissons.map((boisson) => ({ type: "boisson", boisson }));
+    const boisson: NewBoissons[] = listBoissons.map((boisson) => ({ id: boisson.id, type: "boisson", boisson }));
 
     return (
       <ChatLayout
@@ -296,7 +403,7 @@ export default function ChatPage() {
   }
 
   type OtherOption = {
-    type: "menu" | "plat" | "snack" | "boisson" | "end";
+    type: "menu" | "plat" | "snack" | "boisson" | "other" | "end";
     label: string;
   };
 
@@ -322,10 +429,10 @@ export default function ChatPage() {
         <div className="grid grid-cols-2 gap-4">
           {options.map((option, index) => (
             <Button
-              key={option.type + index}
-              color={"default"}
-              variant={"solid"}
-              className={""}
+              key={index}
+              color={index === options.length - 1 ? "danger" : "default"}
+              variant={index === options.length - 1 ? "bordered" : "solid"}
+              className={"font-medium"}
               onClick={() => handleButtonClick(option)}
             >
               {option.label}
@@ -338,7 +445,10 @@ export default function ChatPage() {
 
 
 
-  function ChatEnd() {
+  function ChatEnd({ repas, allViandes }: { repas: NewRepas, allViandes: Viandes[] }) {
+
+    prepareCommande(repas, allViandes);
+
     return (
       <div>
         <h2>Lancelot</h2>
@@ -366,10 +476,10 @@ export default function ChatPage() {
           <div className="grid grid-cols-2 gap-4">
             {buttons.map((button, index) => (
               <Button
-                key={button.type + index}
+                key={index}
                 color={"default"}
                 variant={"solid"}
-                className=""
+                className={"font-medium"}
                 onClick={() => handleButtonClick(button)}
                 isDisabled={buttonClicked}
               >
@@ -380,10 +490,11 @@ export default function ChatPage() {
               key={999}
               color="danger"
               variant="bordered"
-              className="text-color-default bg-color-default"
-              onClick={() => handleButtonClick({ type: "end", label: "Terminer la commande" })}
+              className="font-medium"
+              onClick={() => handleButtonClick({ type: "other", label: "Terminer la commande" })}
               isDisabled={buttonClicked}
-            >Non merci
+            >
+              Non merci
             </Button>
           </div>
         )}
@@ -408,7 +519,15 @@ export default function ChatPage() {
         <div className="w-1 border-r-2 mx-2"></div>
         <div className="flex-1 m-4 justify-end text-right">
           <RecapComponent repas={repas} />
-          <DetailCommandeModal isOpen={isModalOpen} onClose={(values: { viandes: Viandes[], ingredients: Ingredients[] }) => { setIsModalOpen(false); setModalResponse(values); }} options={{ "ingredients": listIngredients, "viandes": listViandes }} />
+          <DetailCommandeModal
+            isOpen={isModalOpen}
+            onClose={(values: { viandes: Viandes[], ingredients: Ingredients[] }) => {
+              setIsModalOpen(false);
+              setModalResponse(values);
+            }}
+            options={{ "ingredients": listIngredients, "viandes": listViandes }}
+            currentPlat={currentPlat?.plat}  // Pass the current plat to the modal
+          />
         </div>
       </div>
     </div>

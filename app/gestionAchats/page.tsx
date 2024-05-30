@@ -3,6 +3,7 @@ import React, { Key, useState, useEffect } from "react";
 import { Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
 import { getAchats, postEditAchat } from "@/config/api";
 import { EditIcon } from "../../public/EditIcon.jsx";
+import EditAchatModal from "@/components/EditAchatModal";
 
 // Define types for achats
 type Achat = {
@@ -61,12 +62,15 @@ const formatDate = (date: any) => {
 
 function isDateExpired(achat: any) {
   const dlcTimestamp = parseInt(achat.dlc.$date.$numberLong);
+  const dlcDate = new Date(dlcTimestamp); // On converti le timestamp en date
+  dlcDate.setHours(0, 0, 0, 0); // On met à 0 les heures et les minutes (seul le jour nous interesse)
 
   const today = new Date();
   today.setHours(0, 0, 0, 0); // On met à 0 les heures et les minutes (seul le jour nous interesse)
-  const todayTimestamp = today.getTime();
 
-  return todayTimestamp >= dlcTimestamp;
+  if (today.getTime() > dlcDate.getTime()) { return 1 } // Date expirée
+  if (today.getTime() === dlcDate.getTime()) { return 2} // Dernier jour avant expiration
+  return 0 // Date non expirée
 }
 
 
@@ -186,12 +190,17 @@ export default function GestionAchatsPage() {
       case "dlc":
         return (
           <div className="flex flex-col">
-            <p className={`text-bold text-sm capitalize ${isDateExpired(achat) ? "text-danger" : "default"}`}>
+            <p className={`text-bold text-sm capitalize ${isDateExpired(achat) === 1 ? "text-danger"
+            : isDateExpired(achat) === 2 ? "text-warning"
+            : "default"}`}>
               {formatDate(cellValue)}
             </p>
           </div>
         )
       case "etat":
+        if (isDateExpired(achat) === 1 && (achat.etat === 0 || achat.etat === 1)) {
+          achat.etat = 3;
+        }
         return (
           <Chip
             className="capitalize"
@@ -199,10 +208,10 @@ export default function GestionAchatsPage() {
             size="sm"
             variant="flat"
           >
-            {cellValue === 0 ? "Non entamé"
-              : cellValue === 1 ? "Ouvert"
-                : cellValue === 2 ? "Consommé"
-                  : cellValue === 3 ? "Perimé"
+            {achat.etat === 0 ? "Non entamé"
+              : achat.etat === 1 ? "Ouvert"
+                : achat.etat === 2 ? "Consommé"
+                  : achat.etat === 3 ? "Perimé"
                     : "error"}
           </Chip>
         )
@@ -226,8 +235,8 @@ export default function GestionAchatsPage() {
 
   const filteredAchats = achats.filter((achat) =>
     (isAfficherLesAchatsConsommes
-      ? achat.etat === 0 || achat.etat === 1 || achat.etat === 2
-      : achat.etat === 0 || achat.etat === 1) &&
+      ? achat.etat === 2
+      : achat.etat === 0 || achat.etat === 1 || achat.etat === 3) &&
     (achat.nomArticle.toLowerCase().includes(searchTerm.toLowerCase()) ||
       achat.numLot.toLowerCase().includes(searchTerm.toLowerCase()))
   );
@@ -265,17 +274,21 @@ export default function GestionAchatsPage() {
         </TableBody>
 
       </Table>
-      {/* {currentAchat && (
+      {currentAchat && (
           <EditAchatModal
             isOpen={isModalOpen}
             onClose={onEditClose}
             onSubmit={onSubmit}
-            currentName={currentAchat.nom}
-            currentFirstname={currentAchat.prenom}
-            currentSolde={currentAchat.montant}
-            currentAccess={currentAchat.acces}
+            currentNomArticle={currentAchat.nomArticle}
+            currentCategorie={currentAchat.categorie}
+            currentNumLot={currentAchat.numLot}
+            currentNbPortions={currentAchat.nbPortions}
+            currentDateOuverture={currentAchat.dateOuverture}
+            currentdateFermeture={currentAchat.dateFermeture}
+            currentDlc={currentAchat.dlc}
+            currentEtat={currentAchat.etat}
           />
-        )} */}
+        )}
     </div>
   );
 }

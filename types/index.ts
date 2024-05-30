@@ -133,6 +133,26 @@ export interface Nettoyages {
 }
 
 
+export interface NewCommandes {
+  id : number;
+  contenu: string;
+  idClient: number;
+  idServeur: number;
+  date: {
+    $date: string;
+  };
+  distribuee: boolean;
+  prix: number;
+  typePaiement: number;
+  commentaire: string;
+  ingredients : [number, number];
+  viandes : [number, number];
+  boissons : [number, number];
+  snacks : [number, number];
+  payee: boolean;
+}
+
+
 export interface Plannings {
   idPlanning: number;
   date: string;
