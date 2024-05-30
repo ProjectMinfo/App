@@ -1,23 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
-import { Ingredients, Viandes } from "@/types";
+import { Ingredients, Plats, Viandes } from "@/types";
 
 interface DetailCommandeModalProps {
   isOpen: boolean;
-  onClose: (data: {viandes: Viandes[], ingredients: Ingredients[]}) => any;
+  onClose: (data: {viandes: Viandes[], ingredients: Ingredients[], plat : Plats}) => any;
   options: {
     ingredients: Ingredients[];
     viandes: Viandes[];
-  }
-}
+  };
+  currentPlat: Plats;  // Add this line
+};
 
-export default function DetailCommandeModal({ isOpen, onClose, options }: DetailCommandeModalProps) {
+export default function DetailCommandeModal({ isOpen, onClose, options, currentPlat }: DetailCommandeModalProps) {
   const [selectedViande, setSelectedViande] = useState<Viandes[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<Ingredients[]>([]);
   const [step, setStep] = useState(1);
 
   const handleViandeClick = (viande: Viandes) => {
-    setSelectedViande([viande]);
+    setSelectedViande((prevSelected) =>
+      prevSelected.includes(viande)
+        ? prevSelected.filter((opt) => opt !== viande)
+        : [...prevSelected, viande]
+    );
   };
 
   const handleIngredientClick = (ingredient: Ingredients) => {
@@ -28,19 +33,31 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
     );
   };
 
+  const reset = () => {
+    setSelectedViande([]);
+    setSelectedIngredients([]);
+    setStep(1);
+  }
+
+  useEffect(() => {
+    if (!isOpen) {
+      reset();
+    }
+  }, [isOpen]);
+
   const handleValidateClick = () => {
     if (step === 1 && selectedViande.length > 0) {
       setStep(2);
     } else if (step === 2) {
-      onClose({ viandes: selectedViande, ingredients: selectedIngredients });
+      const result = { viandes: selectedViande, ingredients: selectedIngredients, plat : currentPlat};
+      reset();
+      onClose(result);
     }
   };
 
   const handleClose = () => {
-    setSelectedViande([]);
-    setSelectedIngredients([]);
-    setStep(1);
-    onClose({ viandes: [], ingredients: [] });
+    reset();
+    onClose({ viandes: [], ingredients: [] , plat : currentPlat});
   };
 
   return (
@@ -57,21 +74,21 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
             </ModalHeader>
             <ModalBody className="grid grid-cols-3 gap-2">
               {step === 1
-                ? options.viandes.map((option) => (
+                ? options.viandes.map((option, index) => (
                     <Button
                       color="primary"
                       variant={selectedViande.includes(option) ? "flat" : "ghost"}
-                      key={option.id}
+                      key={index}
                       onPress={() => handleViandeClick(option)}
                     >
                       {option.nom}
                     </Button>
                   ))
-                : options.ingredients.map((option) => (
+                : options.ingredients.map((option, index) => (
                     <Button
                       color="primary"
                       variant={selectedIngredients.includes(option) ? "flat" : "ghost"}
-                      key={option.id}
+                      key={index}
                       onPress={() => handleIngredientClick(option)}
                     >
                       {option.nom}
