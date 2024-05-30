@@ -102,9 +102,13 @@ function aggregateQuantities(repas: NewRepas, allViandes : Viandes[]) {
 function getAllNom(repas: NewRepas, allViandes : Viandes[]) {
     const listAllNom : string[] = [];
 
+    
     repas.plat.forEach((plat) => {
+        const currentPlat: string[] = [];
+        currentPlat.push(plat.plat.nom);
+        currentPlat.push(" : ");
         plat.plat.ingredients.forEach((ingredient) => {
-            listAllNom.push(ingredient.nom);
+            currentPlat.push(ingredient.nom);
         });
     });
 

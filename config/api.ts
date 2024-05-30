@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Commandes } from '@/types'; // Assurez-vous que le chemin est correct pour votre type Commandes
 
 const baseURL = 'https://minfoapi.fly.dev';
 
@@ -88,7 +87,7 @@ export const getUser = async (id: number) => {
 
 export const getCommandeById = async (id: number) => {
   try {
-    const response = await api.get(`/commandes-new/${id}`);
+    const response = await api.get(`/commandes/${id}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching id:', error);
@@ -98,7 +97,7 @@ export const getCommandeById = async (id: number) => {
 
 export const getCommande = async () => {
   try {
-    const response = await api.get(`/commandes-new`);
+    const response = await api.get(`/commandes`);
     return response.data;
   } catch (error) {
     console.error('Error fetching commandes:', error);
@@ -111,7 +110,7 @@ export const postCommandeById = async (id: number, data: any) => {
   const token = 'DEV_TOKEN'; // Add your token here
 
   try {
-    const response = await api.post(`/commandes-new/${id}`, JSON.stringify(data), {
+    const response = await api.post(`/commandes/${id}`, JSON.stringify(data), {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
@@ -326,7 +325,7 @@ export const postCommande = async (data: any) => {
   const token = 'DEV_TOKEN'; // Add your token here
 
   try {
-    const response = await api.post('/commandes-new', JSON.stringify(data), {
+    const response = await api.post('/commandes', JSON.stringify(data), {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
