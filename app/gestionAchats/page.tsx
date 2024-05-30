@@ -211,7 +211,7 @@ export default function GestionAchatsPage() {
             {achat.etat === 0 ? "Non entamé"
               : achat.etat === 1 ? "Ouvert"
                 : achat.etat === 2 ? "Consommé"
-                  : achat.etat === 3 ? "Perimé"
+                  : achat.etat === 3 ? "Périmé"
                     : "error"}
           </Chip>
         )
