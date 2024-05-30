@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Commandes } from '@/types'; // Assurez-vous que le chemin est correct pour votre type Commandes
 
 const baseURL = 'https://minfoapi.fly.dev';
 
@@ -87,25 +88,61 @@ export const getUser=async(id: number)=>{
   }
 }
 
-export const getCommandeById=async(id:number)=>{
-  try{
-    const response=await api.get(`/commande/${id}`);
-    return (response.data);
-  } catch(error) {
+export const getCommandeById = async (id: number) => {
+  try {
+    const response = await api.get(`/commandes-new/${id}`);
+    return response.data;
+  } catch (error) {
     console.error('Error fetching id:', error);
     throw error;
   }
-}
+};
 
-export const getCommande=async()=>{
-  try{
-    const response=await api.get(`/commandes`);
-    return (response.data);
-  } catch(error) {
-    console.error('Error fetching id:', error);
+export const getCommande = async () => {
+  try {
+    const response = await api.get(`/commandes-new`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching commandes:', error);
     throw error;
   }
-}
+};
+
+// Fonction pour mettre à jour une commande par son ID
+export const postCommandeById = async (id: number, data: any) => {
+  const token = 'DEV_TOKEN'; // Add your token here
+
+  try {
+    const response = await api.post(`/commandes-new/${id}`, JSON.stringify(data), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error posting commande:', error);
+    throw error;
+  }
+};
+
+
+export const postEditAchat = async (achat : any) => {
+  const token = 'DEV_TOKEN'; // Add your token here
+
+    try {
+        const response = await api.post('/user/update', JSON.stringify(achat), {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type" : "application/json"
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error posting viandes:', error);
+        throw error;
+    }
+};
 
 export const getSnacks = async () => {
     try {
@@ -136,22 +173,7 @@ export const getComptes = async () => {
 }
 
 
-export const postEditAchat = async (achat : any) => {
-  const token = 'DEV_TOKEN'; // Add your token here
 
-    try {
-        const response = await api.post('/user/update', JSON.stringify(achat), {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type" : "application/json"
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error posting viandes:', error);
-        throw error;
-    }
-};
 
 export const postEditCompte = async (user:any) => {
     const token = 'DEV_TOKEN'; // Add your token here
