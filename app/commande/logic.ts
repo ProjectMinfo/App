@@ -1,5 +1,5 @@
 import { postCommande } from "@/config/api";
-import { Boissons, Ingredients, Menus, NewCommandes, Plats, Snacks, Viandes } from "@/types";
+import { Boissons, Menus, NewCommandes, Plats, Snacks, Viandes } from "@/types";
 
 type NewMenus = {
     id: number;
@@ -104,7 +104,7 @@ function getAllNom(repas: NewRepas, allViandes : Viandes[]) {
 
     repas.plat.forEach((plat) => {
         plat.plat.ingredients.forEach((ingredient) => {
-            listAllNom.push(ingredient.ingredient.nom);
+            listAllNom.push(ingredient.nom);
         });
     });
 
@@ -167,7 +167,8 @@ export function prepareCommande(repas: NewRepas, allViandes : Viandes[]) {
         "ingredients" : dataPrepared.ingredients,
         "viandes" : dataPrepared.viandes,
         "boissons" : dataPrepared.boissons,
-        "snacks" : dataPrepared.snacks
+        "snacks" : dataPrepared.snacks,
+        "payee" : false
     };
 
     console.log(commande);

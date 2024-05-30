@@ -192,9 +192,7 @@ export default function ChatPage() {
 
           newRepas.boisson.push(boissonInMenu);
         }
-        else {
-          console.log(item);
-          
+        else {          
           newRepas.boisson.push(item);
         }
         break;

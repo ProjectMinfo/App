@@ -149,6 +149,7 @@ export interface NewCommandes {
   viandes : [number, number];
   boissons : [number, number];
   snacks : [number, number];
+  payee: boolean;
 }
 
 
