@@ -125,22 +125,6 @@ export const postCommandeById = async (id: number, data: any) => {
 };
 
 
-export const postEditAchat = async (achat : any) => {
-  const token = 'DEV_TOKEN'; // Add your token here
-
-    try {
-        const response = await api.post('/user/update', JSON.stringify(achat), {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type" : "application/json"
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error posting viandes:', error);
-        throw error;
-    }
-};
 
 export const getSnacks = async () => {
     try {
