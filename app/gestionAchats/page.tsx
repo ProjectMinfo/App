@@ -69,7 +69,7 @@ function isDateExpired(achat: any) {
   today.setHours(0, 0, 0, 0); // On met à 0 les heures et les minutes (seul le jour nous interesse)
 
   if (today.getTime() > dlcDate.getTime()) { return 1 } // Date expirée
-  if (today.getTime() === dlcDate.getTime()) { return 2} // Dernier jour avant expiration
+  if (today.getTime() === dlcDate.getTime()) { return 2 } // Dernier jour avant expiration
   return 0 // Date non expirée
 }
 
@@ -81,6 +81,7 @@ export default function GestionAchatsPage() {
   const [achats, setAchats] = useState<Achat[]>([]);
   const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
   const [isAfficherLesAchatsConsommes, setIsAfficherLesAchatsConsommes] = useState<boolean>(false)
+  const [currentAchatIndex, setCurrentAchatIndex] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchAchats() {
@@ -91,7 +92,8 @@ export default function GestionAchatsPage() {
     fetchAchats();
   }, []);
 
-  const onEditOpen = (achat: Achat) => {
+  const onEditOpen = (achat: Achat, indexAchat: number) => {
+    setCurrentAchatIndex(indexAchat);
     setCurrentAchat(achat);
     setIsModalOpen(true);
   };
@@ -99,6 +101,17 @@ export default function GestionAchatsPage() {
   const onEditClose = () => {
     setIsModalOpen(false);
     setCurrentAchat(null);
+  };
+
+  const convertDateToBDDFormat = (date: any) => {
+    if (date.$date) {
+      return date
+    }
+    
+    const newDate = new Date(date).toISOString();
+    return {
+      $date: newDate
+    };
   };
 
   const onSubmit = async (nomArticle: string,
@@ -110,15 +123,25 @@ export default function GestionAchatsPage() {
     dlc: Date,
     etat: number) => {
 
+    // const newDate = convertDateToBDDFormat(nomArticle.dlc)
+    const newCurrentAchat = {
+      "nomArticle": nomArticle,
+      "numLot": numLot,
+      "nbPortions": nbPortions,
+      "dateOuverture": dateOuverture,
+      "dateFermeture": dateFermeture,
+      "dlc": dlc,
+      "etat": etat
+    }
+
     // Modification sur l'utilisateur
-    if (currentAchat && achats) {
-      const editedListeAchats = achats.map((achat) =>
-        achat.idAchat === currentAchat.idAchat ? { ...achat, categorie, numLot, nbPortions, dateOuverture, dateFermeture, dlc, etat } : achat
-      );
-      setAchats(editedListeAchats);
+    if (newCurrentAchat && achats) {
 
       // Mettre à jour l'utilisateur courant avec les nouvelles données avant de l'envoyer à l'API
-      const updatedAchat = { ...currentAchat, categorie, numLot, nbPortions, dateOuverture, dateFermeture, dlc, etat };
+      const updatedAchat: Achat = { ...currentAchat, ...newCurrentAchat, dlc: convertDateToBDDFormat(dlc) };
+
+      const newListAchats = achats.filter(achat => achat.idAchat !== updatedAchat.idAchat)
+      setAchats([...newListAchats, updatedAchat])
 
       try {
         await postEditAchat(updatedAchat); // Appel à l'API pour enregistrer les modifications
@@ -127,7 +150,14 @@ export default function GestionAchatsPage() {
       catch (error) {
         console.error("Error updating achat:", error);
       }
+
+      if (currentAchatIndex !== null && achats) {
+        const updatedAchatList = [...achats];
+        updatedAchatList[currentAchatIndex] = updatedAchat;
+        setAchats(updatedAchatList);
+      }
     }
+
     onEditClose();
   };
 
@@ -190,9 +220,9 @@ export default function GestionAchatsPage() {
       case "dlc":
         return (
           <div className="flex flex-col">
-            <p className={`text-bold text-sm capitalize ${ achat.etat !== 2 && isDateExpired(achat) === 1 ? "text-danger" // Si l'achat perime le lendemain (et qu'il n'a pas été consommé)
-            : achat.etat !== 2 && isDateExpired(achat) === 2 ? "text-warning" // Si l'achat est perimé (et qu'il n'a pas déjà été consommé)
-            : "default"}`}>
+            <p className={`text-bold text-sm capitalize ${achat.etat !== 2 && isDateExpired(achat) === 1 ? "text-danger" // Si l'achat perime le lendemain (et qu'il n'a pas été consommé)
+              : achat.etat !== 2 && isDateExpired(achat) === 2 ? "text-warning" // Si l'achat est perimé (et qu'il n'a pas déjà été consommé)
+                : "default"}`}>
               {formatDate(cellValue)}
             </p>
           </div>
@@ -220,7 +250,7 @@ export default function GestionAchatsPage() {
           <div className="relative flex items-center gap-2">
             <Tooltip content="Modifier">
               <span
-                onClick={() => onEditOpen(achat)}
+                onClick={() => onEditOpen(achat, achat.idAchat)}
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"
               >
                 <EditIcon />
@@ -276,20 +306,20 @@ export default function GestionAchatsPage() {
 
       </Table>
       {currentAchat && (
-          <EditAchatModal
-            isOpen={isModalOpen}
-            onClose={onEditClose}
-            onSubmit={onSubmit}
-            currentNomArticle={currentAchat.nomArticle}
-            currentCategorie={currentAchat.categorie}
-            currentNumLot={currentAchat.numLot}
-            currentNbPortions={currentAchat.nbPortions}
-            currentDateOuverture={currentAchat.dateOuverture}
-            currentdateFermeture={currentAchat.dateFermeture}
-            currentDlc={currentAchat.dlc}
-            currentEtat={currentAchat.etat}
-          />
-        )}
+        <EditAchatModal
+          isOpen={isModalOpen}
+          onClose={onEditClose}
+          onSubmit={onSubmit}
+          currentNomArticle={currentAchat.nomArticle}
+          currentCategorie={currentAchat.categorie}
+          currentNumLot={currentAchat.numLot}
+          currentNbPortions={currentAchat.nbPortions}
+          currentDateOuverture={currentAchat.dateOuverture}
+          currentdateFermeture={currentAchat.dateFermeture}
+          currentDlc={currentAchat.dlc}
+          currentEtat={currentAchat.etat}
+        />
+      )}
     </div>
   );
 }

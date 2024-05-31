@@ -150,7 +150,7 @@ export const postEditAchat = async (achat: any) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error posting viandes:', error);
+    console.error('Error posting achats:', error);
     throw error;
   }
 };

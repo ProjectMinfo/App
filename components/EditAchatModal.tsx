@@ -35,6 +35,7 @@ const formatDate = (date: any) => {
     }
 };
 
+
 export default function EditAccountModal({
     isOpen,
     onClose,
@@ -81,7 +82,14 @@ export default function EditAccountModal({
     };
 
     const handleDlcChange = (date: CalendarDate) => {
-        setFormatDlc(date); // Ensure date is not null
+        // Convertir l'objet CalendarDate en une instance de Date standard
+        const jsDate = new Date(date.year, date.month - 1, date.day);
+
+        // Mettre à jour l'état formatDlc avec la nouvelle date
+        setFormatDlc(date);
+
+        // Mettre à jour l'état dlc avec la date standard JavaScript
+        setDlc(jsDate);
     };
 
     const isEtatSelected = (accessSelected: string) => {
