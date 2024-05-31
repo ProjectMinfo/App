@@ -114,26 +114,27 @@ export default function ChatPage() {
   useEffect(() => {
 
     if (modalResponse && modalResponse.viandes && modalResponse.ingredients) {
-      const newRepas = { ...repas };
+      const nextRepas = { ...repas };
       const resultIngredients = [...modalResponse.ingredients, ...modalResponse.viandes];
 
       const newPlat = { ...currentPlat }; // Make a copy of the currentPlat object
 
       if (newPlat.plat) {
-
         newPlat.plat.ingredients = resultIngredients; // Update the ingredients property of the newPlat object
 
 
-        newRepas.plat.push(newPlat); // Push the newPlat object to the plat array in newRepas
+        nextRepas.plat.push(newPlat); // Push the newPlat object to the plat array in newRepas
 
 
         modalResponse.viandes.map((viande: Viandes) => (
           allViandes.push(viande)
         ));
 
-        setRepas(newRepas);
+        setCurrentPlat(undefined);
+
+        setRepas(nextRepas);
         setAllViandes(allViandes);
-        setCurrentStep(getNextStep({ type: "plat" }, newRepas));
+        setCurrentStep(getNextStep({ type: "plat" }, nextRepas));
       }
     }
   }, [modalResponse]);
@@ -149,7 +150,7 @@ export default function ChatPage() {
         newRepas.remainingPlats = item.menu.quantitePlat;
         newRepas.remainingBoissons = item.menu.quantiteBoisson;
         newRepas.remainingSnacks = item.menu.quantiteSnack;
-        setCurrentMenuId(Math.floor(Math.random() * 1000) + 1);
+        setCurrentMenuId(item.menuId);
         setIsMenuDone(false);
         break;
       case "plat":
@@ -159,7 +160,6 @@ export default function ChatPage() {
           platInMenu.plat.prix = 0;
           platInMenu.plat.prixServeur = 0;
           platInMenu.menuId = currentMenuId;
-
           setCurrentPlat(platInMenu);  // Set the current plat before opening the modal
           setIsModalOpen(true);
         }
@@ -192,7 +192,7 @@ export default function ChatPage() {
 
           newRepas.boisson.push(boissonInMenu);
         }
-        else {          
+        else {
           newRepas.boisson.push(item);
         }
         break;
@@ -218,8 +218,38 @@ export default function ChatPage() {
     }
   };
 
+  function handleDeleteItem(type: keyof NewRepas, item: AllType) {
+    const newRepas: NewRepas = { ...repas };
+    const itemIndex = newRepas[type].findIndex((currentItem) => currentItem.id === item.id);
+
+    if (type === "menu") {
+      console.log("delete menu");
+      
+      const currentItem = item as NewMenus;
+
+      newRepas.boisson = newRepas.boisson.filter((boisson) => boisson.menuId !== currentItem.menuId);
+      newRepas.snack = newRepas.snack.filter((snack) => snack.menuId !== currentItem.menuId);
+      newRepas.plat = newRepas.plat.filter((plat) => plat.menuId !== currentItem.menuId);
+    }
+
+    newRepas[type].splice(itemIndex, 1);
+
+    if (type === "plat") {
+      const currentItem = item as NewPlats;
+      currentItem.plat.ingredients.map((ingredient) => {
+        const index = allViandes.findIndex((viande) => ingredient.id === viande.id);
+        allViandes.splice(index, 1);
+      });
+    }
+
+    setRepas(newRepas);
+    setCurrentStep(getNextStep(item, newRepas));
+  }
+
 
   function RecapComponent({ repas }: { repas: NewRepas }) {
+
+    console.log(repas, allViandes);
 
     return (
       <div className="flex flex-col gap-4 max-w-[300px] min-w-[300px] text-justify">
@@ -241,7 +271,7 @@ export default function ChatPage() {
                         href="#"
                         onClick={(e) => {
                           e.preventDefault();
-                          console.log(menu.menu.nom);
+                          handleDeleteItem("menu", menu);
                         }}
                         className="text-link"
                       >
@@ -269,11 +299,29 @@ export default function ChatPage() {
                 <p className="text-default-500 font-bold">Pas de plat</p>
               </CardBody>
             ) : (
-              repas.plat.map((currentPlat: NewPlats, index) => (
-                <CardBody key={currentPlat.plat.nom}>
-                  <p className="text-default-500 font-bold">{currentPlat.plat.nom}</p>
+              repas.plat.map((plat: NewPlats, index) => (
+                <CardBody key={plat.id}>
+                  <p className="text-default-500 font-bold">
+                    {/* {repas.plat.length > 0
+                      ? repas.plat.map((plat, index) => ( */}
+                    <span>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteItem("plat", plat);
+                        }}
+                        className="text-link"
+                      >
+                        {plat.plat.nom}
+                      </a>
+                      {index < repas.plat.length - 1 ? ", " : ""}
+                    </span>
+                    {/* ))
+                      : "Pas de plat"} */}
+                  </p>
                   <ul>
-                    {currentPlat.plat.ingredients.map((currentIngredient: IngredientsInPlat, index2) => (
+                    {plat.plat.ingredients.map((currentIngredient: IngredientsInPlat) => (
                       <li className="text-default-500" key={currentIngredient.nom} >{currentIngredient.nom}</li>
                     ))}
 
@@ -294,7 +342,25 @@ export default function ChatPage() {
           <div className="max-h-[80px] h-[80px] overflow-scroll">
 
             <CardBody>
-              <p className="text-default-500 font-bold">{repas.snack.map((snack: NewSnacks) => snack.snack.nom).join(", ") || "Pas de snack"}</p>
+              <p className="text-default-500 font-bold">
+                {repas.snack.length > 0
+                  ? repas.snack.map((snack, index) => (
+                    <span key={snack.id}>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteItem("snack", snack);
+                        }}
+                        className="text-link"
+                      >
+                        {snack.snack.nom}
+                      </a>
+                      {index < repas.snack.length - 1 ? ", " : ""}
+                    </span>
+                  ))
+                  : "Pas de snack"}
+              </p>
             </CardBody>
           </div>
           <Divider />
@@ -309,7 +375,25 @@ export default function ChatPage() {
           <div className="max-h-[80px] h-[80px] overflow-scroll">
 
             <CardBody>
-              <p className="text-default-500 font-bold">{repas.boisson.map((boisson: NewBoissons) => boisson.boisson.nom).join(", ") || "Pas de boisson"}</p>
+              <p className="text-default-500 font-bold">
+                {repas.boisson.length > 0
+                  ? repas.boisson.map((boisson, index) => (
+                    <span key={boisson.id}>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteItem("boisson", boisson);
+                        }}
+                        className="text-link"
+                      >
+                        {boisson.boisson.nom}
+                      </a>
+                      {index < repas.boisson.length - 1 ? ", " : ""}
+                    </span>
+                  ))
+                  : "Pas de boisson"}
+              </p>
             </CardBody>
           </div>
           <Divider />
@@ -364,7 +448,8 @@ export default function ChatPage() {
   }
 
   function ChatPlat({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const plat: NewPlats[] = listPlats.map((plat) => ({ id: plat.id, type: "plat", plat }));
+    const id = Math.floor(Math.random() * 1000) + 1;
+    const plat: NewPlats[] = listPlats.map((plat) => ({ id: id, type: "plat", plat }));
 
     return (
       <ChatLayout
@@ -377,7 +462,8 @@ export default function ChatPage() {
   }
 
   function ChatSnack({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const snack: NewSnacks[] = listSnacks.map((snack) => ({ id: snack.id, type: "snack", snack }));
+    const id = Math.floor(Math.random() * 1000) + 1;
+    const snack: NewSnacks[] = listSnacks.map((snack) => ({ id: id, type: "snack", snack }));
 
     return (
       <ChatLayout
@@ -390,7 +476,8 @@ export default function ChatPage() {
   }
 
   function ChatBoisson({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const boisson: NewBoissons[] = listBoissons.map((boisson) => ({ id: boisson.id, type: "boisson", boisson }));
+    const id = Math.floor(Math.random() * 1000) + 1;
+    const boisson: NewBoissons[] = listBoissons.map((boisson) => ({ id: id, type: "boisson", boisson }));
 
     return (
       <ChatLayout
@@ -525,8 +612,7 @@ export default function ChatPage() {
               setIsModalOpen(false);
               setModalResponse(values);
             }}
-            options={{ "ingredients": listIngredients, "viandes": listViandes }}
-            currentPlat={currentPlat?.plat}  // Pass the current plat to the modal
+            options={{ "ingredients": listIngredients, "viandes": listViandes, "currentPlat": currentPlat }}  // Pass the current plat to the modal
           />
         </div>
       </div>

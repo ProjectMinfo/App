@@ -91,7 +91,6 @@ export interface Commandes {
 
 
 export interface Comptes {
-  idCompte: number;
   acces: number;
   email: string;
   mdp: string;
