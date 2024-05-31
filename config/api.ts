@@ -65,6 +65,16 @@ export const getBoissons = async () => {
   }
 }
 
+export const getBoissonById = async (id: number)=>{
+  try {
+    const response= await api.get(`/boissons/${id}`);
+    return (response.data);
+  } catch (error){
+    console.error('Error fetching boissons',error);
+    throw error;
+  }
+}
+
 export const getPlats = async () => {
   try {
     const response = await api.get('/plats');
@@ -98,6 +108,16 @@ export const getCommandeById = async (id: number) => {
 export const getCommande = async () => {
   try {
     const response = await api.get(`/commandes`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching commandes:', error);
+    throw error;
+  }
+};
+
+export const getCommandesByIdUser = async (id:number) => {
+  try {
+    const response = await api.get(`/commandes/user/${id}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching commandes:', error);
@@ -319,7 +339,31 @@ export const deleteBoissons = async (id: number) => {
   }
 };
 
+export const getAllTemperatures = async()=>{
+  try{
+    const response= await api.get(`/temperatures`);
+    return response.data;
+  } catch(error){
+    console.error('Error fetching Temperatures',error);
+    throw error;
+  }
+}
 
+export const postTemperature= async (data :any)=>{
+  const token='DEV_TOKEN';//Add your token here
+  try {
+    const response = await api.post('/temperatures', JSON.stringify(data),{
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }     
+    });
+    return response.data
+  } catch(error){
+    console.error('Error posting temperature:', error);
+    throw error; 
+  }
+}
 
 export const postCommande = async (data: any) => {
   const token = 'DEV_TOKEN'; // Add your token here

@@ -1,27 +1,35 @@
 'use client'; // Indique que ce composant doit être rendu côté client.
 import React, { Key, useState, useEffect } from "react";
-import { getUser, getCommande} from "@/config/api";
+import { getUser, getCommandesByIdUser, getBoissonById} from "@/config/api";
 
 
 const Compte = () => {
   const [user, setUser] = useState(null); // État pour stocker les informations de l'utilisateur
   const [isLoading, setIsLoading] = useState(true); // État pour indiquer si les données sont en cours de chargement
-  const [commande, setCommande] = useState(null); // État pour stocker les informations de l'utilisateur
+  const [commandes, setCommandes] = useState(null); // État pour stocker les informations des commandes
+  const [boisson, setBoisson] = useState(null); // État pour stocker les informations des boissons
 
 
 
   useEffect(() => {
     async function fetchUser() {
-      const fetchedUser = await getUser(47);
+      const fetchedUser = await getUser(587);
       setUser(fetchedUser);
       setIsLoading(false); // Indique que les données ont été chargées
     }
 
     async function fetchCommande(){
-      const fetchedCommande = await getCommande();
-      setCommande(fetchedCommande);
+      const fetchedCommande = await getCommandesByIdUser(587);
+      setCommandes(fetchedCommande);
       setIsLoading(false); // Indique que les données ont été chargées
     }
+
+    async function fetchBoisson(idBoisson : number){
+      const fetchedBoisson = await getBoissonById(idBoisson);
+      setBoisson(fetchedBoisson);
+      setIsLoading(false);//Indique que les données ont été chargées
+    }
+
 
     fetchUser();
     fetchCommande();
@@ -30,10 +38,15 @@ const Compte = () => {
   if (isLoading) {
     return <div>Chargement...</div>; // Affiche un message de chargement pendant le chargement des données
   }
-
+  
   console.log(user)
-  console.log(commande)
+  console.log(commandes) 
 
+  for (let i in commandes){
+    console.log(commandes[i])
+  }
+
+  
   return (
     <div className="min-h-screen flex flex-col p-8">
       <h1 className="text-3xl font-bold mb-6">Compte</h1>
@@ -57,11 +70,9 @@ const Compte = () => {
       </div>
     </div>
   );
+
 };
 
 export default Compte; // Exporte le composant Compte par défaut.
 
-function setComptes(fetchedUser: any) {
-  throw new Error('Function not implemented.');
-}
 
