@@ -60,15 +60,16 @@ const Navbarr = () => {
               </Link>
             </div>
 
-            <div className={isActive('/carte')}>
-              <Link href="/carte" onClick={handleLinkClick}>
-                Carte
-              </Link>
-            </div>
 
             <div className={isActive('/priseCommande')}>
               <Link href="/priseCommande" onClick={handleLinkClick}>
                 Prise commande
+              </Link>
+            </div>
+
+            <div className={isActive('/carte')}>
+              <Link href="/carte" onClick={handleLinkClick}>
+                Carte
               </Link>
             </div>
 
@@ -95,28 +96,29 @@ const Navbarr = () => {
               {isDropdownOpen && (
                 <div className="absolute top-12 left-0 bg-red-500 border-3 border-red-800 shadow-lg rounded-lg mt-2 z-10 text-white text-left w-full text-base p-2">
                   <div className="py-2 space-y-2">
-                    <div className="">
+                  <div className={isActive('/gestionStock')}>
                       <Link href="/gestionStock" onClick={handleLinkClick}>Gestion des stocks</Link>
                     </div>
-                    <div className="">
+                    <div className={isActive('/gestionAchats')}>
                       <Link href="/gestionAchats" onClick={handleLinkClick}>Gestion des achats</Link>
                     </div>
-                    <div className="">
+                    <div className={isActive('/gestionComptes')}>
                       <Link href="/gestionComptes" onClick={handleLinkClick}>Gestion des comptes</Link>
                     </div>
-                    <div className="">
+                    <div className={isActive('/gestionTemps')}>
                       <Link href="/gestionTemps" onClick={handleLinkClick}>Gestion des températures</Link>
+                    </div>
+                    <div className={isActive('/gestionCarte')}>
+                      <Link href="/gestionCarte" onClick={handleLinkClick}>
+                        Modifications cartes
+                      </Link>
                     </div>
                   </div>
                 </div>
               )}
             </div>
 
-            <div className={isActive('/gestionCarte')}>
-              <Link href="/gestionCarte" onClick={handleLinkClick}>
-                Modifications cartes
-              </Link>
-            </div>
+
 
             <div className={isActive('/tresorerie')}>
               <Link href="/tresorerie" onClick={handleLinkClick}>

@@ -160,10 +160,39 @@ def getMenu():
         
         keyId += 1
     
-
-getViandes()
+    
+# def changeIDUser():
+#     collection = db.comptes
+    
+#     # for x in collection.find():
+        
+#     for x in collection.find():
+    
+#             # print(x)
+#             # changer le idCompte pour qu'il soit égal a numCompte
+#             db.comptes.update_one(
+#                 {"_id": x["_id"]},
+#                 {"$set": {"idCompte": x["numCompte"]}}
+#             )
+    
+    
+def removeidCompte():
+    collection = db.comptes
+    
+    for x in collection.find():
+    
+            # print(x)
+            # changer le idCompte pour qu'il soit égal a numCompte
+            db.comptes.update_one(
+                {"_id": x["_id"]},
+                {"$unset": {"idCompte": ""}}
+            )
+    
+# getViandes()
 # getIngredients()
 # getSnacks()
 # getBoissons()
 # getPlats()
 # getMenu()
+# changeIDUser()
+removeidCompte()
