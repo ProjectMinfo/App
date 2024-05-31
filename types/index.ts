@@ -91,7 +91,6 @@ export interface Commandes {
 
 
 export interface Comptes {
-  idCompte: number;
   acces: number;
   email: string;
   mdp: string;
@@ -136,8 +135,7 @@ export interface Nettoyages {
 export interface NewCommandes {
   id : number;
   contenu: string;
-  idClient: number;
-  idServeur: number;
+  numCompte: number;
   date: {
     $date: string;
   };

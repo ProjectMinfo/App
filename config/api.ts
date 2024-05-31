@@ -187,7 +187,7 @@ export const postEditAchat = async (achat: any) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error posting viandes:', error);
+    console.error('Error posting achats:', error);
     throw error;
   }
 };
@@ -365,11 +365,32 @@ export const postTemperature= async (data :any)=>{
   }
 }
 
+// Fonction pour mettre à jour une commande par son ID
 export const postCommande = async (data: any) => {
   const token = 'DEV_TOKEN'; // Add your token here
 
   try {
-    const response = await api.post('/commandes', JSON.stringify(data), {
+    console.log('data', data);
+    const response = await api.post(`/commandes`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error posting commande:', error);
+    throw error;
+  }
+};
+
+// Fonction pour créer un nouveau compte
+export const postCreateCompte = async (data: any) => {
+  const token = 'DEV_TOKEN'; // Add your token here
+
+  try {
+    const response = await api.post('/user', JSON.stringify(data), {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
@@ -377,7 +398,24 @@ export const postCommande = async (data: any) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error posting commande:', error);
+    console.error('Error creating compte:', error);
     throw error;
   }
 }
+
+
+// Fonction pour envoyer un e-mail de vérification
+export const sendVerificationEmail = async (email: string) => {
+  try {
+    const response = await api.post('/send-verification-email', JSON.stringify({ email }), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error sending verification email:', error);
+    throw error;
+  }
+};

@@ -1,24 +1,12 @@
 'use client';
-import React, { Key, useState, useEffect } from "react";
-import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input, User } from "@nextui-org/react";
+import React, { useState, useEffect } from "react";
+import { Chip, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
 import { getComptes, postEditCompte } from "@/config/api";
-import { EditIcon } from "../../public/EditIcon.jsx";
+import { EditIcon } from "@/public/EditIcon.jsx";
 import EditAccountModal from "@/components/EditAccountModal";
+import { Comptes } from "@/types/index.js";
 
-// Define types for users
-type User = {
-  acces: number;
-  email: string;
-  idCompte: number;
-  mdp: string;
-  montant: number;
-  nom: string;
-  numCompte: number;
-  prenom: string;
-  promo: number;
-  resetToken: string;
-  tokenExpiration: string;
-};
+
 
 type ColumnKeys = 'numCompte' | 'nom' | 'prenom' | 'montant' | 'acces' | 'modifier';
 
@@ -31,7 +19,7 @@ const columns: { name: string, uid: ColumnKeys }[] = [
   { name: "MODIFIER", uid: "modifier" }
 ];
 
-function accessColorMap(user: User) {
+function accessColorMap(user: Comptes) {
   switch (user.acces) {
     case 0:
       return "success"; // Affiche les clients en vert
@@ -54,20 +42,20 @@ function colorSolde(solde: number) {
 export default function GestionComptePage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [comptes, setComptes] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<Comptes | null>(null);
+  const [comptes, setComptes] = useState<Comptes[]>([]);
   const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
 
   useEffect(() => {
     async function fetchComptes() {
       const fetchedComptes = await getComptes();
-      fetchedComptes.sort((a: User, b: User) => a.numCompte - b.numCompte); // Trie par ordre de numero de compte
+      fetchedComptes.sort((a: Comptes, b: Comptes) => a.numCompte - b.numCompte); // Trie par ordre de numero de compte
       setComptes(fetchedComptes);
     }
     fetchComptes();
   }, []);
 
-  const onEditOpen = (user: User) => {
+  const onEditOpen = (user: Comptes) => {
     setCurrentUser(user);
     setIsModalOpen(true);
   };
@@ -81,7 +69,7 @@ export default function GestionComptePage() {
     // Modification sur l'utilisateur
     if (currentUser && comptes) {
       const editedListeUtilisateurs = comptes.map((compte) =>
-        compte.idCompte === currentUser.idCompte ? { ...compte, nom, prenom, montant, acces } : compte
+        compte.numCompte === currentUser.numCompte ? { ...compte, nom, prenom, montant, acces } : compte
       );
       setComptes(editedListeUtilisateurs);
 
@@ -99,8 +87,8 @@ export default function GestionComptePage() {
     onEditClose();
   };
 
-  const renderCell = React.useCallback((compte: User, columnKey: ColumnKeys) => {
-    const cellValue = compte[columnKey as keyof User];
+  const renderCell = React.useCallback((compte: Comptes, columnKey: ColumnKeys) => {
+    const cellValue = compte[columnKey as keyof Comptes];
 
     switch (columnKey) {
       case "numCompte":

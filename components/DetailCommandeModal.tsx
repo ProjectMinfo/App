@@ -2,17 +2,25 @@ import React, { useEffect, useState } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import { Ingredients, Plats, Viandes } from "@/types";
 
+type NewPlats = {
+  id: number;
+  type: "plat";
+  plat: Plats;
+  menuId?: number;
+};
 interface DetailCommandeModalProps {
   isOpen: boolean;
-  onClose: (data: {viandes: Viandes[], ingredients: Ingredients[], plat : Plats}) => any;
+  onClose: (data: {viandes: Viandes[], ingredients: Ingredients[], plat : NewPlats}) => any;
   options: {
     ingredients: Ingredients[];
     viandes: Viandes[];
+    currentPlat: NewPlats;
   };
-  currentPlat: Plats;  // Add this line
+    // Add this line
 };
 
-export default function DetailCommandeModal({ isOpen, onClose, options, currentPlat }: DetailCommandeModalProps) {
+
+export default function DetailCommandeModal({ isOpen, onClose, options }: DetailCommandeModalProps) {
   const [selectedViande, setSelectedViande] = useState<Viandes[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<Ingredients[]>([]);
   const [step, setStep] = useState(1);
@@ -49,7 +57,7 @@ export default function DetailCommandeModal({ isOpen, onClose, options, currentP
     if (step === 1 && selectedViande.length > 0) {
       setStep(2);
     } else if (step === 2) {
-      const result = { viandes: selectedViande, ingredients: selectedIngredients, plat : currentPlat};
+      const result = { viandes: selectedViande, ingredients: selectedIngredients, plat : options.currentPlat};
       reset();
       onClose(result);
     }
@@ -57,7 +65,7 @@ export default function DetailCommandeModal({ isOpen, onClose, options, currentP
 
   const handleClose = () => {
     reset();
-    onClose({ viandes: [], ingredients: [] , plat : currentPlat});
+    onClose({ viandes: [], ingredients: [] , plat : options.currentPlat});
   };
 
   return (
