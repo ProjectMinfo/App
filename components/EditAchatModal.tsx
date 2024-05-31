@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Radio, RadioGroup, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
+import { CalendarDate, DateInput, Radio, RadioGroup, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
+import moment from 'moment';
+import { parseDate } from "@internationalized/date";
+
 
 interface EditAchatModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (
         nomArticle: string,
-        // categorie: number,
-        // numLot: string,
-        // nbPortions: number,
-        // dateOuverture: Date,
-        // dateFermeture: Date,
-        // dlc: Date,
-        // etat: number
+        categorie: number,
+        numLot: string,
+        nbPortions: number,
+        dateOuverture: Date,
+        dateFermeture: Date,
+        dlc: Date,
+        etat: number
     ) => void;
     currentNomArticle: string;
     currentCategorie: number;
@@ -23,6 +26,14 @@ interface EditAchatModalProps {
     currentDlc: Date;
     currentEtat: number;
 }
+
+const formatDate = (date: any) => {
+    if (date && date.$date) {
+        const timestamp = parseInt(date.$date.$numberLong); // récupère le timestamp de la date
+        const dateObj = new Date(timestamp); // crée une nouvelle date avec ce timestamp
+        return (moment(dateObj)).format('YYYY-MM-DD')
+    }
+};
 
 export default function EditAccountModal({
     isOpen,
@@ -45,6 +56,7 @@ export default function EditAccountModal({
     const [dateOuverture, setDateOuverture] = useState<Date>(currentDateOuverture);
     const [dateFermeture, setDateFermeture] = useState<Date>(currentdateFermeture);
     const [dlc, setDlc] = useState<Date>(currentDlc);
+    const [formatDlc, setFormatDlc] = useState(parseDate("2024-04-04"));
     const [etat, setEtat] = useState<number>(currentEtat);
 
     // Initialize variables with the values from the database on startup
@@ -56,82 +68,87 @@ export default function EditAccountModal({
         setDateOuverture(currentDateOuverture);
         setDateFermeture(currentdateFermeture);
         setDlc(currentDlc);
+        setFormatDlc(parseDate(formatDate(dlc)));
         setEtat(currentEtat);
     }, [currentNomArticle, currentCategorie, currentNumLot, currentNbPortions, currentDateOuverture, currentdateFermeture, currentDlc, currentEtat]);
 
-    const handleNomArticleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setNomArticle(event.target.value);
+    const handleNumLotChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNumLot(event.target.value);
     };
 
+    const handleNbPortionsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNbPortions(Number(event.target.value));
+    };
+
+    const handleDlcChange = (date: CalendarDate) => {
+        setFormatDlc(date); // Ensure date is not null
+    };
+
+    const isEtatSelected = (accessSelected: string) => {
+        setEtat(Number(accessSelected)); // Update the selected access
+    }
+
     const handleSubmit = () => {
-        onSubmit(nomArticle);
+        onSubmit(nomArticle, categorie, numLot, nbPortions, dateOuverture, dateFermeture, dlc, etat);
         onClose();
-      };
+    };
 
 
     return (
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="top-center">
             <ModalContent>
                 <ModalHeader className="flex flex-col gap-1">
-                    Modifier l'utilisateur
+                    Modifier l'achat
                 </ModalHeader>
 
                 <ModalBody>
-                    Modifier le nom
+                    {categorie === 0 ? "Ingrédient" : categorie === 1 ? "Viande" : categorie === 2 ? "Boisson" : categorie === 3 ? "Snack" : "Catégorie inconnue"} : {nomArticle}
                     <Input
                         autoFocus
-                        label="Nom"
+                        label="Numéro de lot"
                         type="string"
-                        value={nomArticle}
-                        onChange={handleNomArticleChange}
-                        variant="bordered"
-                    />
-                </ModalBody>
-
-                {/* <ModalBody>
-                    Modifier le prénom
-                    <Input
-                        autoFocus
-                        label="Prénom"
-                        type="string"
-                        value={String(categorie)}
-                        onChange={handleFirstnameChange}
-                        variant="bordered"
-                    />
-                </ModalBody>
-
-                <ModalBody>
-                    Modifier le solde
-                    <Input
-                        autoFocus
-                        label="Solde"
-                        type="number"
                         value={numLot}
-                        onChange={handleSoldeChange}
+                        onChange={handleNumLotChange}
                         variant="bordered"
                     />
-                </ModalBody> */}
 
-                {/* <ModalBody>
-                    Modifier l'accès
+                    <Input
+                        autoFocus
+                        label="Quantité de l'article"
+                        type="number"
+                        value={String(nbPortions)}
+                        onChange={handleNbPortionsChange}
+                        variant="bordered"
+                    />
+
                     <RadioGroup
                         isRequired
-                        isInvalid={isInvalidAccess}
-                        defaultValue={String(nbPortions)}
-                        onValueChange={isAccessSelected}
+                        defaultValue={String(etat)}
+                        onValueChange={isEtatSelected}
                     >
-                        <Radio value="0"> User </Radio>
-                        <Radio value="1"> Serveur </Radio>
-                        <Radio value="2"> Admin </Radio>
+                        <div className="flex gap-4">
+                            <Radio value="0"> Non entamé </Radio>
+                            <Radio value="1"> Ouvert </Radio>
+                            <Radio value="2"> Consommé </Radio>
+                            <Radio value="3"> Périmé </Radio>
+                        </div>
                     </RadioGroup>
-                </ModalBody> */}
+
+                    <DateInput
+                        label="Date limite de consommation :"
+                        value={formatDlc}
+                        onChange={handleDlcChange}
+                    />
+
+                </ModalBody>
 
                 <ModalFooter>
                     <Button color="danger" variant="flat" onPress={onClose}>
                         Annuler
                     </Button>
 
-                    <Button color="primary" onPress={handleSubmit} /*isDisabled={isInvalidAccess}*/>
+                    <Button color="primary" onPress={handleSubmit}
+                    >
                         Valider
                     </Button>
                 </ModalFooter>

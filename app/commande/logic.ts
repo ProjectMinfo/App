@@ -71,11 +71,11 @@ function aggregateQuantities(repas: NewRepas, allViandes : Viandes[]) {
     });
 
     repas.boisson.forEach((boisson) => {
-        if (listBoissons.some(currentBoisson => currentBoisson[0] === boisson.id)){
-            listBoissons.find(currentBoisson => currentBoisson[0] === boisson.id)[1] += 1;
+        if (listBoissons.some(currentBoisson => currentBoisson[0] === boisson.boisson.id)){
+            listBoissons.find(currentBoisson => currentBoisson[0] === boisson.boisson.id)[1] += 1;
         }
         else {
-            listBoissons.push([boisson.id, 1]);
+            listBoissons.push([boisson.boisson.id, 1]);
         }
         
     });
@@ -85,7 +85,7 @@ function aggregateQuantities(repas: NewRepas, allViandes : Viandes[]) {
             listSnacks.find(currentSnack => currentSnack[0] === snack.id)[1] += 1;
         }
         else {
-            listSnacks.push([snack.id, 1]);
+            listSnacks.push([snack.snack.id, 1]);
         }
     });
     
@@ -109,20 +109,23 @@ function getAllNom(repas: NewRepas, allViandes : Viandes[]) {
         currentPlat.push(" : ");
         plat.plat.ingredients.forEach((ingredient) => {
             currentPlat.push(ingredient.nom);
+            currentPlat.push(", ");
         });
+        currentPlat.push("//");
+        listAllNom.push(currentPlat.join(""));
     });
 
-    allViandes.forEach((viande) => {
-        listAllNom.push(viande.nom);
-    });
+    // allViandes.forEach((viande) => {
+    //     listAllNom.push(viande.nom);
+    // });
 
-    repas.boisson.forEach((boisson) => {
-        listAllNom.push(boisson.boisson.nom);
-    });
+    // repas.boisson.forEach((boisson) => {
+    //     listAllNom.push(boisson.boisson.nom);
+    // });
 
-    repas.snack.forEach((snack) => {
-        listAllNom.push(snack.snack.nom);
-    });
+    // repas.snack.forEach((snack) => {
+    //     listAllNom.push(snack.snack.nom);
+    // });
 
     return listAllNom.join(", ");
 }
@@ -161,8 +164,7 @@ export function prepareCommande(repas: NewRepas, allViandes : Viandes[]) {
     const commande : NewCommandes = {
         "id" : -1,
         "contenu" : dataContenu,
-        "idClient" : 1,
-        "idServeur" : 1,
+        "numCompte" : 587,
         "date" : {"$date" : inputDate},
         "distribuee" : false,
         "prix" : dataPrix,
@@ -172,10 +174,10 @@ export function prepareCommande(repas: NewRepas, allViandes : Viandes[]) {
         "viandes" : dataPrepared.viandes,
         "boissons" : dataPrepared.boissons,
         "snacks" : dataPrepared.snacks,
-        "payee" : false
+        "payee" : true
     };
 
     console.log(commande);
 
-    postCommande(commande);
+    // postCommande(commande);
 }

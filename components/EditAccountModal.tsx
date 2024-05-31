@@ -24,7 +24,6 @@ export default function EditAccountModal({
   const [firstname, setFirstname] = useState<string>(currentFirstname);
   const [solde, setSolde] = useState<number>(currentSolde);
   const [access, setAccess] = useState<number>(currentAccess);
-  const [isInvalidAccess, setIsInvalidAccess] = useState<boolean>(false);
 
   // Initialize variables with the values from the database on startup
   useEffect(() => {
@@ -47,10 +46,7 @@ export default function EditAccountModal({
   }
 
   const isAccessSelected = (accessSelected: string) => {
-    setIsInvalidAccess(accessSelected.length !== 1); // If more than one access is selected, invalidate
-    if (accessSelected.length === 1) {
-      setAccess(Number(accessSelected[0])); // Update the selected access
-    }
+      setAccess(Number(accessSelected)); // Update the selected access
   }
 
   const handleSubmit = () => {
@@ -105,7 +101,6 @@ export default function EditAccountModal({
           Modifier l'accès
           <RadioGroup
             isRequired
-            isInvalid={isInvalidAccess}
             defaultValue={String(currentAccess)}
             onValueChange={isAccessSelected}
           >
@@ -120,7 +115,7 @@ export default function EditAccountModal({
             Annuler
           </Button>
 
-          <Button color="primary" onPress={handleSubmit} isDisabled={isInvalidAccess}>
+          <Button color="primary" onPress={handleSubmit}>
             Valider
           </Button>
         </ModalFooter>
