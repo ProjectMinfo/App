@@ -322,4 +322,36 @@ export const postCommande = async (data: any) => {
   }
 };
 
+// Fonction pour créer un nouveau compte
+export const postCreateCompte = async (data: any) => {
+  const token = 'DEV_TOKEN'; // Add your token here
 
+  try {
+    const response = await api.post('/user', JSON.stringify(data), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating compte:', error);
+    throw error;
+  }
+};
+
+// Fonction pour envoyer un e-mail de vérification
+export const sendVerificationEmail = async (email: string) => {
+  try {
+    const response = await api.post('/send-verification-email', JSON.stringify({ email }), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error sending verification email:', error);
+    throw error;
+  }
+};
