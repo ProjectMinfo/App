@@ -105,23 +105,6 @@ export const getCommande = async () => {
   }
 };
 
-// Fonction pour mettre à jour une commande par son ID
-export const postCommandeById = async (id: number, data: any) => {
-  const token = 'DEV_TOKEN'; // Add your token here
-
-  try {
-    const response = await api.post(`/commandes/${id}`, JSON.stringify(data), {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error posting commande:', error);
-    throw error;
-  }
-};
 
 
 
@@ -319,21 +302,24 @@ export const deleteBoissons = async (id: number) => {
   }
 };
 
-
-
+// Fonction pour mettre à jour une commande par son ID
 export const postCommande = async (data: any) => {
   const token = 'DEV_TOKEN'; // Add your token here
 
   try {
-    const response = await api.post('/commandes', JSON.stringify(data), {
+    console.log('data', data);
+    const response = await api.post(`/commandes`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
+
     return response.data;
   } catch (error) {
     console.error('Error posting commande:', error);
     throw error;
   }
-}
+};
+
+

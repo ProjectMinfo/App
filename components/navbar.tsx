@@ -105,7 +105,7 @@ const Navbarr = () => {
                       <Link href="/gestionComptes" onClick={handleLinkClick}>Gestion des comptes</Link>
                     </div>
                     <div className="">
-                      <Link href="/gestionTemp" onClick={handleLinkClick}>Gestion des températures</Link>
+                      <Link href="/gestionTemps" onClick={handleLinkClick}>Gestion des températures</Link>
                     </div>
                   </div>
                 </div>
