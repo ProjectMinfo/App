@@ -187,6 +187,34 @@ def removeidCompte():
                 {"_id": x["_id"]},
                 {"$unset": {"idCompte": ""}}
             )
+            
+
+# suppr idServeur de CommandeNew     idClient to numCompte
+def removeidServeur():
+    collection = db.commandesNew
+    
+    for x in collection.find():
+    
+            # print(x)
+            # changer le idCompte pour qu'il soit égal a numCompte
+            db.commandesNew.update_one(
+                {"_id": x["_id"]},
+                {"$unset": {"idServeur": ""}}
+            )
+            
+#  renommer idClient to numCompte
+def renameidClient():
+    collection = db.commandesNew
+    
+    for x in collection.find():
+    
+            # print(x)
+            # changer le idCompte pour qu'il soit égal a numCompte
+            db.commandesNew.update_one(
+                {"_id": x["_id"]},
+                {"$rename": {"idClient": "numCompte"}}
+            )
+            
     
 # getViandes()
 # getIngredients()
@@ -195,4 +223,7 @@ def removeidCompte():
 # getPlats()
 # getMenu()
 # changeIDUser()
-removeidCompte()
+# removeidCompte()
+# removeidServeur()
+# renameidClient()
+

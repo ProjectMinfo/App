@@ -135,8 +135,7 @@ export interface Nettoyages {
 export interface NewCommandes {
   id : number;
   contenu: string;
-  idClient: number;
-  idServeur: number;
+  numCompte: number;
   date: {
     $date: string;
   };

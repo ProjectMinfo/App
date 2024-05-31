@@ -164,8 +164,7 @@ export function prepareCommande(repas: NewRepas, allViandes : Viandes[]) {
     const commande : NewCommandes = {
         "id" : -1,
         "contenu" : dataContenu,
-        "idClient" : 587,
-        "idServeur" : 1,
+        "numCompte" : 587,
         "date" : {"$date" : inputDate},
         "distribuee" : false,
         "prix" : dataPrix,

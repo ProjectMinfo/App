@@ -2,43 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { getCommande, getComptes, postCommande } from "@/config/api"; // Assurez-vous que le chemin est correct pour vos appels API
 
-interface Commandes {
-  id: number;
-  contenu: string;
-  idClient: number;
-  idServeur: number;
-  date: {
-    $date: string;
-  };
-  distribuee: boolean;
-  prix: number;
-  typePaiement: number;
-  commentaire: string;
-  ingredients: [number, number];
-  viandes: [number, number];
-  boissons: [number, number];
-  snacks: [number, number];
-  payee: boolean;
-  color: string;
-  nom: string; // Ajout de la propriété nom
-}
+import { NewCommandes, Comptes } from "@/types"; // Assurez-vous que le chemin est correct pour vos types
 
-interface Comptes {
-  idCompte: number;
-  acces: number;
-  email: string;
-  mdp: string;
-  montant: number;
-  nom: string;
-  numCompte: number;
-  prenom: string;
-  promo: number;
-  resetToken: string;
-  tokenExpiration: string;
-}
+type ColoredCommande = NewCommandes & { color: string };
 
 const CommandesCuisine = () => {
-  const [commandes, setCommandes] = useState<Commandes[]>([]);
+  const [ColoredCommande, setCommandes] = useState<ColoredCommande[]>([]);
   const [clients, setClients] = useState<Comptes[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -50,18 +19,18 @@ const CommandesCuisine = () => {
         const fetchCommandes = await getCommande();
         const comptes = await getComptes();
 
-        const resultCommandes : Commandes[] = fetchCommandes
-          .filter((commande: Commandes) => commande.payee && commande.contenu)
-          .map((commande: Commandes) => ({
+        const resultCommandes : ColoredCommande[] = fetchCommandes
+          .filter((commande: ColoredCommande) => commande.payee && commande.contenu)
+          .map((commande: ColoredCommande) => ({
             ...commande,
             color: generateRandomColor(),
-            nom: comptes.find((client: { idCompte: number; }) => client.idCompte === commande.idClient)?.nom || "Inconnu",
+            nom: comptes.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.nom || "Inconnu",
           }));
 
         setCommandes(resultCommandes);
         setClients(comptes);
       } catch (error) {
-        console.error("Erreur lors de la récupération des commandes ou des comptes :", error);
+        console.error("Erreur lors de la récupération des ColoredCommande ou des comptes :", error);
       } finally {
         setLoading(false);
       }
@@ -96,7 +65,7 @@ const CommandesCuisine = () => {
   // Fonction pour valider un élément d'une commande
   const handleValiderElement = async (id: number, type: 'chaud' | 'froid', produit: string) => {
     try {
-      const updatedCommandes = commandes.map(commande => {
+      const updatedCommandes = ColoredCommande.map(commande => {
         if (commande.id === id) {
           const updatedContenu = commande.contenu.split('//').map(part => {
             if (part.includes(produit)) {
@@ -107,7 +76,7 @@ const CommandesCuisine = () => {
 
           const isDistribuee = updatedContenu === '';
 
-          const newCommande : Commandes= {...commande};
+          const newCommande : ColoredCommande= {...commande};
           newCommande.contenu = updatedContenu;
           newCommande.distribuee = isDistribuee;
           postCommande(newCommande);
@@ -115,7 +84,7 @@ const CommandesCuisine = () => {
           return { ...commande, contenu: updatedContenu, distribuee: isDistribuee };
         }
         return commande;
-      }).filter(commande => !commande.distribuee); // Filtrer les commandes distribuées
+      }).filter(commande => !commande.distribuee); // Filtrer les ColoredCommande distribuées
 
       setCommandes(updatedCommandes);
     } catch (error) {
@@ -159,11 +128,11 @@ const CommandesCuisine = () => {
         <div className="w-1/2 p-2 border-r border-gray-300 overflow-hidden">
           <h2 className="text-2xl text-blue-800 font-bold mb-4">Sandwichs et Hot-Dogs</h2>
           <div className="grid grid-cols-1 gap-2">
-            {commandes.filter(commande => commande.contenu.includes('Sandwich') || commande.contenu.includes('Hot-Dog')).slice(0, 10).map((commande, index) => {
+            {ColoredCommande.filter(commande => commande.contenu.includes('Sandwich') || commande.contenu.includes('Hot-Dog')).slice(0, 10).map((commande, index) => {
               const produitsFroids = commande.contenu.split('//').filter(part => part.includes('Sandwich') || part.includes('Hot-Dog'));
               return produitsFroids.map((produit, idx) => (
                 <div key={`${index}-${idx}`} className="p-2 rounded shadow-lg bg-white bg-opacity-80 text-black" style={{ backgroundColor: commande.color, height: '80px', width: '95%' }}>
-                  <h3 className="text-md font-semibold truncate">{commande.nom}</h3>
+                  <h3 className="text-md font-semibold truncate">{commande.numCompte}</h3>
                   <p className="text-sm mt-1 truncate">{produit}</p>
                   <p className="text-xs text-black mt-1 truncate">{commande.commentaire}</p>
                   <button
@@ -180,11 +149,11 @@ const CommandesCuisine = () => {
         <div className="w-1/2 p-2 overflow-hidden">
           <h2 className="text-2xl text-red-800 font-bold mb-4">Paninis et Croque-Monsieur</h2>
           <div className="grid grid-cols-1 gap-2">
-            {commandes.filter(commande => commande.contenu.includes('Panini') || commande.contenu.includes('Croque-Monsieur')).slice(0, 10).map((commande, index) => {
+            {ColoredCommande.filter(commande => commande.contenu.includes('Panini') || commande.contenu.includes('Croque-Monsieur')).slice(0, 10).map((commande, index) => {
               const produitsChauds = commande.contenu.split('//').filter(part => part.includes('Panini') || part.includes('Croque-Monsieur'));
               return produitsChauds.map((produit, idx) => (
                 <div key={`${index}-${idx}`} className="p-2 rounded shadow-lg bg-white bg-opacity-80 text-black" style={{ backgroundColor: commande.color, height: '80px', width: '95%' }}>
-                  <h3 className="text-md font-semibold truncate">{commande.nom}</h3>
+                  <h3 className="text-md font-semibold truncate">{commande.numCompte}</h3>
                   <p className="text-sm mt-1 truncate">{produit}</p>
                   <p className="text-xs text-black mt-1 truncate">{commande.commentaire}</p>
                   <button
