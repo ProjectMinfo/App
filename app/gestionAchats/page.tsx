@@ -23,13 +23,13 @@ type Achat = {
 type ColumnKeys = 'nomArticle' | 'categorie' | 'numLot' | 'nbPortions' | 'dateOuverture' | 'dateFermeture' | 'dlc' | 'etat' | 'action';
 
 const columns: { name: string, uid: ColumnKeys }[] = [
-  { name: "NOM", uid: "nomArticle" },
+  { name: "ARTICLE", uid: "nomArticle" },
   { name: "CATEGORIE", uid: "categorie" },
   { name: "NUMERO DE LOT", uid: "numLot" },
   { name: "QUANTITE", uid: "nbPortions" },
-  { name: "DATE D'OUVERTURE", uid: "dateOuverture" },
-  { name: "DATE DE FERMETURE", uid: "dateFermeture" },
-  { name: "DATE LIMITE DE CONSOMMATION", uid: "dlc" },
+  { name: "OUVERTURE", uid: "dateOuverture" },
+  { name: "FIN DE CONSO", uid: "dateFermeture" },
+  { name: "DATE LIMITE", uid: "dlc" },
   { name: "ETAT", uid: "etat" },
   { name: "ACTION", uid: "action" }
 ];
@@ -190,8 +190,8 @@ export default function GestionAchatsPage() {
       case "dlc":
         return (
           <div className="flex flex-col">
-            <p className={`text-bold text-sm capitalize ${isDateExpired(achat) === 1 ? "text-danger"
-            : isDateExpired(achat) === 2 ? "text-warning"
+            <p className={`text-bold text-sm capitalize ${ achat.etat !== 2 && isDateExpired(achat) === 1 ? "text-danger" // Si l'achat perime le lendemain (et qu'il n'a pas été consommé)
+            : achat.etat !== 2 && isDateExpired(achat) === 2 ? "text-warning" // Si l'achat est perimé (et qu'il n'a pas déjà été consommé)
             : "default"}`}>
               {formatDate(cellValue)}
             </p>
@@ -251,6 +251,7 @@ export default function GestionAchatsPage() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
+
       <Checkbox onValueChange={setIsAfficherLesAchatsConsommes}>Afficher les articles consommé</Checkbox>
 
       <Table aria-label="Liste des achats">

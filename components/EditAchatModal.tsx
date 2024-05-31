@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { DateInput, Radio, RadioGroup, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
+import { CalendarDate, DateInput, Radio, RadioGroup, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
+import moment from 'moment';
+import { parseDate } from "@internationalized/date";
+
 
 interface EditAchatModalProps {
     isOpen: boolean;
@@ -26,14 +29,11 @@ interface EditAchatModalProps {
 
 const formatDate = (date: any) => {
     if (date && date.$date) {
-      const timestamp = parseInt(date.$date.$numberLong); // récupère le timestamp de la date
-      const dateObj = new Date(timestamp); // crée une nouvelle date avec ce timestamp
-      return dateObj; // affiche la date au format string
+        const timestamp = parseInt(date.$date.$numberLong); // récupère le timestamp de la date
+        const dateObj = new Date(timestamp); // crée une nouvelle date avec ce timestamp
+        return (moment(dateObj)).format('YYYY-MM-DD')
     }
-    else {
-        console.log("merde")
-    }
-  };
+};
 
 export default function EditAccountModal({
     isOpen,
@@ -56,6 +56,7 @@ export default function EditAccountModal({
     const [dateOuverture, setDateOuverture] = useState<Date>(currentDateOuverture);
     const [dateFermeture, setDateFermeture] = useState<Date>(currentdateFermeture);
     const [dlc, setDlc] = useState<Date>(currentDlc);
+    const [formatDlc, setFormatDlc] = useState(parseDate("2024-04-04"));
     const [etat, setEtat] = useState<number>(currentEtat);
 
     // Initialize variables with the values from the database on startup
@@ -67,6 +68,7 @@ export default function EditAccountModal({
         setDateOuverture(currentDateOuverture);
         setDateFermeture(currentdateFermeture);
         setDlc(currentDlc);
+        setFormatDlc(parseDate(formatDate(dlc)));
         setEtat(currentEtat);
     }, [currentNomArticle, currentCategorie, currentNumLot, currentNbPortions, currentDateOuverture, currentdateFermeture, currentDlc, currentEtat]);
 
@@ -78,16 +80,8 @@ export default function EditAccountModal({
         setNbPortions(Number(event.target.value));
     };
 
-    // const handleDateOuvertureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setDateOuverture(event.target.value);
-    // };
-
-    // const handleDateFermetureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setDateFermeture(event.target.value);
-    // };
-
-    const handleDlcChange = (date: Date | null) => {
-        setDlc(date || new Date()); // Ensure date is not null
+    const handleDlcChange = (date: CalendarDate) => {
+        setFormatDlc(date); // Ensure date is not null
     };
 
     const isEtatSelected = (accessSelected: string) => {
@@ -98,6 +92,7 @@ export default function EditAccountModal({
         onSubmit(nomArticle, categorie, numLot, nbPortions, dateOuverture, dateFermeture, dlc, etat);
         onClose();
     };
+
 
     return (
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="top-center">
@@ -139,14 +134,12 @@ export default function EditAccountModal({
                         </div>
                     </RadioGroup>
 
-                    <div className="flex flex-col">
-                        <DateInput
+                    <DateInput
                         label="Date limite de consommation :"
-                        selectedDate={formatDate(dlc)}
+                        value={formatDlc}
                         onChange={handleDlcChange}
-                        dateFormat="dd/MM/yyyy"
-                        />
-                    </div>
+                    />
+
                 </ModalBody>
 
                 <ModalFooter>
