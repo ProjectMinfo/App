@@ -365,6 +365,16 @@ export const postTemperature= async (data :any)=>{
   }
 }
 
+export const deleteTemperature = async (id: number) => {
+  try {
+    const response = await api.delete(`/temperatures/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting temperature:', error);
+    throw error;
+  }
+};
+
 // Fonction pour mettre à jour une commande par son ID
 export const postCommande = async (data: any) => {
   const token = 'DEV_TOKEN'; // Add your token here
