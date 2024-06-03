@@ -82,7 +82,7 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
             </ModalHeader>
             <ModalBody className="grid grid-cols-3 gap-2">
               {step === 1
-                ? options.viandes.map((option, index) => (
+                ? options.viandes.filter((option) => option.dispo).map((option, index) => (
                     <Button
                       color="primary"
                       variant={selectedViande.includes(option) ? "flat" : "ghost"}
@@ -92,7 +92,7 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
                       {option.nom}
                     </Button>
                   ))
-                : options.ingredients.map((option, index) => (
+                : options.ingredients.filter((option) => option.dispo).map((option, index) => (
                     <Button
                       color="primary"
                       variant={selectedIngredients.includes(option) ? "flat" : "ghost"}

@@ -429,3 +429,53 @@ export const sendVerificationEmail = async (email: string) => {
     throw error;
   }
 };
+
+
+export const postMenus = async (data: any) => {
+  try {
+    const response = await api.post('/menus', data, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error posting menus:', error);
+    throw error;
+  }
+};
+
+export const postPlats = async (data: any) => {
+  try {
+    const response = await api.post('/plats', data, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error posting plats:', error);
+    throw error;
+  }
+};
+
+export const deleteMenus = async (id: number) => {
+  try {
+    const response = await api.delete(`/menus/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting menus:', error);
+    throw error;
+  }
+};
+
+export const deletePlats = async (id: number) => {
+  try {
+    const response = await api.delete(`/plats/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting plats:', error);
+    throw error;
+  }
+};
+

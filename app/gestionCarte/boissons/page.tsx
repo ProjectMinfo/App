@@ -35,7 +35,7 @@ export default function GestionBoissons() {
 
       <div className="grid grid-cols-4 gap-x-4">
         {filteredBoissons.map((item: Boissons) => (
-          <ModifyCard key={item.id} item={item} />
+          <ModifyCard key={item.id} item={item} type="boisson"/>
         ))}
       </div>
     </div>

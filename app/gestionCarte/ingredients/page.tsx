@@ -1,25 +1,25 @@
 'use client';
 import ModifyCard from "@/components/modifyCard";
-import { getSnacks } from "@/config/api";
+import { getIngredients } from "@/config/api";
 import { useEffect, useState } from "react";
 
-import { Snacks } from '@/types/index';
+import { Ingredients } from '@/types/index';
 
-export default function GestionSnacks() {
+export default function GestionIngredients() {
 
-  const [snacks, setSnacks] = useState([] as Snacks[]);
+  const [ingredients, setIngredients] = useState([] as Ingredients[]);
   const [search, setSearch] = useState(""); // État pour la recherche
 
   useEffect(() => {
-    async function fetchSnacks() {
-      const fetchedSnacks = await getSnacks();
-      setSnacks(fetchedSnacks);
+    async function fetchIngredients() {
+      const fetchedIngredients = await getIngredients();
+      setIngredients(fetchedIngredients);
     }
-    fetchSnacks();
+    fetchIngredients();
   }, []);
 
-  // Filtrer les snacks en fonction de la recherche
-  const filteredSnacks = snacks.filter((snack) =>
+  // Filtrer les ingredients en fonction de la recherche
+  const filteredIngredients = ingredients.filter((snack) =>
     snack.nom.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -35,8 +35,8 @@ export default function GestionSnacks() {
       />
 
       <div className="grid grid-cols-4 gap-x-4">
-        {filteredSnacks.map((item: Snacks) => (
-          <ModifyCard key={item.id} item={item} type="snack"/>
+        {filteredIngredients.map((item: Ingredients) => (
+          <ModifyCard key={item.id} item={item} type="ingredient"/>
         ))}
       </div>
     </div>

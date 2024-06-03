@@ -215,6 +215,47 @@ def renameidClient():
                 {"$rename": {"idClient": "numCompte"}}
             )
             
+            
+def changeIDuserInPlanning():
+    collection = db.planning
+    
+    for x in collection.find():
+    
+            # print(x)
+            # changer le idCompte pour qu'il soit égal a numCompte
+            db.planning.update_one(
+                {"_id": x["_id"]},
+                {"$rename": {"idUser": "numCompte"}}
+            )
+
+def removeposteInPlanning():
+    collection = db.planning
+    
+    for x in collection.find():
+    
+            # print(x)
+            # changer le idCompte pour qu'il soit égal a numCompte
+            db.planning.update_one(
+                {"_id": x["_id"]},
+                {"$unset": {"poste": ""}}
+            )
+            
+def fixPriceRound():
+    collections = [db.boissons, db.snacks, db.plats, db.menus]
+    collection_names = ['boissons', 'snacks', 'plats', 'menus']
+    
+    for collection, name in zip(collections, collection_names):
+        for x in collection.find():
+            # print(x)
+            collection.update_one(
+                {"_id": x["_id"]},
+                {"$set": {
+                    "prix": round(x["prix"], 2),
+                    "prixServeur": round(x["prixServeur"], 2)
+                }}
+            )
+        print(f"{name} done")
+    
     
 # getViandes()
 # getIngredients()
@@ -226,4 +267,6 @@ def renameidClient():
 # removeidCompte()
 # removeidServeur()
 # renameidClient()
-
+# changeIDuserInPlanning()
+# removeposteInPlanning()
+# fixPriceRound()

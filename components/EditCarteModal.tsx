@@ -1,10 +1,10 @@
-import { use, useEffect, useState } from 'react';
-import { Button, Modal, Input, ModalHeader, ModalBody, ModalFooter, ModalContent, Switch, Select, SelectItem } from '@nextui-org/react';
-import { Menus, Boissons, Plats, Snacks, Ingredients } from '@/types/index';
+import { useEffect, useState } from 'react';
+import { Button, Modal, Input, ModalHeader, ModalBody, ModalFooter, ModalContent, Switch } from '@nextui-org/react';
+import { Menus, Boissons, Plats, Snacks, Ingredients, Viandes } from '@/types/index';
 import { TrashIcon } from '@/public/TrashIcon';
 import { getIngredients } from '@/config/api';
 
-type MenuItem = Menus | Boissons | Plats | Snacks;
+type MenuItem = Menus | Boissons | Plats | Snacks | Ingredients | Viandes;
 
 interface EditModalProps {
     item: MenuItem;
@@ -21,14 +21,12 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
     };
 
     const handleIngredientChange = (index: number, field: string, value: any) => {
-        const newIngredients = [...updatedItem.ingredients];
+        const newIngredients = [...(updatedItem as Plats).ingredients];
         newIngredients[index] = { ...newIngredients[index], [field]: value };
         setUpdatedItem((prev) => ({ ...prev, ingredients: newIngredients }));
     };
 
     const handleSave = () => {
-        console.log('updatedItem:', updatedItem);
-        
         onSave(updatedItem);
         onClose();
     };
@@ -36,9 +34,9 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
     const addIngredient = () => {
         setUpdatedItem((prev) => ({
             ...prev,
-            ingredients: [...prev.ingredients, { id: 0, qmin: 0, qmax: 0 }],
+            ingredients: [...(prev as Plats).ingredients, { ingredient: { id: 0, nom: '', dispo: true, quantite: 0, commentaire: '' }, qmin: 0, qmax: 0 }],
         }));
-    }
+    };
 
     const [listIngredients, setListIngredients] = useState<Ingredients[]>([]);
 
@@ -55,6 +53,38 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
         fetchData();
     }, []);
 
+    const CustomSelect = ({ selectedIngredient, index }: { selectedIngredient: Ingredients, index: number }) => {
+        const [showOptions, setShowOptions] = useState(false);
+
+        return (
+            <div className="relative">
+                <div
+                    className="border p-2 z-10 cursor-pointer"
+                    onClick={() => setShowOptions(!showOptions)}
+                >
+                    {selectedIngredient.nom || "Select Ingredient"}
+                </div>
+                {showOptions && (
+                    <div className="z-10 overflow-scroll">
+                        {listIngredients.filter(ingredient => ingredient.dispo).map((ingredient) => (
+                            <div
+                                key={ingredient.id}
+                                className="p-2 cursor-pointer"
+                                onClick={() => {
+                                    handleIngredientChange(index, 'ingredient', ingredient);
+                                    setShowOptions(false);
+                                }}
+                            >
+                                {ingredient.nom}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalContent>
@@ -68,24 +98,31 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
                         onChange={(e) => handleChange('nom', e.target.value)}
                     />
                     <Switch
-                        defaultSelected={updatedItem.dispo}
-                        onChange={(e) => handleChange('dispo', e.target.checked)}>
+                        defaultChecked={updatedItem.dispo}
+                        // checked={updatedItem.dispo}
+                        onChange={(e) => handleChange('dispo', e.target.checked)}
+                    >
                         Disponible
                     </Switch>
-                    <div className="flex gap-4">
-                        <Input
-                            label="Prix"
-                            type="number"
-                            value={updatedItem.prix}
-                            onChange={(e) => handleChange('prix', parseFloat(e.target.value))}
-                        />
-                        <Input
-                            label="Prix Serveur"
-                            type="number"
-                            value={updatedItem.prixServeur}
-                            onChange={(e) => handleChange('prixServeur', parseFloat(e.target.value))}
-                        />
-                    </div>
+                    
+                    {('prix' && 'prixServeur') in updatedItem && (
+                        <>
+                            <div className="flex gap-4">
+                                <Input
+                                    label="Prix"
+                                    type="number"
+                                    value={updatedItem.prix}
+                                    onChange={(e) => handleChange('prix', parseFloat(e.target.value))}
+                                />
+                                <Input
+                                    label="Prix Serveur"
+                                    type="number"
+                                    value={updatedItem.prixServeur}
+                                    onChange={(e) => handleChange('prixServeur', parseFloat(e.target.value))}
+                                />
+                            </div>
+                        </>
+                    )}
 
                     {'quantite' in updatedItem && (
                         <Input
@@ -120,22 +157,11 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
                     {'ingredients' in updatedItem && (
                         <>
                             <p>Ingrédients:</p>
-                            {updatedItem.ingredients.map((ingredient, index) => (
+                            {(updatedItem as Plats).ingredients.map((ingredient, index) => (
                                 <div key={index} className='flex gap-2'>
-                                    <Select
-                                        label="Ingrédient"
-                                        className="relative w-[1000px]"
-                                        defaultSelectedKeys={[ingredient.id]}
-                                        onChange={(e) => handleIngredientChange(index, 'id', parseInt(e.target.value))}
-                                    >
-                                        {listIngredients.filter(ingredient => ingredient.dispo).map((ingredient) => (
-                                            <SelectItem key={ingredient.id} className='w-[100%]' value={ingredient.id}>
-                                                {ingredient.nom}
-                                            </SelectItem>
-                                        ))}
-                                    </Select>
+                                    <CustomSelect selectedIngredient={ingredient.ingredient} index={index} />
                                     <Input
-                                        label={`Quantité min ${index + 1}`} 
+                                        label={`Quantité min ${index + 1}`}
                                         type="number"
                                         value={ingredient.qmin}
                                         onChange={(e) => handleIngredientChange(index, 'qmin', parseInt(e.target.value))}
@@ -148,19 +174,18 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
                                     />
                                     <Button isIconOnly color='danger' onPress={() => setUpdatedItem((prev) => ({
                                         ...prev,
-                                        ingredients: prev.ingredients.filter((_, i) => i !== index),
+                                        ingredients: (prev as Plats).ingredients.filter((_, i) => i !== index),
                                     }))}>
                                         <TrashIcon className="text-default-900" />
                                     </Button>
                                 </div>
                             ))}
-
                         </>
                     )}
                 </ModalBody>
                 <ModalFooter>
                     {'ingredients' in updatedItem && (
-                    <Button onPress={addIngredient}>Ajouter ingrédient</Button>
+                        <Button onPress={addIngredient}>Ajouter ingrédient</Button>
                     )}
                     <Button onPress={handleSave} color='success'>Sauvegarder</Button>
                     <Button onPress={onClose}>Annuler</Button>

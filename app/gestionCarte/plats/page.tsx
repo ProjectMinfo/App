@@ -23,7 +23,7 @@ export default function GestionPlats() {
   return (
     <div className="grid grid-cols-4 gap-x-4">
       {plats?.map((item: any) => (
-        <ModifyCard key={item.id} item={item}
+        <ModifyCard key={item.id} item={item} type="plat"
         />
       ))}
 

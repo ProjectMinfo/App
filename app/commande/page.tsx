@@ -89,6 +89,8 @@ export default function ChatPage() {
   const [allViandes, setAllViandes] = useState<Viandes[]>([]);
   const [currentMenuId, setCurrentMenuId] = useState<number>(0);
 
+  const [prixTotal, setPrixTotal] = useState<number>(0.0);
+
   // Fetch data
   useEffect(() => {
     async function fetchData() {
@@ -121,11 +123,7 @@ export default function ChatPage() {
 
       if (newPlat.plat) {
         newPlat.plat.ingredients = resultIngredients; // Update the ingredients property of the newPlat object
-
-
         nextRepas.plat.push(newPlat); // Push the newPlat object to the plat array in newRepas
-
-
         modalResponse.viandes.map((viande: Viandes) => (
           allViandes.push(viande)
         ));
@@ -138,6 +136,37 @@ export default function ChatPage() {
       }
     }
   }, [modalResponse]);
+
+  function getPriceTotal(repas: NewRepas, serveur : boolean): void {
+    let total = 0;
+
+    repas.menu.map((currentMenu) => {
+      if (serveur) {
+        total += currentMenu.menu.prixServeur;
+      } 
+      else total += currentMenu.menu.prix;
+    });
+    repas.plat.map((currentPlat) => {
+      if (serveur) {
+        total += currentPlat.plat.prixServeur;
+      } 
+      else total += currentPlat.plat.prix;
+    });
+    repas.snack.map((currentSnack) => {      
+      if (serveur) {
+        total += currentSnack.snack.prixServeur;
+      } 
+      else total += currentSnack.snack.prix;
+    });
+    repas.boisson.map((currentBoisson) => {
+      // console.log(currentBoisson);
+      if (serveur) {
+        total += currentBoisson.boisson.prixServeur;
+      } 
+      else total += currentBoisson.boisson.prix;
+    });
+    setPrixTotal(total);
+  }
 
   // Ajout des items dans le repas
   const handleSetRepasItem = (type: keyof NewRepas, item: AllType) => {
@@ -224,7 +253,7 @@ export default function ChatPage() {
 
     if (type === "menu") {
       console.log("delete menu");
-      
+
       const currentItem = item as NewMenus;
 
       newRepas.boisson = newRepas.boisson.filter((boisson) => boisson.menuId !== currentItem.menuId);
@@ -248,9 +277,9 @@ export default function ChatPage() {
 
 
   function RecapComponent({ repas }: { repas: NewRepas }) {
-
-    console.log(repas, allViandes);
-
+    getPriceTotal(repas, false);
+    
+    // console.log(repas, allViandes);
     return (
       <div className="flex flex-col gap-4 max-w-[300px] min-w-[300px] text-justify">
         <h2 className="text-lg font-bold">Récapitulatif de la commande :</h2>
@@ -398,7 +427,10 @@ export default function ChatPage() {
           </div>
           <Divider />
         </Card>
+        <Divider />
+        <h3 className="text-lg font-bold">Total : {prixTotal.toFixed(2)} €</h3>
       </div>
+      
     );
   }
 
@@ -561,18 +593,30 @@ export default function ChatPage() {
         <p className="text-default-900">{mainSentence}</p>
         {buttons && buttons.length > 0 && (
           <div className="grid grid-cols-2 gap-4">
-            {buttons.map((button, index) => (
-              <Button
-                key={index}
-                color={"default"}
-                variant={"solid"}
-                className={"font-medium"}
-                onClick={() => handleButtonClick(button)}
-                isDisabled={buttonClicked}
-              >
-                {"menu" in button ? button.menu.nom : "plat" in button ? button.plat.nom : "snack" in button ? button.snack.nom : "boisson" in button ? button.boisson.nom : "label" in button ? button.label : ""}
-              </Button>
-            ))}
+            {buttons
+              .filter(button =>
+                "menu" in button ? button.menu && button.menu.dispo : 
+                "plat" in button ? button.plat && button.plat.dispo :
+                "snack" in button ? button.snack && button.snack.dispo :
+                "boisson" in button ? button.boisson && button.boisson.dispo : false
+              )
+              .map((button, index) => (
+                <Button
+                  key={index}
+                  color={"default"}
+                  variant={"solid"}
+                  className={"font-medium"}
+                  onClick={() => handleButtonClick(button)}
+                  isDisabled={buttonClicked}
+                >
+                  {"menu" in button ? button.menu.nom :
+                    "plat" in button ? button.plat.nom :
+                      "snack" in button ? button.snack.nom :
+                        "boisson" in button ? button.boisson.nom :
+                          "label" in button ? button.label : ""}
+                </Button>
+              ))}
+
             <Button
               key={999}
               color="danger"
