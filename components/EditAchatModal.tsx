@@ -28,11 +28,11 @@ interface EditAchatModalProps {
 }
 
 const formatDate = (date: any) => {
-    if (date && date.$date) {
+    // if (date && date.$date) {
         const timestamp = parseInt(date.$date.$numberLong); // récupère le timestamp de la date
         const dateObj = new Date(timestamp); // crée une nouvelle date avec ce timestamp
         return (moment(dateObj)).format('YYYY-MM-DD')
-    }
+    // }
 };
 
 
@@ -56,7 +56,7 @@ export default function EditAccountModal({
     const [nbPortions, setNbPortions] = useState<number>(currentNbPortions);
     const [dateOuverture, setDateOuverture] = useState<Date>(currentDateOuverture);
     const [dateFermeture, setDateFermeture] = useState<Date>(currentdateFermeture);
-    const [dlc, setDlc] = useState<Date>(currentDlc);
+    const [dlc, setDlc] = useState<any>(currentDlc);
     const [formatDlc, setFormatDlc] = useState(parseDate("2024-04-04"));
     const [etat, setEtat] = useState<number>(currentEtat);
 
@@ -81,15 +81,22 @@ export default function EditAccountModal({
         setNbPortions(Number(event.target.value));
     };
 
-    const handleDlcChange = (date: CalendarDate) => {
-        // Convertir l'objet CalendarDate en une instance de Date standard
-        const jsDate = new Date(date.year, date.month - 1, date.day);
+    const handleDlcChange = (newDate: CalendarDate) => {
+        // console.log("date selectionee :", newDate)
 
         // Mettre à jour l'état formatDlc avec la nouvelle date
-        setFormatDlc(date);
+        setFormatDlc(newDate);
+        // console.log("formatDlc :", formatDlc) // la conversion renvoit l'ancienne date
+
+        // Convertir l'objet CalendarDate en une instance de Date standard
+        const jsDate = new Date(newDate.year, newDate.month - 1, newDate.day)
+        const timestampDate = jsDate.getTime();
+        // console.log("date js :", jsDate)
 
         // Mettre à jour l'état dlc avec la date standard JavaScript
-        setDlc(jsDate);
+        setDlc({"$date" : {$numberLong : timestampDate.toString()}});
+        // console.log("dlc :", dlc);
+        
     };
 
     const isEtatSelected = (accessSelected: string) => {

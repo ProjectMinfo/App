@@ -2,7 +2,8 @@
 import React, { Key, useState, useEffect } from "react";
 import { Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
 import { getAchats, postEditAchat } from "@/config/api";
-import { EditIcon } from "../../public/EditIcon.jsx";
+import { EditIcon } from "@/public/EditIcon.jsx";
+import { DeleteIcon } from "@/public/DeleteIcon.jsx";
 import EditAchatModal from "@/components/EditAchatModal";
 
 // Define types for achats
@@ -49,7 +50,7 @@ function accessColorMap(achat: Achat) {
   }
 };
 
-const formatDate = (date: any) => {
+const formatDate = (date: any) => {  
   if (date && date.$date) {
     const timestamp = parseInt(date.$date.$numberLong); // récupère le timestamp de la date
     const dateObj = new Date(timestamp); // crée une nouvelle date avec ce timestamp
@@ -81,7 +82,7 @@ export default function GestionAchatsPage() {
   const [achats, setAchats] = useState<Achat[]>([]);
   const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
   const [isAfficherLesAchatsConsommes, setIsAfficherLesAchatsConsommes] = useState<boolean>(false)
-  const [currentAchatIndex, setCurrentAchatIndex] = useState<number | null>(null);
+  const [currentAchatIndex, setCurrentAchatIndex] = useState<number>();
 
   useEffect(() => {
     async function fetchAchats() {
@@ -137,11 +138,20 @@ export default function GestionAchatsPage() {
     // Modification sur l'utilisateur
     if (newCurrentAchat && achats) {
 
-      // Mettre à jour l'utilisateur courant avec les nouvelles données avant de l'envoyer à l'API
+      // Mettre à jour l'achat courant avec les nouvelles données avant de l'envoyer à l'API
       const updatedAchat: Achat = { ...currentAchat, ...newCurrentAchat, dlc: convertDateToBDDFormat(dlc) };
 
+      // On retire l'achat courant de la liste
       const newListAchats = achats.filter(achat => achat.idAchat !== updatedAchat.idAchat)
-      setAchats([...newListAchats, updatedAchat])
+
+      // On ajoute l'achat modifié à la liste
+      const updatedAchats = [...newListAchats, updatedAchat];
+
+      // On retrie la liste
+      updatedAchats.sort((a: Achat, b: Achat) => a.idAchat - b.idAchat);
+
+      // On met à jour la liste des achats
+      setAchats(updatedAchats);
 
       try {
         await postEditAchat(updatedAchat); // Appel à l'API pour enregistrer les modifications
@@ -150,18 +160,12 @@ export default function GestionAchatsPage() {
       catch (error) {
         console.error("Error updating achat:", error);
       }
-
-      if (currentAchatIndex !== null && achats) {
-        const updatedAchatList = [...achats];
-        updatedAchatList[currentAchatIndex] = updatedAchat;
-        setAchats(updatedAchatList);
-      }
     }
 
     onEditClose();
   };
 
-  const renderCell = React.useCallback((achat: Achat, columnKey: ColumnKeys) => {
+  const renderCell = React.useCallback((achat: Achat, columnKey: ColumnKeys, index:number) => {
     const cellValue = achat[columnKey as keyof Achat];
 
     switch (columnKey) {
@@ -248,14 +252,16 @@ export default function GestionAchatsPage() {
       case "action":
         return (
           <div className="relative flex items-center gap-2">
-            <Tooltip content="Modifier">
-              <span
-                onClick={() => onEditOpen(achat, achat.idAchat)}
+            <span
+                onClick={() => onEditOpen(achat, index)}
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"
-              >
+            >
                 <EditIcon />
               </span>
-            </Tooltip>
+
+              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <DeleteIcon />
+              </span>
           </div>
         );
     }
@@ -294,11 +300,11 @@ export default function GestionAchatsPage() {
         </TableHeader>
 
         <TableBody items={filteredAchats}>
-          {(item) => (
+          {filteredAchats.map((item,index ) =>
             <TableRow key={item.idAchat}>
               {(columnKey) =>
                 <TableCell>
-                  {renderCell(item, columnKey as ColumnKeys)}
+                  {renderCell(item, columnKey as ColumnKeys,index)}
                 </TableCell>}
             </TableRow>
           )}
