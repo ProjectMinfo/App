@@ -1,10 +1,12 @@
 'use client';
 import React, { Key, useState, useEffect } from "react";
 import { Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
-import { getAchats, postEditAchat } from "@/config/api";
+import { getAchats, postEditAchat, deleteAchats } from "@/config/api";
 import { EditIcon } from "@/public/EditIcon.jsx";
 import { DeleteIcon } from "@/public/DeleteIcon.jsx";
+// import { CubeTransparentIcon } from "@/public/CubeTransparent.jsx";
 import EditAchatModal from "@/components/EditAchatModal";
+import DeleteAchatModal from "@/components/DeleteAchatModal";
 
 // Define types for achats
 type Achat = {
@@ -50,7 +52,7 @@ function accessColorMap(achat: Achat) {
   }
 };
 
-const formatDate = (date: any) => {  
+const formatDate = (date: any) => {
   if (date && date.$date) {
     const timestamp = parseInt(date.$date.$numberLong); // récupère le timestamp de la date
     const dateObj = new Date(timestamp); // crée une nouvelle date avec ce timestamp
@@ -74,10 +76,22 @@ function isDateExpired(achat: any) {
   return 0 // Date non expirée
 }
 
+const convertDateToBDDFormat = (date: any) => {
+  if (date.$date) {
+    return date
+  }
+
+  const newDate = new Date(date).toISOString();
+  return {
+    $date: newDate
+  };
+};
+
 
 export default function GestionAchatsPage() {
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentAchat, setCurrentAchat] = useState<Achat | null>(null);
   const [achats, setAchats] = useState<Achat[]>([]);
   const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
@@ -96,26 +110,25 @@ export default function GestionAchatsPage() {
   const onEditOpen = (achat: Achat, indexAchat: number) => {
     setCurrentAchatIndex(indexAchat);
     setCurrentAchat(achat);
-    setIsModalOpen(true);
+    setIsEditModalOpen(true);
   };
 
   const onEditClose = () => {
-    setIsModalOpen(false);
+    setIsEditModalOpen(false);
     setCurrentAchat(null);
   };
 
-  const convertDateToBDDFormat = (date: any) => {
-    if (date.$date) {
-      return date
-    }
-    
-    const newDate = new Date(date).toISOString();
-    return {
-      $date: newDate
-    };
+  const onDeleteOpen = (achat: Achat) => {
+    setCurrentAchat(achat)
+    setIsDeleteModalOpen(true)
+  }
+
+  const onDeleteClose = () => {
+    setIsDeleteModalOpen(false);
+    setCurrentAchat(null);
   };
 
-  const onSubmit = async (nomArticle: string,
+  const onEditSubmit = async (nomArticle: string,
     categorie: number,
     numLot: string,
     nbPortions: number,
@@ -165,7 +178,34 @@ export default function GestionAchatsPage() {
     onEditClose();
   };
 
-  const renderCell = React.useCallback((achat: Achat, columnKey: ColumnKeys, index:number) => {
+  const onDeleteSubmit = async () => {
+
+    // Modification sur l'utilisateur
+    if (currentAchat && achats) {
+
+      // On retire l'achat courant de la liste
+      const updatedAchats = achats.filter(achat => achat.idAchat !== currentAchat.idAchat)
+
+      // On retrie la liste
+      updatedAchats.sort((a: Achat, b: Achat) => a.idAchat - b.idAchat);
+
+      // On met à jour la liste des achats
+      setAchats(updatedAchats);
+
+      try {
+        await deleteAchats(currentAchat.idAchat); // Appel à l'API pour enregistrer les modifications
+        console.log("Achat deleted successfully in the API");
+      }
+      catch (error) {
+        console.error("Error deleting achat:", error);
+      }
+    }
+
+    onDeleteClose();
+  };
+
+
+  const renderCell = React.useCallback((achat: Achat, columnKey: ColumnKeys, index: number) => {
     const cellValue = achat[columnKey as keyof Achat];
 
     switch (columnKey) {
@@ -253,20 +293,31 @@ export default function GestionAchatsPage() {
         return (
           <div className="relative flex items-center gap-2">
             <span
-                onClick={() => onEditOpen(achat, index)}
-                className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              onClick={() => onEditOpen(achat, index)}
             >
-                <EditIcon />
-              </span>
+              {/* <CubeTransparentIcon /> */}
+            </span>
 
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <DeleteIcon />
-              </span>
+            <span
+              className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              onClick={() => onEditOpen(achat, index)}
+
+            >
+              <EditIcon />
+            </span>
+
+            <span
+              className="text-lg text-danger cursor-pointer active:opacity-50"
+              onClick={() => onDeleteOpen(achat)}
+            >
+              <DeleteIcon />
+            </span>
           </div>
         );
     }
 
-  }, [onEditOpen]);
+  }, [achats]);
 
 
   const filteredAchats = achats.filter((achat) =>
@@ -300,11 +351,11 @@ export default function GestionAchatsPage() {
         </TableHeader>
 
         <TableBody items={filteredAchats}>
-          {filteredAchats.map((item,index ) =>
+          {filteredAchats.map((item, index) =>
             <TableRow key={item.idAchat}>
               {(columnKey) =>
                 <TableCell>
-                  {renderCell(item, columnKey as ColumnKeys,index)}
+                  {renderCell(item, columnKey as ColumnKeys, index)}
                 </TableCell>}
             </TableRow>
           )}
@@ -313,9 +364,9 @@ export default function GestionAchatsPage() {
       </Table>
       {currentAchat && (
         <EditAchatModal
-          isOpen={isModalOpen}
+          isOpen={isEditModalOpen}
           onClose={onEditClose}
-          onSubmit={onSubmit}
+          onSubmit={onEditSubmit}
           currentNomArticle={currentAchat.nomArticle}
           currentCategorie={currentAchat.categorie}
           currentNumLot={currentAchat.numLot}
@@ -324,6 +375,13 @@ export default function GestionAchatsPage() {
           currentdateFermeture={currentAchat.dateFermeture}
           currentDlc={currentAchat.dlc}
           currentEtat={currentAchat.etat}
+        />
+      )}
+      {currentAchat && (
+        <DeleteAchatModal
+          isOpen={isDeleteModalOpen}
+          onClose={onDeleteClose}
+          onSubmit={onDeleteSubmit}
         />
       )}
     </div>

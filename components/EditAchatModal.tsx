@@ -128,7 +128,6 @@ export default function EditAccountModal({
                     />
 
                     <Input
-                        autoFocus
                         label="Quantité de l'article"
                         type="number"
                         value={String(nbPortions)}
@@ -162,8 +161,7 @@ export default function EditAccountModal({
                         Annuler
                     </Button>
 
-                    <Button color="primary" onPress={handleSubmit}
-                    >
+                    <Button color="primary" onPress={handleSubmit}>
                         Valider
                     </Button>
                 </ModalFooter>

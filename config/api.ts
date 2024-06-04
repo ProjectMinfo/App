@@ -430,3 +430,13 @@ export const deleteMenus = async (id: number) => {
     throw error;
   }
 }
+
+export const deleteAchats = async (id: number) => {
+  try {
+    const response = await api.delete(`/achats/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting achats:', error);
+    throw error;
+  }
+}
