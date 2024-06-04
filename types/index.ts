@@ -151,15 +151,13 @@ export interface NewCommandes {
 }
 
 
-export interface Plannings {
-  idPlanning: number;
-  date: string;
-  idUser: number;
-  nom: string;
-  numPoste: number;
+export interface Planning {
+  idPlanning: number; 
+  date: string; 
+  numCompte: number;
+  numPoste: number; 
   numSemaine: number;
-  poste: number;
-  prenom: string;
+  prenom: string; 
   tab: number;
 }
 

@@ -65,16 +65,6 @@ export const getBoissons = async () => {
   }
 }
 
-export const getBoissonById = async (id: number)=>{
-  try {
-    const response= await api.get(`/boissons/${id}`);
-    return (response.data);
-  } catch (error){
-    console.error('Error fetching boissons',error);
-    throw error;
-  }
-}
-
 export const getPlats = async () => {
   try {
     const response = await api.get('/plats');
@@ -115,33 +105,6 @@ export const getCommande = async () => {
   }
 };
 
-export const getCommandesByIdUser = async (id:number) => {
-  try {
-    const response = await api.get(`/commandes/user/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching commandes:', error);
-    throw error;
-  }
-};
-
-// Fonction pour mettre à jour une commande par son ID
-export const postCommandeById = async (id: number, data: any) => {
-  const token = 'DEV_TOKEN'; // Add your token here
-
-  try {
-    const response = await api.post(`/commandes/${id}`, JSON.stringify(data), {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error posting commande:', error);
-    throw error;
-  }
-};
 
 
 
@@ -187,7 +150,7 @@ export const postEditAchat = async (achat: any) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error posting achats:', error);
+    console.error('Error posting viandes:', error);
     throw error;
   }
 };
@@ -339,42 +302,6 @@ export const deleteBoissons = async (id: number) => {
   }
 };
 
-export const getAllTemperatures = async()=>{
-  try{
-    const response= await api.get(`/temperatures`);
-    return response.data;
-  } catch(error){
-    console.error('Error fetching Temperatures',error);
-    throw error;
-  }
-}
-
-export const postTemperature= async (data :any)=>{
-  const token='DEV_TOKEN';//Add your token here
-  try {
-    const response = await api.post('/temperatures', JSON.stringify(data),{
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }     
-    });
-    return response.data
-  } catch(error){
-    console.error('Error posting temperature:', error);
-    throw error; 
-  }
-}
-
-export const deleteTemperature = async (id: number) => {
-  try {
-    const response = await api.delete(`/temperatures/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting temperature:', error);
-    throw error;
-  }
-};
-
 // Fonction pour mettre à jour une commande par son ID
 export const postCommande = async (data: any) => {
   const token = 'DEV_TOKEN'; // Add your token here
@@ -411,8 +338,7 @@ export const postCreateCompte = async (data: any) => {
     console.error('Error creating compte:', error);
     throw error;
   }
-}
-
+};
 
 // Fonction pour envoyer un e-mail de vérification
 export const sendVerificationEmail = async (email: string) => {
@@ -430,52 +356,29 @@ export const sendVerificationEmail = async (email: string) => {
   }
 };
 
-
-export const postMenus = async (data: any) => {
+// Fonction pour obtenir le planning de la semaine
+export const getPlanning = async (numSemaine: number) => {
   try {
-    const response = await api.post('/menus', data, {
+    const response = await api.get(`/planning/week/${numSemaine}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching planning:', error);
+    throw error;
+  }
+};
+
+// Fonction pour poster le planning
+export const postPlanning = async (data: any) => {
+  try {
+    const response = await api.post('/planning', JSON.stringify(data), {
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
     return response.data;
   } catch (error) {
-    console.error('Error posting menus:', error);
+    console.error('Error posting planning:', error);
     throw error;
   }
 };
-
-export const postPlats = async (data: any) => {
-  try {
-    const response = await api.post('/plats', data, {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error posting plats:', error);
-    throw error;
-  }
-};
-
-export const deleteMenus = async (id: number) => {
-  try {
-    const response = await api.delete(`/menus/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting menus:', error);
-    throw error;
-  }
-};
-
-export const deletePlats = async (id: number) => {
-  try {
-    const response = await api.delete(`/plats/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting plats:', error);
-    throw error;
-  }
-};
-
