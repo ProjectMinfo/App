@@ -27,11 +27,26 @@ interface EditAchatModalProps {
     currentEtat: number;
 }
 
+enum CategorieAchat {
+    Ingrédient = 0,
+    Viande = 1,
+    Boisson = 2,
+    Snack = 3
+}
+
+enum EtatAchat {
+    NonEntame = 0,
+    Ouvert = 1,
+    Consomme = 2,
+    Perime = 3,
+    Perte = 4
+}
+
 const formatDate = (date: any) => {
     // if (date && date.$date) {
-        const timestamp = parseInt(date.$date.$numberLong); // récupère le timestamp de la date
-        const dateObj = new Date(timestamp); // crée une nouvelle date avec ce timestamp
-        return (moment(dateObj)).format('YYYY-MM-DD')
+    const timestamp = parseInt(date.$date.$numberLong); // récupère le timestamp de la date
+    const dateObj = new Date(timestamp); // crée une nouvelle date avec ce timestamp
+    return (moment(dateObj)).format('YYYY-MM-DD')
     // }
 };
 
@@ -82,21 +97,17 @@ export default function EditAccountModal({
     };
 
     const handleDlcChange = (newDate: CalendarDate) => {
-        // console.log("date selectionee :", newDate)
 
         // Mettre à jour l'état formatDlc avec la nouvelle date
         setFormatDlc(newDate);
-        // console.log("formatDlc :", formatDlc) // la conversion renvoit l'ancienne date
 
         // Convertir l'objet CalendarDate en une instance de Date standard
         const jsDate = new Date(newDate.year, newDate.month - 1, newDate.day)
         const timestampDate = jsDate.getTime();
-        // console.log("date js :", jsDate)
 
         // Mettre à jour l'état dlc avec la date standard JavaScript
-        setDlc({"$date" : {$numberLong : timestampDate.toString()}});
-        // console.log("dlc :", dlc);
-        
+        setDlc({ "$date": { $numberLong: timestampDate.toString() } });
+
     };
 
     const isEtatSelected = (accessSelected: string) => {
@@ -117,7 +128,12 @@ export default function EditAccountModal({
                 </ModalHeader>
 
                 <ModalBody>
-                    {categorie === 0 ? "Ingrédient" : categorie === 1 ? "Viande" : categorie === 2 ? "Boisson" : categorie === 3 ? "Snack" : "Catégorie inconnue"} : {nomArticle}
+                    {categorie === CategorieAchat.Ingrédient ? "Ingrédient"
+                        : categorie === CategorieAchat.Viande ? "Viande"
+                            : categorie === CategorieAchat.Boisson ? "Boisson"
+                                : categorie === CategorieAchat.Snack ? "Snack"
+                                    : "Catégorie inconnue"}
+                    : {nomArticle}
                     <Input
                         autoFocus
                         label="Numéro de lot"
@@ -141,10 +157,10 @@ export default function EditAccountModal({
                         onValueChange={isEtatSelected}
                     >
                         <div className="flex gap-4">
-                            <Radio value="0"> Non entamé </Radio>
-                            <Radio value="1"> Ouvert </Radio>
-                            <Radio value="2"> Consommé </Radio>
-                            <Radio value="3"> Périmé </Radio>
+                            <Radio value={(EtatAchat.NonEntame).toString()}> Non entamé </Radio>
+                            <Radio value={(EtatAchat.Ouvert).toString()}> Ouvert </Radio>
+                            <Radio value={(EtatAchat.Consomme).toString()}> Consommé </Radio>
+                            <Radio value={(EtatAchat.Perime).toString()}> Périmé </Radio>
                         </div>
                     </RadioGroup>
 

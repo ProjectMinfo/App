@@ -2,9 +2,11 @@
 import React, { Key, useState, useEffect } from "react";
 import { Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
 import { getAchats, postEditAchat, deleteAchats } from "@/config/api";
+import { SlSocialDropbox } from "react-icons/sl";
+import { BsBoxSeam } from "react-icons/bs";
+import { FaSkullCrossbones } from "react-icons/fa6";
 import { EditIcon } from "@/public/EditIcon.jsx";
 import { DeleteIcon } from "@/public/DeleteIcon.jsx";
-// import { CubeTransparentIcon } from "@/public/CubeTransparent.jsx";
 import EditAchatModal from "@/components/EditAchatModal";
 import DeleteAchatModal from "@/components/DeleteAchatModal";
 
@@ -23,6 +25,27 @@ type Achat = {
   qtePerimee: number;
 }
 
+enum CategorieAchat {
+  Ingrédient = 0,
+  Viande = 1,
+  Boisson = 2,
+  Snack = 3
+}
+
+enum EtatAchat {
+  NonEntame = 0,
+  Ouvert = 1,
+  Consomme = 2,
+  Perime = 3,
+  Perte = 4
+}
+
+enum Expiration {
+  DateNonExpirée = 0,
+  DateExpirée = 1,
+  DateExpiréeDemain = 2
+}
+
 type ColumnKeys = 'nomArticle' | 'categorie' | 'numLot' | 'nbPortions' | 'dateOuverture' | 'dateFermeture' | 'dlc' | 'etat' | 'action';
 
 const columns: { name: string, uid: ColumnKeys }[] = [
@@ -39,16 +62,18 @@ const columns: { name: string, uid: ColumnKeys }[] = [
 
 function accessColorMap(achat: Achat) {
   switch (achat.etat) {
-    case 0:
+    case EtatAchat.NonEntame:
       return "primary"; // Affiche les articles non consommés en bleu
-    case 1:
+    case EtatAchat.Ouvert:
       return "success"; // Affiche les articles ouverts en vert
-    case 2:
+    case EtatAchat.Consomme:
       return "warning"; // Affiche les articles consommés en orange
-    case 3:
-      return "danger"; // Affiche les articles perimés en rouge
+    case EtatAchat.Perime:
+      return "danger"; // Affiche les articles perimés (encore dans les stocks) en rouge
+    case EtatAchat.Perte:
+      return "secondary" // Affiche les articles perdu (perimés jetés) en violet
     default:
-      return "secondary" // Affiche les articles imprévus en violet
+      return "default"
   }
 };
 
@@ -71,9 +96,9 @@ function isDateExpired(achat: any) {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // On met à 0 les heures et les minutes (seul le jour nous interesse)
 
-  if (today.getTime() > dlcDate.getTime()) { return 1 } // Date expirée
-  if (today.getTime() === dlcDate.getTime()) { return 2 } // Dernier jour avant expiration
-  return 0 // Date non expirée
+  if (today.getTime() > dlcDate.getTime()) { return Expiration.DateExpirée }
+  if (today.getTime() === dlcDate.getTime()) { return Expiration.DateExpiréeDemain }
+  return Expiration.DateNonExpirée
 }
 
 const convertDateToBDDFormat = (date: any) => {
@@ -107,6 +132,48 @@ export default function GestionAchatsPage() {
     fetchAchats();
   }, []);
 
+
+  // OUVRIR ACHAT
+
+  const onChangementEtat = async (achat: Achat) => {
+    const changedAchat = { ...achat };
+    if (achat.etat === EtatAchat.NonEntame) {
+      changedAchat.etat = EtatAchat.Ouvert; // Si l'achat est non entamé, on l'ouvre
+    }
+    else if (achat.etat === EtatAchat.Ouvert) {
+      changedAchat.etat = EtatAchat.Consomme; // Si l'achat est ouvert, on le consomme
+    }
+    else if (achat.etat === EtatAchat.Consomme) {
+      changedAchat.etat = EtatAchat.NonEntame; // Si l'achat est consommé, on le remet en stock
+    }
+    else if (achat.etat === EtatAchat.Perime) {
+      changedAchat.etat = EtatAchat.Perte; // Si l'achat est perimé, on le déclare comme une perte
+    }
+
+    // On retire l'achat courant de la liste
+    const newListAchats = achats.filter(achat => achat.idAchat !== changedAchat.idAchat)
+
+    // On ajoute l'achat modifié à la liste
+    const updatedAchats = [...newListAchats, changedAchat];
+
+    // On retrie la liste
+    updatedAchats.sort((a: Achat, b: Achat) => a.idAchat - b.idAchat);
+
+    // On met à jour la liste des achats
+    setAchats(updatedAchats);
+
+    try {
+      await postEditAchat(changedAchat); // Appel à l'API pour enregistrer les modifications
+      console.log("Achat updated successfully in the API");
+    }
+    catch (error) {
+      console.error("Error updating achat:", error);
+    }
+  };
+
+
+  // EDIT //
+
   const onEditOpen = (achat: Achat, indexAchat: number) => {
     setCurrentAchatIndex(indexAchat);
     setCurrentAchat(achat);
@@ -115,16 +182,6 @@ export default function GestionAchatsPage() {
 
   const onEditClose = () => {
     setIsEditModalOpen(false);
-    setCurrentAchat(null);
-  };
-
-  const onDeleteOpen = (achat: Achat) => {
-    setCurrentAchat(achat)
-    setIsDeleteModalOpen(true)
-  }
-
-  const onDeleteClose = () => {
-    setIsDeleteModalOpen(false);
     setCurrentAchat(null);
   };
 
@@ -178,6 +235,19 @@ export default function GestionAchatsPage() {
     onEditClose();
   };
 
+
+  // DELETE //
+
+  const onDeleteOpen = (achat: Achat) => {
+    setCurrentAchat(achat)
+    setIsDeleteModalOpen(true)
+  }
+
+  const onDeleteClose = () => {
+    setIsDeleteModalOpen(false);
+    setCurrentAchat(null);
+  };
+
   const onDeleteSubmit = async () => {
 
     // Modification sur l'utilisateur
@@ -221,10 +291,10 @@ export default function GestionAchatsPage() {
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {cellValue === 0 ? "Ingrédient"
-                : cellValue === 1 ? "viande"
-                  : cellValue === 2 ? "Boisson"
-                    : cellValue === 3 ? "Snack"
+              {cellValue === CategorieAchat.Ingrédient ? "Ingrédient"
+                : cellValue === CategorieAchat.Viande ? "viande"
+                  : cellValue === CategorieAchat.Boisson ? "Boisson"
+                    : cellValue === CategorieAchat.Snack ? "Snack"
                       : "error"}
             </p>
           </div>
@@ -264,16 +334,31 @@ export default function GestionAchatsPage() {
       case "dlc":
         return (
           <div className="flex flex-col">
-            <p className={`text-bold text-sm capitalize ${achat.etat !== 2 && isDateExpired(achat) === 1 ? "text-danger" // Si l'achat perime le lendemain (et qu'il n'a pas été consommé)
-              : achat.etat !== 2 && isDateExpired(achat) === 2 ? "text-warning" // Si l'achat est perimé (et qu'il n'a pas déjà été consommé)
-                : "default"}`}>
+            <p className={`text-bold text-sm capitalize
+            ${((achat.etat !== EtatAchat.Consomme && achat.etat !== EtatAchat.Perte) // Si l'achat n'est pas déjà consommé ou perdu
+                && isDateExpired(achat) === Expiration.DateExpirée) // ET si l'achat est perimé
+                ? "text-danger" // On affiche la date en rouge
+
+                : ((achat.etat !== EtatAchat.Consomme && achat.etat !== EtatAchat.Perte) // Si l'achat n'est pas déjà consommé ou perdu
+                  && isDateExpired(achat) === Expiration.DateExpiréeDemain) // ET si l'achat perime le lendemain
+                  ? "text-warning" // On affiche la date en orange
+
+                  : "default" // Sinon on affiche la date en default
+              }`
+            }>
               {formatDate(cellValue)}
             </p>
           </div>
         )
       case "etat":
-        if (isDateExpired(achat) === 1 && (achat.etat === 0 || achat.etat === 1)) {
-          achat.etat = 3;
+        console.log(achat.qtePerimee)
+        if (isDateExpired(achat) === Expiration.DateExpirée
+          && (achat.etat === EtatAchat.NonEntame || achat.etat === EtatAchat.Ouvert)) {
+          achat.etat = EtatAchat.Perime; // Si l'achat est périmé on l'affiche comme tel
+        }
+        if ((isDateExpired(achat) === Expiration.DateNonExpirée || isDateExpired(achat) === Expiration.DateExpiréeDemain)
+          && achat.etat === EtatAchat.Perime) {
+          achat.etat = EtatAchat.NonEntame; // Si l'achat n'était en fait pas perimé on l'affiche comme non entamé
         }
         return (
           <Chip
@@ -282,11 +367,12 @@ export default function GestionAchatsPage() {
             size="sm"
             variant="flat"
           >
-            {achat.etat === 0 ? "Non entamé"
-              : achat.etat === 1 ? "Ouvert"
-                : achat.etat === 2 ? "Consommé"
-                  : achat.etat === 3 ? "Périmé"
-                    : "error"}
+            {achat.etat === EtatAchat.NonEntame ? "Non entamé"
+              : achat.etat === EtatAchat.Ouvert ? "Ouvert"
+                : achat.etat === EtatAchat.Consomme ? "Consommé"
+                  : achat.etat === EtatAchat.Perime ? "Périmé"
+                    : achat.etat === EtatAchat.Perte ? "Perte"
+                      : "error"}
           </Chip>
         )
       case "action":
@@ -294,15 +380,19 @@ export default function GestionAchatsPage() {
           <div className="relative flex items-center gap-2">
             <span
               className="text-lg text-default-400 cursor-pointer active:opacity-50"
-              onClick={() => onEditOpen(achat, index)}
+              onClick={() => onChangementEtat(achat)}
             >
-              {/* <CubeTransparentIcon /> */}
+              {
+                achat.etat === EtatAchat.NonEntame ? <SlSocialDropbox /> // Ouverture de l'achat
+                  : achat.etat === EtatAchat.Ouvert ? <BsBoxSeam /> // Jeter l'achat
+                    : achat.etat === EtatAchat.Perime ? <FaSkullCrossbones /> // Jeter l'achat perimé
+                      : <></> // Default
+              }
             </span>
 
             <span
               className="text-lg text-default-400 cursor-pointer active:opacity-50"
               onClick={() => onEditOpen(achat, index)}
-
             >
               <EditIcon />
             </span>
@@ -322,8 +412,8 @@ export default function GestionAchatsPage() {
 
   const filteredAchats = achats.filter((achat) =>
     (isAfficherLesAchatsConsommes
-      ? achat.etat === 2
-      : achat.etat === 0 || achat.etat === 1 || achat.etat === 3) &&
+      ? achat.etat === EtatAchat.Consomme || achat.etat === EtatAchat.Perte
+      : achat.etat === EtatAchat.NonEntame || achat.etat === EtatAchat.Ouvert || achat.etat === EtatAchat.Perime) &&
     (achat.nomArticle.toLowerCase().includes(searchTerm.toLowerCase()) ||
       achat.numLot.toLowerCase().includes(searchTerm.toLowerCase()))
   );
