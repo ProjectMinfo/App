@@ -476,3 +476,41 @@ export const deleteTemperature = async (id: number) => {
     throw error;
   }
 };
+
+export const getBoissonById = async (id: number)=>{
+  try {
+    const response= await api.get(`/boissons/${id}`);
+    return (response.data);
+  } catch (error){
+    console.error('Error fetching boissons',error);
+    throw error;
+  }
+}
+
+export const getCommandesByIdUser = async (id:number) => {
+  try {
+    const response = await api.get(`/commandes/user/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching commandes:', error);
+    throw error;
+  }
+};
+
+// Fonction pour mettre à jour une commande par son ID
+export const postCommandeById = async (id: number, data: any) => {
+  const token = 'DEV_TOKEN'; // Add your token here
+
+  try {
+    const response = await api.post(`/commandes/${id}`, JSON.stringify(data), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error posting commande:', error);
+    throw error;
+  }
+};
