@@ -8,6 +8,7 @@ import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from './paiement/page';
 import { Card, CardHeader, Divider, CardBody } from '@nextui-org/react';
 import { prepareCommande } from './logic';
+import ListeComptes from '@/components/listeCompteModal';
 
 
 type NewMenus = {
@@ -69,6 +70,7 @@ export default function ChatPage() {
   const [listSnacks, setListSnacks] = useState<Snacks[]>([]);
   const [listBoissons, setListBoissons] = useState<Boissons[]>([]);
 
+
   const [repas, setRepas] = useState<NewRepas>({
     menu: [],
     plat: [],
@@ -91,6 +93,9 @@ export default function ChatPage() {
 
   const [prixTotal, setPrixTotal] = useState<number>(0.0);
   const [serveur, isServeur] = useState<boolean>(false);
+  
+  const [isModalCompteOpen, setIsModalCompteOpen] = useState<boolean>(false);
+
 
   // Fetch data
   useEffect(() => {
@@ -676,20 +681,15 @@ export default function ChatPage() {
                 >
                   Baguette(s) restante(s) : {0}
                 </Button>
+
                 <Button
                   color="default"
                   variant="solid"
-                  onClick={() => isServeur(!serveur)}
-                >
-                  Serveur ?
-                </Button>
-                <Button
-                  color="default"
-                  variant="solid"
-                  onClick={() => isServeur(!serveur)}
+                  onClick={() => isModalCompteOpen(!isModalCompteOpen)}
                 >
                   Listes des comptes
                 </Button>
+
                 <Button
                   color="default"
                   variant="solid"
@@ -697,8 +697,17 @@ export default function ChatPage() {
                 >
                   Commande en cours
                 </Button>
+
+                <Button
+                  color="default"
+                  variant="solid"
+                  onClick={() => isServeur(!serveur)}
+                >
+                  Serveur ?  {serveur ? "(Oui)" : "(Non)"}
+                </Button>
               </CardBody>
             </Card>
+            <ListeComptes isOpen={isModalCompteOpen} onClose={() => setIsModalCompteOpen(false)} />
           </div>
         </div>
         <div className="w-1 border-r-2 mx-2"></div>

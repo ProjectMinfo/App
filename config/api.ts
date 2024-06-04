@@ -440,3 +440,39 @@ export const deleteAchats = async (id: number) => {
     throw error;
   }
 }
+
+export const getAllTemperatures = async()=>{
+  try{
+    const response= await api.get(`/temperatures`);
+    return response.data;
+  } catch(error){
+    console.error('Error fetching Temperatures',error);
+    throw error;
+  }
+}
+
+export const postTemperature= async (data :any)=>{
+  const token='DEV_TOKEN';//Add your token here
+  try {
+    const response = await api.post('/temperatures', JSON.stringify(data),{
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }     
+    });
+    return response.data
+  } catch(error){
+    console.error('Error posting temperature:', error);
+    throw error; 
+  }
+}
+
+export const deleteTemperature = async (id: number) => {
+  try {
+    const response = await api.delete(`/temperatures/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting temperature:', error);
+    throw error;
+  }
+};
