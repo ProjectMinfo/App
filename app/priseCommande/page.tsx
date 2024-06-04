@@ -90,6 +90,7 @@ export default function ChatPage() {
   const [currentMenuId, setCurrentMenuId] = useState<number>(0);
 
   const [prixTotal, setPrixTotal] = useState<number>(0.0);
+  const [serveur, isServeur] = useState<boolean>(false);
 
   // Fetch data
   useEffect(() => {
@@ -137,7 +138,7 @@ export default function ChatPage() {
     }
   }, [modalResponse]);
 
-  function getPriceTotal(repas: NewRepas, serveur: boolean): void {
+  function getPriceTotal(repas: NewRepas): void {
     let total = 0;
 
     repas.menu.map((currentMenu) => {
@@ -277,7 +278,7 @@ export default function ChatPage() {
 
 
   function RecapComponent({ repas }: { repas: NewRepas }) {
-    getPriceTotal(repas, false);
+    getPriceTotal(repas);
 
     // console.log(repas, allViandes);
     return (
@@ -312,7 +313,7 @@ export default function ChatPage() {
                         {index < repas.menu.length - 1 ? ", " : ""}
                       </span>
                       <span className="ml-auto">
-                        {menu.menu.prix.toFixed(2)}
+                        {!serveur ? menu.menu.prix.toFixed(2) : menu.menu.prixServeur.toFixed(2)}
                       </span>
                     </div>
                   ))
@@ -353,7 +354,7 @@ export default function ChatPage() {
                         {index < repas.plat.length - 1 ? ", " : ""}
                       </span>
                       <span className="ml-auto">
-                        {plat.plat.prix.toFixed(2)}
+                        {!serveur ? plat.plat.prix.toFixed(2) : plat.plat.prixServeur.toFixed(2)}
                       </span>
                     </div>
                   </p>
@@ -397,7 +398,7 @@ export default function ChatPage() {
                         {/* {index < repas.snack.length - 1 ? ", " : ""} */}
                       </span>
                       <span className="ml-auto">
-                        {snack.snack.prix.toFixed(2)}
+                        {!serveur ? snack.snack.prix.toFixed(2) : snack.snack.prixServeur.toFixed(2)}
                       </span>
                     </div>
                   ))
@@ -435,7 +436,7 @@ export default function ChatPage() {
                         {/* {index < repas.boisson.length - 1 ? ", " : ""} */}
                       </span>
                       <span className="ml-auto">
-                        {boisson.boisson.prix.toFixed(2)}
+                        {!serveur ? boisson.boisson.prix.toFixed(2) : boisson.boisson.prixServeur.toFixed(2)}
                       </span>
                     </div>
                   ))
@@ -558,11 +559,7 @@ export default function ChatPage() {
     };
 
     return (
-      <div className="flex flex-col gap-4">
-        <div>
-          <h2 className="text-lg font-bold">Lancelot</h2>
-        </div>
-        <p className="text-default-900">C'est noté ! Que veux-tu faire ensuite ?</p>
+      <div className="flex flex-col gap-4 mt-32">
         <div className="grid grid-cols-2 gap-4">
           {options.map((option, index) => (
             <Button
@@ -655,16 +652,54 @@ export default function ChatPage() {
 
   return (
     <>
-    <h1 className={title()}>Commande !</h1>
+    <h1 className={title()}>Prise de commande </h1>
     <div className="flex justify-center min-h-screen mt-20">
       <div className="flex w-3/4 h-3/4">
-        <div className="flex-1 m-4 grid gap-32">
-          <ChatNext
-            repas={repas}
-            setRepasItem={handleSetRepasItem}
-            currentStep={currentStep}
-            setCurrentStep={setCurrentStep}
-          />
+        <div className="flex-1 m-4 grid">
+          <div className="flex flex-col gap-32">
+            <ChatNext
+              repas={repas}
+              setRepasItem={handleSetRepasItem}
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+            />
+            <Card className="max-w-full">
+              <CardHeader>
+                <h2 className="text-lg font-semibold">Options serveur</h2>
+              </CardHeader>
+              <CardBody className='flex flex-col gap-4'>
+                <Button
+                  color="default"
+                  variant="solid"
+                  onClick={() => isServeur(!serveur)}
+                  isDisabled
+                >
+                  Baguette(s) restante(s) : {0}
+                </Button>
+                <Button
+                  color="default"
+                  variant="solid"
+                  onClick={() => isServeur(!serveur)}
+                >
+                  Serveur ?
+                </Button>
+                <Button
+                  color="default"
+                  variant="solid"
+                  onClick={() => isServeur(!serveur)}
+                >
+                  Listes des comptes
+                </Button>
+                <Button
+                  color="default"
+                  variant="solid"
+                  onClick={() => isServeur(!serveur)}
+                >
+                  Commande en cours
+                </Button>
+              </CardBody>
+            </Card>
+          </div>
         </div>
         <div className="w-1 border-r-2 mx-2"></div>
         <div className="flex-1 m-4 justify-end text-right">

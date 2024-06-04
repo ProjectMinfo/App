@@ -73,6 +73,8 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
       isOpen={isOpen}
       onOpenChange={handleClose}
       placement="top-center"
+      isDismissable={false}
+      isKeyboardDismissDisabled={true}
     >
       <ModalContent>
         {() => (
