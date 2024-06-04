@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {getCommande, getIngredients} from "@/config/api";
 import {Ingredients, NewCommandes} from "@/types";
 import {
+    BarElement,
     CategoryScale,
     Chart as ChartJS,
     Legend,
@@ -10,10 +11,10 @@ import {
     LineElement,
     PointElement,
     Title,
-    Tooltip,
-    BarElement
+    Tooltip
 } from 'chart.js';
 import {Bar, Line} from "react-chartjs-2";
+import {Card} from "@nextui-org/react";
 
 // Register Chart.js components
 ChartJS.register(
@@ -126,30 +127,41 @@ const Dashboard = () => {
 
     return (
         <>
-            <div className="min-h-screen flex flex-col p-8">
-                <div className="flex flex-row space-x-8">
-                    <div className="w-1/2 p-6 shadow-md rounded-lg border-2 border-red-500">
-                        <h2 className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Commandes</h2>
-                        <div className="flex flex-col space-y-4">
-                            <select value={timeFrame} onChange={(e) => setTimeFrame(Number(e.target.value))}>
-                                {Object.values(TimeFrame).filter(value => typeof value === 'number').map((value, index) => (
-                                    <option key={index} value={value}>{TimeFrame[value]}</option>
-                                ))}
-                            </select>
-                            <Line data={commandesData} width={600} height={400}/>
-                        </div>
-                    </div>
+            <div className="grid grid-cols-6 gap-4">
+                <Card className="col-span-4 row-span-2 p-2">
+                    <h2 className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Commandes</h2>
 
-                    <div className="w-1/2 p-6 shadow-md rounded-lg border-2 border-red-500">
-                        <h2 className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Ingrédients</h2>
-                        <div className="flex flex-col space-y-4">
-                            <Bar data={ingredientsData} width={600} height={400}/>
-                        </div>
-                    </div>
+                    <select value={timeFrame} onChange={(e) => setTimeFrame(Number(e.target.value))}>
+                        {Object.values(TimeFrame).filter(value => typeof value === 'number').map((value, index) => (
+                            <option key={index} value={value}>{TimeFrame[value]}</option>
+                        ))}
+                    </select>
+                    <Line data={commandesData}/>
+                </Card>
 
-                </div>
+                <Card className="row-span-2 col-span-2 p-2">
+                    <h2 className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Dernières commandes</h2>
+                    <ul>
+                        {
+                            commandes.slice(commandes.length-15, commandes.length).reverse().map((commande, index) => (
+                                <li key={index}>{getDate(commande).toLocaleString()}</li>
+                            ))
+                        }
+                    </ul>
+
+                </Card>
+
+                <Card className="col-span-3 p-2">
+                    <h2 className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Ingrédients</h2>
+                    <Bar data={ingredientsData}/>
+                </Card>
+
+                <Card className="col-span-3 p-2">
+                    <h2 className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Snacks</h2>
+                    <Bar data={ingredientsData}/>
+                </Card>
+
             </div>
-
         </>
     );
 };
