@@ -383,3 +383,22 @@ export const postPlanning = async (data: any) => {
   }
 };
 
+export const deletePlats = async (id: number) => {
+  try {
+    const response = await api.delete(`/plats/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting plats:', error);
+    throw error;
+  }
+}
+
+export const deleteMenus = async (id: number) => {
+  try {
+    const response = await api.delete(`/menus/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting menus:', error);
+    throw error;
+  }
+}
