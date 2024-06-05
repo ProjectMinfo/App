@@ -3,7 +3,6 @@ import Ingredients from './ingredients/page';  // Import du composant Ingredient
 import Viandes from '@/app/gestionStock/viandes/page';  // Import du composant Viandes.
 import Snack from './snacks/page';  // Import du composant Snack.
 import Boisson from './boissons/page';  // Import du composant Boisson.
-import Link from 'next/link';  // Import du composant Link de Next.js pour la navigation.
 import { title } from "@/components/primitives";  // Import d'un utilitaire de style pour les titres.
 import { Button } from "@nextui-org/button";  // Import du composant Button de NextUI.
 import { useState } from "react";  // Import du hook useState de React pour gérer l'état.
@@ -35,13 +34,13 @@ const GestionStock = () => {
   const renderCategoryPage = () => {
     switch (selectedCategory) {
       case "Ingrédients":
-        return <Ingredients onValidate={handleValidate} />;
+        return <Ingredients />;
       case "Viandes":
-        return <Viandes onValidate={handleValidate} />;
+        return <Viandes />;
       case "Snack":
-        return <Snack onValidate={handleValidate} />;
+        return <Snack />;
       case "Boisson":
-        return <Boisson onValidate={handleValidate} />;
+        return <Boisson />;
       default:
         return null;
     }

@@ -9,6 +9,7 @@ interface EditAccountModalProps {
   currentFirstname: string;
   currentSolde: number;
   currentAccess: number;
+  serveurAccess?: boolean;
 }
 
 export default function EditAccountModal({
@@ -18,12 +19,16 @@ export default function EditAccountModal({
   currentName,
   currentFirstname,
   currentSolde,
-  currentAccess
+  currentAccess,
+  serveurAccess,
 }: EditAccountModalProps) {
   const [name, setName] = useState<string>(currentName);
   const [firstname, setFirstname] = useState<string>(currentFirstname);
   const [solde, setSolde] = useState<number>(currentSolde);
+  const [addSolde, setAddSolde] = useState<number>(0);
+  const [delSolde, setDelSolde] = useState<number>(0);
   const [access, setAccess] = useState<number>(currentAccess);
+  const isServeurAccess = (serveurAccess || false);
 
   // Initialize variables with the values from the database on startup
   useEffect(() => {
@@ -45,12 +50,20 @@ export default function EditAccountModal({
     setSolde(Number(event.target.value));
   }
 
+  const handleAddSoldeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAddSolde(Number(event.target.value));
+  }
+
+  const handleDelSoldeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDelSolde(Number(event.target.value));
+  }
+
   const isAccessSelected = (accessSelected: string) => {
-      setAccess(Number(accessSelected)); // Update the selected access
+    setAccess(Number(accessSelected)); // Update the selected access
   }
 
   const handleSubmit = () => {
-    onSubmit(name, firstname, solde, access);
+    onSubmit(name, firstname, (solde + addSolde - delSolde), access);
     onClose();
   };
 
@@ -85,30 +98,79 @@ export default function EditAccountModal({
           />
         </ModalBody>
 
-        <ModalBody>
-          Modifier le solde
-          <Input
-            autoFocus
-            label="Solde"
-            type="number"
-            value={String(solde)}
-            onChange={handleSoldeChange}
-            variant="bordered"
-          />
-        </ModalBody>
+        {!isServeurAccess && (
+          <>
+            <ModalBody>
+              Modifier le solde
+              <Input
+                autoFocus
+                label="Solde"
+                type="number"
+                value={String(solde)}
+                onChange={handleSoldeChange}
+                variant="bordered"
+              />
+            </ModalBody>
 
-        <ModalBody>
-          Modifier l'accès
-          <RadioGroup
-            isRequired
-            defaultValue={String(currentAccess)}
-            onValueChange={isAccessSelected}
-          >
-            <Radio value="0"> User </Radio>
-            <Radio value="1"> Serveur </Radio>
-            <Radio value="2"> Admin </Radio>
-          </RadioGroup>
-        </ModalBody>
+            <ModalBody>
+              Modifier l'accès
+              <RadioGroup
+                isRequired
+                defaultValue={String(currentAccess)}
+                onValueChange={isAccessSelected}
+              >
+                <Radio value="0"> User </Radio>
+                <Radio value="1"> Serveur </Radio>
+                <Radio value="2"> Admin </Radio>
+              </RadioGroup>
+            </ModalBody>
+          </>
+        )}
+
+        {isServeurAccess && (
+          <>
+
+
+            <ModalBody className="">
+              <div className="text-center my-2">
+                Solde actuel : <span className=" font-semibold">{solde.toFixed(2)} €</span>
+              </div>
+              <div className="flex flex-row gap-3">
+                <div className="text-success">
+                  Ajouter au solde
+                  <Input
+                    autoFocus
+                    label="Valeur à ajouter"
+                    type="number"
+                    value={String(addSolde)}
+                    color="success"
+                    onChange={handleAddSoldeChange}
+                    variant="bordered"
+                  />
+                </div>
+                <div className="text-danger">
+                  Retirer au solde
+                  <Input
+                    autoFocus
+                    label="Valeur à ajouter"
+                    type="number"
+                    value={String(delSolde)}
+                    color="danger"
+                    onChange={handleDelSoldeChange}
+                    variant="bordered"
+                  />
+                </div>
+
+              </div>
+            </ModalBody>
+
+            <ModalBody>
+              <div className="text-center my-2">
+                Solde final : <span className="font-semibold">{(solde + addSolde - delSolde).toFixed(2)} €</span>
+              </div>
+            </ModalBody>
+          </>
+        )}
 
         <ModalFooter>
           <Button color="danger" variant="flat" onPress={onClose}>

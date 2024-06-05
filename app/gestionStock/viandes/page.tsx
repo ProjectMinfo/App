@@ -1,3 +1,4 @@
+'use client';
 import { Button } from "@nextui-org/button";
 import { useState, useEffect } from "react";
 import EditQuantityModal from "@/components/EditQuantityModal";
@@ -13,11 +14,8 @@ interface Meat {
   quantite: number;
 }
 
-interface ViandesProps {
-  onValidate: (updatedMeats: Meat[]) => void;
-}
 
-const Viandes = ({ onValidate }: ViandesProps) => {
+const Viandes = () => {
   const [meats, setMeats] = useState<Meat[]>([]);
   const [newMeats, setNewMeats] = useState<Meat[]>([]); // Nouvel état pour les viandes ajoutées localement
   const [modifiedMeats, setModifiedMeats] = useState<Meat[]>([]); // Nouvel état pour les viandes modifiées localement
@@ -86,7 +84,6 @@ const Viandes = ({ onValidate }: ViandesProps) => {
       setNewMeats([]);
       setModifiedMeats([]);
       
-      onValidate(meats); // Redirection vers la page GestionStock
     } catch (error) {
       console.error('Error validating meats:', error);
     }
@@ -108,7 +105,7 @@ const Viandes = ({ onValidate }: ViandesProps) => {
             </div>
             <div className="flex justify-center mt-4 gap-2">
               <Button onClick={() => handleModify(meat)}>Modifier</Button>
-              <Button color="warning" onClick={() => handleDelete(meat.id)}>Supprimer</Button>
+              <Button color="danger" onClick={() => handleDelete(meat.id)}>Supprimer</Button>
             </div>
           </div>
         ))}

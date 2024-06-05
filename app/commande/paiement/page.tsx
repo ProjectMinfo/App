@@ -5,7 +5,7 @@ import { subtitle } from "@/components/primitives";
 
 export default function Paiement() {
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 max-md:py-0">
       <div className="inline-block max-w-lg text-center justify-center">
         <h1 className={subtitle({ class: "mt-4" })}>
           Tu as plusieurs moyens de paiement à ta disposition

@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronDown } from "./iconNavbar.jsx";
 import Link from 'next/link';
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
+import { ThemeSwitch } from "@/components/theme-switch.tsx";
 
 const Navbarr = () => {
   const activePath = usePathname();
@@ -42,7 +43,7 @@ const Navbarr = () => {
   }, []);
 
   return (
-    <div className="flex">
+    <div className="flex z-50 max-md:w-0 w-1/6">
       {/* Navbar */}
       <div className={`fixed top-0 left-0 h-full bg-red-500 text-white py-4 px-4 w-64 md:w-1/6 z-10 transform ${isNavOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 overflow-y-auto `}>
         <div className="flex flex-col space-y-4">
@@ -96,7 +97,7 @@ const Navbarr = () => {
               {isDropdownOpen && (
                 <div className="absolute top-12 left-0 bg-red-500 border-3 border-red-800 shadow-lg rounded-lg mt-2 z-10 text-white text-left w-full text-base p-2">
                   <div className="py-2 space-y-2">
-                  <div className={isActive('/gestionStock')}>
+                    <div className={isActive('/gestionStock')}>
                       <Link href="/gestionStock" onClick={handleLinkClick}>Gestion des stocks</Link>
                     </div>
                     <div className={isActive('/gestionAchats')}>
@@ -137,6 +138,11 @@ const Navbarr = () => {
                 Paramètres
               </Link>
             </div>
+
+            <div className="flex items-center justify-center">
+              <ThemeSwitch />
+            </div>
+
           </div>
         </div>
       </div>
