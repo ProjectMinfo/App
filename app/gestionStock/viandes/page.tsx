@@ -105,7 +105,7 @@ const Viandes = () => {
             </div>
             <div className="flex justify-center mt-4 gap-2">
               <Button onClick={() => handleModify(meat)}>Modifier</Button>
-              <Button color="warning" onClick={() => handleDelete(meat.id)}>Supprimer</Button>
+              <Button color="danger" onClick={() => handleDelete(meat.id)}>Supprimer</Button>
             </div>
           </div>
         ))}

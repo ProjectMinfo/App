@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronDown } from "./iconNavbar.jsx";
 import Link from 'next/link';
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
+import { ThemeSwitch } from "@/components/theme-switch.tsx";
 
 const Navbarr = () => {
   const activePath = usePathname();
@@ -96,7 +97,7 @@ const Navbarr = () => {
               {isDropdownOpen && (
                 <div className="absolute top-12 left-0 bg-red-500 border-3 border-red-800 shadow-lg rounded-lg mt-2 z-10 text-white text-left w-full text-base p-2">
                   <div className="py-2 space-y-2">
-                  <div className={isActive('/gestionStock')}>
+                    <div className={isActive('/gestionStock')}>
                       <Link href="/gestionStock" onClick={handleLinkClick}>Gestion des stocks</Link>
                     </div>
                     <div className={isActive('/gestionAchats')}>
@@ -137,6 +138,11 @@ const Navbarr = () => {
                 Paramètres
               </Link>
             </div>
+
+            <div className="flex items-center justify-center">
+              <ThemeSwitch />
+            </div>
+
           </div>
         </div>
       </div>

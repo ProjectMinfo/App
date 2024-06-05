@@ -105,7 +105,7 @@ const Ingredients = () => {
             </div>
             <div className="flex justify-center mt-4 gap-2">
               <Button onClick={() => handleModify(ingredient)}>Modifier</Button>
-              <Button color="warning" onClick={() => handleDelete(ingredient.id)}>Supprimer</Button>
+              <Button color="danger" onClick={() => handleDelete(ingredient.id)}>Supprimer</Button>
             </div>
           </div>
         ))}
