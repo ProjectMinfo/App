@@ -1,6 +1,7 @@
 import { postCommande, getPlats } from "@/config/api";
 import { Boissons, Menus, NewCommandes, Plats, Snacks, Viandes } from "@/types";
 import { useEffect, useState } from "react";
+import crypto from "crypto";
 
 type NewMenus = {
     id: number;
@@ -154,40 +155,61 @@ function getPrice(repas: NewRepas) {
     return parseFloat(price.toFixed(3));;
 }
 
-export function prepareCommande(repas: NewRepas, allViandes: Viandes[]) {
 
-    const [allPlats, setAllPlats] = useState<Plats[]>([]);
+function encryptCommande(commande: any) {
 
-    useEffect(() => {
-        getPlats().then((data) => {
-            setAllPlats(data);
-        });
-    }, []);
+    try {
+        const ENC_KEY = "vuAoN8t3jAmrrUpkjgpY6YgRc4hyjQ8p";
+        const IV = "D2H*wUKNwwii#CH!";
 
-    const dataPrepared = aggregateQuantities(repas, allViandes, allPlats);
-    const dataContenu = getAllNom(repas, allViandes);
-    const dataPrix = getPrice(repas);
-
-
-    var inputDate = new Date().toISOString();
-
-    const commande: NewCommandes = {
-        "id": -1,
-        "contenu": dataContenu,
-        "numCompte": 587,
-        "date": { "$date": inputDate },
-        "distribuee": false,
-        "prix": dataPrix,
-        "typePaiement": 1,
-        "commentaire": "",
-        "ingredients": dataPrepared.ingredients,
-        "viandes": dataPrepared.viandes,
-        "boissons": dataPrepared.boissons,
-        "snacks": dataPrepared.snacks,
-        "payee": true
-    };
-
-    // console.log(commande);
-
-    // postCommande(commande);
+        let cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV);
+        let encrypted = cipher.update(commande, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+        return encrypted;
+    } catch (e) {
+        console.log(e);
+    }
 }
+
+
+
+    export function prepareCommande(repas: NewRepas, allViandes: Viandes[]) {
+
+        const [allPlats, setAllPlats] = useState<Plats[]>([]);
+
+        useEffect(() => {
+            getPlats().then((data) => {
+                setAllPlats(data);
+            });
+        }, []);
+
+        const dataPrepared = aggregateQuantities(repas, allViandes, allPlats);
+        const dataContenu = getAllNom(repas, allViandes);
+        const dataPrix = getPrice(repas);
+
+
+        var inputDate = new Date().toISOString();
+
+        const commande: NewCommandes = {
+            "id": -1,
+            "contenu": dataContenu,
+            "numCompte": 587,
+            "date": { "$date": inputDate },
+            "distribuee": false,
+            "prix": dataPrix,
+            "typePaiement": 1,
+            "commentaire": "",
+            "ingredients": dataPrepared.ingredients,
+            "viandes": dataPrepared.viandes,
+            "boissons": dataPrepared.boissons,
+            "snacks": dataPrepared.snacks,
+            "payee": true
+        };
+
+        // console.log(commande);
+        
+        const encryptedCommande = encryptCommande(JSON.stringify(commande));
+        console.log(encryptedCommande);
+        
+        // postCommande(encryptedCommande);
+    }

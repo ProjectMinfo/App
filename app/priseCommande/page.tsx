@@ -8,7 +8,7 @@ import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from './paiement/page';
 import { Card, CardHeader, Divider, CardBody } from '@nextui-org/react';
 import { prepareCommande } from './logic';
-import ListeComptes from '@/components/listeCompteModal';
+import ListeComptesModal from '@/components/listeCompteModal';
 
 
 type NewMenus = {
@@ -93,7 +93,7 @@ export default function ChatPage() {
 
   const [prixTotal, setPrixTotal] = useState<number>(0.0);
   const [serveur, isServeur] = useState<boolean>(false);
-  
+
   const [isModalCompteOpen, setIsModalCompteOpen] = useState<boolean>(false);
 
 
@@ -657,73 +657,78 @@ export default function ChatPage() {
 
   return (
     <>
-    <h1 className={title()}>Prise de commande </h1>
-    <div className="flex justify-center min-h-screen mt-20">
-      <div className="flex w-3/4 h-3/4">
-        <div className="flex-1 m-4 grid">
-          <div className="flex flex-col gap-32">
-            <ChatNext
-              repas={repas}
-              setRepasItem={handleSetRepasItem}
-              currentStep={currentStep}
-              setCurrentStep={setCurrentStep}
+      <h1 className={title()}>Prise de commande </h1>
+      <div className="flex justify-center min-h-screen mt-20">
+        <div className="flex w-3/4 h-3/4">
+          <div className="flex-1 m-4 grid">
+            <div className="flex flex-col gap-32">
+              <ChatNext
+                repas={repas}
+                setRepasItem={handleSetRepasItem}
+                currentStep={currentStep}
+                setCurrentStep={setCurrentStep}
+              />
+              <Card className="max-w-full">
+                <CardHeader>
+                  <h2 className="text-lg font-semibold">Options serveur</h2>
+                </CardHeader>
+                <CardBody className='flex flex-col gap-4'>
+                  <Button
+                    color="default"
+                    variant="solid"
+                    onClick={() => isServeur(!serveur)}
+                    isDisabled
+                  >
+                    Baguette(s) restante(s) : {0}
+                  </Button>
+
+                  <Button
+                    color="default"
+                    variant="solid"
+                    onClick={() => setIsModalCompteOpen(!isModalCompteOpen)}
+                  >
+                    Listes des comptes
+                  </Button>
+
+                  <Button
+                    color="default"
+                    variant="solid"
+                    onClick={() => isServeur(!serveur)}
+                  >
+                    Commande en cours
+                  </Button>
+
+                  <Button
+                    color="default"
+                    variant="solid"
+                    onClick={() => isServeur(!serveur)}
+                  >
+                    Serveur ?  {serveur ? "(Oui)" : "(Non)"}
+                  </Button>
+                </CardBody>
+              </Card>
+              {isModalCompteOpen && (
+                <ListeComptesModal
+                  isOpen={isModalCompteOpen}
+                  onClose={() => setIsModalCompteOpen(false)}
+                />
+              )}          
+            </div>
+          </div>
+          <div className="w-1 border-r-2 mx-2"></div>
+          <div className="flex-1 m-4 justify-end text-right">
+            <RecapComponent repas={repas} />
+            <DetailCommandeModal
+              isOpen={isModalOpen}
+              onClose={(values: { viandes: Viandes[], ingredients: Ingredients[] }) => {
+                setIsModalOpen(false);
+                setModalResponse(values);
+              }}
+              options={{ "ingredients": listIngredients, "viandes": listViandes, "currentPlat": currentPlat }}  // Pass the current plat to the modal
             />
-            <Card className="max-w-full">
-              <CardHeader>
-                <h2 className="text-lg font-semibold">Options serveur</h2>
-              </CardHeader>
-              <CardBody className='flex flex-col gap-4'>
-                <Button
-                  color="default"
-                  variant="solid"
-                  onClick={() => isServeur(!serveur)}
-                  isDisabled
-                >
-                  Baguette(s) restante(s) : {0}
-                </Button>
-
-                <Button
-                  color="default"
-                  variant="solid"
-                  onClick={() => isModalCompteOpen(!isModalCompteOpen)}
-                >
-                  Listes des comptes
-                </Button>
-
-                <Button
-                  color="default"
-                  variant="solid"
-                  onClick={() => isServeur(!serveur)}
-                >
-                  Commande en cours
-                </Button>
-
-                <Button
-                  color="default"
-                  variant="solid"
-                  onClick={() => isServeur(!serveur)}
-                >
-                  Serveur ?  {serveur ? "(Oui)" : "(Non)"}
-                </Button>
-              </CardBody>
-            </Card>
-            <ListeComptes isOpen={isModalCompteOpen} onClose={() => setIsModalCompteOpen(false)} />
           </div>
         </div>
-        <div className="w-1 border-r-2 mx-2"></div>
-        <div className="flex-1 m-4 justify-end text-right">
-          <RecapComponent repas={repas} />
-          <DetailCommandeModal
-            isOpen={isModalOpen}
-            onClose={(values: { viandes: Viandes[], ingredients: Ingredients[] }) => {
-              setIsModalOpen(false);
-              setModalResponse(values);
-            }}
-            options={{ "ingredients": listIngredients, "viandes": listViandes, "currentPlat": currentPlat }}  // Pass the current plat to the modal
-          />
-        </div>
       </div>
-    </div>
     </>
   );
 }
