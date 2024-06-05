@@ -1,3 +1,4 @@
+'use client';
 import { Button } from "@nextui-org/button";
 import { useState, useEffect } from "react";
 import EditQuantityModal from "@/components/EditQuantityModal";
@@ -14,11 +15,8 @@ interface Boisson {
   prixServeur: number;
 }
 
-interface BoissonsProps {
-  onValidate: (updatedBoissons: Boisson[]) => void;
-}
 
-const Boissons = ({ onValidate }: BoissonsProps) => {
+const Boissons = () => {
   const [boissons, setBoissons] = useState<Boisson[]>([]);
   const [newBoissons, setNewBoissons] = useState<Boisson[]>([]); // Nouvel état pour les boissons ajoutées localement
   const [modifiedBoissons, setModifiedBoissons] = useState<Boisson[]>([]); // Nouvel état pour les boissons modifiées localement
@@ -87,7 +85,6 @@ const Boissons = ({ onValidate }: BoissonsProps) => {
       setNewBoissons([]);
       setModifiedBoissons([]);
       
-      onValidate(boissons); // Redirection vers la page GestionStock
     } catch (error) {
       console.error('Error validating boissons:', error);
     }

@@ -306,12 +306,17 @@ export const deleteBoissons = async (id: number) => {
 export const postCommande = async (data: any) => {
   const token = 'DEV_TOKEN'; // Add your token here
 
+  const newData = {
+    "data" : data
+  }
+
+
   try {
     // console.log('data', data);
-    const response = await api.post(`/commandes`, data, {
+    const response = await api.post(`/commandes`, newData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "string"
+        "Content-Type": "application/json"
       }
     });
 

@@ -1,0 +1,7 @@
+{
+  "name": "next-app-template",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}
