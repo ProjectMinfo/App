@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
 import { getBoissons, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
-import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes} from "@/types/index";
+import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from './paiement/page';
 import { Card, CardHeader, Divider, CardBody } from '@nextui-org/react';
@@ -661,10 +661,10 @@ export default function ChatPage() {
   return (
     <>
       <h1 className={title()}>Prise de commande </h1>
-      <div className="flex justify-center min-h-screen mt-20">
-        <div className="flex w-3/4 h-3/4">
+      <div className="flex justify-center min-h-screen mt-20 max-md:mt-0">
+        <div className="flex flex-row max-md:flex-col w-5/6 h-3/4 ">
           <div className="flex-1 m-4 grid">
-            <div className="flex flex-col gap-32">
+            <div className="flex flex-col gap-32 max-md:gap-6">
               <ChatNext
                 repas={repas}
                 setRepasItem={handleSetRepasItem}
@@ -724,8 +724,10 @@ export default function ChatPage() {
               )}
             </div>
           </div>
+
           <div className="w-1 border-r-2 mx-2"></div>
-          <div className="flex-1 m-4 justify-end text-right">
+
+          <div className="flex-1 m-4 justify-end text-right max-md:grid max-md:justify-center">
             <RecapComponent repas={repas} />
             <DetailCommandeModal
               isOpen={isModalOpen}

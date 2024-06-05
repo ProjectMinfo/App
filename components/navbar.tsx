@@ -43,7 +43,7 @@ const Navbarr = () => {
   }, []);
 
   return (
-    <div className="flex">
+    <div className="flex z-50 max-md:w-0 w-1/6">
       {/* Navbar */}
       <div className={`fixed top-0 left-0 h-full bg-red-500 text-white py-4 px-4 w-64 md:w-1/6 z-10 transform ${isNavOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 overflow-y-auto `}>
         <div className="flex flex-col space-y-4">
