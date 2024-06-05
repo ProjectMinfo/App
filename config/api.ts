@@ -307,11 +307,11 @@ export const postCommande = async (data: any) => {
   const token = 'DEV_TOKEN'; // Add your token here
 
   try {
-    console.log('data', data);
+    // console.log('data', data);
     const response = await api.post(`/commandes`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "string"
       }
     });
 

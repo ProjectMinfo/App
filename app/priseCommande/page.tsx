@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
 import { getBoissons, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
-import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/index";
+import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes} from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from './paiement/page';
 import { Card, CardHeader, Divider, CardBody } from '@nextui-org/react';
-import { prepareCommande } from './logic';
+import { prepareCommande } from '@/config/logic';
 import ListeComptesModal from '@/components/listeCompteModal';
+import ListeCommandeModal from '@/components/listeCommandeModal';
 
 
 type NewMenus = {
@@ -95,6 +96,8 @@ export default function ChatPage() {
   const [serveur, isServeur] = useState<boolean>(false);
 
   const [isModalCompteOpen, setIsModalCompteOpen] = useState<boolean>(false);
+  const [isModalCommandeOpen, setIsModalCommandeOpen] = useState<boolean>(false);
+
 
 
   // Fetch data
@@ -693,7 +696,7 @@ export default function ChatPage() {
                   <Button
                     color="default"
                     variant="solid"
-                    onClick={() => isServeur(!serveur)}
+                    onClick={() => setIsModalCommandeOpen(!isModalCommandeOpen)}
                   >
                     Commande en cours
                   </Button>
@@ -712,7 +715,13 @@ export default function ChatPage() {
                   isOpen={isModalCompteOpen}
                   onClose={() => setIsModalCompteOpen(false)}
                 />
-              )}          
+              )}
+              {isModalCommandeOpen && (
+                <ListeCommandeModal
+                  isOpen={isModalCommandeOpen}
+                  onClose={() => setIsModalCommandeOpen(false)}
+                />
+              )}
             </div>
           </div>
           <div className="w-1 border-r-2 mx-2"></div>

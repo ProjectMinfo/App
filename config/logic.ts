@@ -1,6 +1,7 @@
 import { postCommande, getPlats } from "@/config/api";
 import { Boissons, Menus, NewCommandes, Plats, Snacks, Viandes } from "@/types";
 import { useEffect, useState } from "react";
+import crypto from "crypto";
 
 type NewMenus = {
     id: number;
@@ -154,6 +155,24 @@ function getPrice(repas: NewRepas) {
     return parseFloat(price.toFixed(3));;
 }
 
+
+function encryptCommande(commande: any) {
+
+    try {
+        const ENC_KEY = "vuAoN8t3jAmrrUpkjgpY6YgRc4hyjQ8p";
+        const IV = "D2H*wUKNwwii#CH!";
+
+        let cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV);
+        let encrypted = cipher.update(commande, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+        return encrypted;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+
+
 export function prepareCommande(repas: NewRepas, allViandes: Viandes[]) {
 
     const [allPlats, setAllPlats] = useState<Plats[]>([]);
@@ -189,5 +208,8 @@ export function prepareCommande(repas: NewRepas, allViandes: Viandes[]) {
 
     // console.log(commande);
 
-    // postCommande(commande);
+    const encryptedCommande = encryptCommande(JSON.stringify(commande));
+    console.log(encryptedCommande);
+
+    postCommande(encryptedCommande);
 }

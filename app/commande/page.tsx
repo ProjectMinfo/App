@@ -7,7 +7,7 @@ import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/in
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from './paiement/page';
 import { Card, CardHeader, Divider, CardBody } from '@nextui-org/react';
-import { prepareCommande } from './logic';
+import { prepareCommande } from '@/config/logic';
 
 
 type NewMenus = {
@@ -252,7 +252,7 @@ export default function ChatPage() {
     const itemIndex = newRepas[type].findIndex((currentItem) => currentItem.id === item.id);
 
     if (type === "menu") {
-      console.log("delete menu");
+      // console.log("delete menu");
 
       const currentItem = item as NewMenus;
 
