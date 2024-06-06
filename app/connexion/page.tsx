@@ -1,94 +1,89 @@
 'use client';
 import React, { useState } from 'react';
+import { Card, CardHeader, Divider, CardBody, Input, Button, CardFooter } from '@nextui-org/react';
+import { EyeFilledIcon } from "@/public/EyeFilledIcon";
+import { EyeSlashFilledIcon } from "@/public/EyeSlashFilledIcon";
+import { postLogin } from '@/config/api';
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    mdp: '',
-  });
 
-  const [errors, setErrors] = useState({
-    email: '',
-    mdp: '',
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
 
-  const handleChange = (e: { target: { name: any; value: any; }; }) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const [emailInvalide, setEmailInvalide] = useState(false);
+  const [passwordInvalide, setPasswordInvalide] = useState(false);
 
-  const validateEmail = (email: string) => {
-    if (!email.includes('@')) {
-      return "L'email doit contenir un '@'.";
+  const handleSubmit = () => {
+    // Check if email contains "@" and ends with "junia.com"
+    if (password.length < 1) {
+      setPasswordInvalide(true);
     }
-    if (!email.endsWith('@junia.com')) {
-      return "L'email doit se terminer par 'junia.com'.";
+    if (!email.includes("@") || !email.endsWith("junia.com")) {
+      setEmailInvalide(true);
     }
-    return '';
-  };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
-
-    const emailError = validateEmail(formData.email);
-
-    if (emailError) {
-      setErrors({
-        email: emailError,
-        mdp: ''
+    if (!emailInvalide || !passwordInvalide) {
+      const login = { "email": email, "mdp": password };
+      const fetchLogin =  postLogin(login);
+      fetchLogin.then((response) => {
+        if (window.localStorage.getItem('token') !== null && response.token !== null){
+          window.location.href = '/';
+        } else {
+          alert("Erreur lors de la connexion");
+        }
       });
-      return;
     }
-
-    // Réinitialiser les erreurs
-    setErrors({
-      email: '',
-      mdp: ''
-    });
-
-    // Ici vous pouvez ajouter la logique pour envoyer les données à l'API
-    console.log('Form data submitted:', formData);
   };
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Connexion</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm"
-              required
-            />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
-            <input
-              type="password"
-              name="mdp"
-              value={formData.mdp}
-              onChange={handleChange}
-              className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm"
-              required
-            />
-          </div>
-          <div>
-            <button
-              type="submit"
-              className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md shadow hover:bg-blue-600"
-            >
-              Se connecter
+    <Card className="w-96 m-auto my-[50%]">
+      <CardHeader className="">
+        <h1 className='font-bold text-lg'>Connexion</h1>
+      </CardHeader>
+      <Divider />
+      <CardBody className="flex flex-col gap-8 mt-6">
+        <Input
+          isClearable
+          type="email"
+          label="Mail"
+          variant="bordered"
+          placeholder="Votre mail de connexion"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className=""
+          isInvalid={emailInvalide}
+          errorMessage="L'adresse mail doit être avoir un @ et finir par junia.com"
+        />
+        <Input
+          label="Password"
+          variant="bordered"
+          placeholder="Votre mot de passe"
+          endContent={
+            <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+              {isVisible ? (
+                <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+              ) : (
+                <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+              )}
             </button>
-          </div>
-        </form>
-      </div>
-    </div>
+          }
+          type={isVisible ? "text" : "password"}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className=""
+          isInvalid={passwordInvalide}
+          errorMessage="Le mot de passe est nécessaire"
+        />
+        <Button onClick={handleSubmit}>Se connecter</Button>
+      </CardBody>
+      <Divider className='mt-6' />
+      <CardFooter>
+        <p>Vous n'avez pas de compte ? <a href="/inscription" className='text-primary'>Inscrivez-vous</a></p>
+      </CardFooter>
+    </Card>
   );
 };
 

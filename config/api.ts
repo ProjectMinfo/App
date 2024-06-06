@@ -337,7 +337,16 @@ export const postCreateCompte = async (data: any) => {
         "Content-Type": "application/json"
       }
     });
-    return response.data;
+
+    if (response.status === 201) {
+
+      window.localStorage.setItem('password', data.mdp);
+      window.localStorage.setItem('email', data.email);
+      window.localStorage.setItem('user', JSON.stringify(data));
+      return response.data;
+    } else {
+      throw new Error('Error creating compte');
+    }
   } catch (error) {
     console.error('Error creating compte:', error);
     throw error;
@@ -573,6 +582,42 @@ export const postCommandeById = async (id: number, data: any) => {
     return response.data;
   } catch (error) {
     console.error('Error posting commande:', error);
+    throw error;
+  }
+};
+
+
+export const postLogin = async (data: any) => {
+  try {
+    const response = await api.post('/login', JSON.stringify(data), {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    // console.log('response', response.data);
+
+    if (response.status === 200) {
+
+      window.localStorage.setItem('password', data.mdp);
+      window.localStorage.setItem('email', data.email);
+
+      const token = response.data.token;
+      const numCompte = response.data.num_compte;
+
+      window.localStorage.setItem('token', token);
+      window.localStorage.setItem('numCompte', numCompte);
+
+      const user = await getUser(numCompte);
+      window.localStorage.setItem('user', JSON.stringify(user));
+
+      return response.data;
+    } else {
+      throw new Error('Error login');
+    }
+
+    // return response.data;
+  } catch (error) {
+    console.error('Error login:', error);
     throw error;
   }
 };
