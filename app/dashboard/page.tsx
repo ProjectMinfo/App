@@ -78,24 +78,31 @@ function getDatasetFromCollectionType(collectionType: CollectionType, ingredient
 
 function aggregateByTimeFrame(commandes: NewCommandes[], timeFrame: TimeFrame): Map<string, number> {
     const result = new Map<string, number>();
+    const currDate = new Date();
     commandes.forEach((commande) => {
         const date = getDate(commande);
         let key: string;
         switch (timeFrame) {
             case TimeFrame.Jour:
+                if (date.getFullYear() != currDate.getFullYear())
+                    break;
                 key = date.toLocaleDateString();
                 break;
             case TimeFrame.Semaine:
-                key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+                if (date.getFullYear() != currDate.getFullYear())
+                    break;
+                key = getWeekNumber(date.toLocaleDateString()).toString();
                 break;
             case TimeFrame.Mois:
-                key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+                if (date.getFullYear() != currDate.getFullYear())
+                    break;
+                key = getMonthName(date.toLocaleDateString());
                 break;
             case TimeFrame.Annee:
-                key = `${date.getFullYear()}`;
+                key = date.getFullYear().toString();
                 break;
             case TimeFrame.Toujours:
-                key = "all_time";
+                key = date.toLocaleDateString();
                 break;
         }
         if (result.has(key)) {
@@ -325,17 +332,26 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
-    // Sort ingredients by quantity
-    const sortedIngredients = ingredients.sort((a, b) => b.quantite - a.quantite);
-    const sortedSnacks = snacks.sort((a, b) => b.quantite - a.quantite);
-
     // Aggregate commandes by time frame and sort labels
     const commandesByTimeFrame = aggregateByTimeFrame(commandes, timeFrame);
     let mapArray = Array.from(commandesByTimeFrame.entries());
     mapArray.sort((a, b) => {
-        const dateA = new Date(a[0]);
-        const dateB = new Date(b[0]);
-        return dateA.getDate() - dateB.getDate();
+        switch (timeFrame) {
+            case TimeFrame.Jour:
+                const dateA = new Date(a[0]);
+                const dateB = new Date(b[0]);
+                return dateA.getDate() - dateB.getDate();
+            case TimeFrame.Semaine:
+                return parseInt(a[0]) - parseInt(b[0]);
+            case TimeFrame.Mois:
+                return getMonthNumber(a[0]) - getMonthNumber(b[0]);
+            case TimeFrame.Annee:
+                return parseInt(a[0]) - parseInt(b[0]);
+            case TimeFrame.Toujours:
+                const dateC = new Date(a[0]);
+                const dateD = new Date(b[0]);
+                return dateC.getUTCDate() - dateD.getUTCDate();
+        }
     });
     const sortedCommandes = new Map<string, number>(mapArray);
 
@@ -367,7 +383,7 @@ const Dashboard = () => {
         datasets: [
             {
                 label: `Commandes par ${TimeFrame[timeFrame].toLowerCase()}`,
-                data: Array.from(commandesByTimeFrame.values()),
+                data: Array.from(sortedCommandes.values()),
                 fill: false,
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgba(255, 99, 132, 0.2)',
@@ -413,6 +429,19 @@ const Dashboard = () => {
             <div className="grid grid-cols-6 gap-4">
                 <Card className="col-span-6 p-2">
                     <CardHeader
+                        className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Commandes</CardHeader>
+                    <CardBody>
+                        <select value={timeFrame} onChange={(e) => setTimeFrame(Number(e.target.value))}>
+                            {Object.values(TimeFrame).filter(value => typeof value === 'number').map((value, index) => (
+                                <option key={index} value={value}>{TimeFrame[value]}</option>
+                            ))}
+                        </select>
+                        <Line data={commandesData}/>
+                    </CardBody>
+                </Card>
+
+                <Card className="col-span-4 p-2">
+                    <CardHeader
                         className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Températures
                         frigo</CardHeader>
                     <CardBody>
@@ -425,18 +454,6 @@ const Dashboard = () => {
                     </CardBody>
                 </Card>
 
-                <Card className="col-span-4 p-2">
-                    <CardHeader
-                        className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Commandes</CardHeader>
-                    <CardBody>
-                        <select value={timeFrame} onChange={(e) => setTimeFrame(Number(e.target.value))}>
-                            {Object.values(TimeFrame).filter(value => typeof value === 'number').map((value, index) => (
-                                <option key={index} value={value}>{TimeFrame[value]}</option>
-                            ))}
-                        </select>
-                        <Line data={commandesData}/>
-                    </CardBody>
-                </Card>
 
                 <Card className="col-span-2 row-span-1 p-2">
                     <CardHeader className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Dernières
