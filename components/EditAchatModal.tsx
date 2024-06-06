@@ -12,8 +12,8 @@ interface EditAchatModalProps {
         categorie: number,
         numLot: string,
         nbPortions: number,
-        dateOuverture: Date,
-        dateFermeture: Date,
+        dateOuverture: Date | null,
+        dateFermeture: Date | null,
         dlc: Date,
         etat: number
     ) => void;
@@ -21,8 +21,8 @@ interface EditAchatModalProps {
     currentCategorie: number;
     currentNumLot: string;
     currentNbPortions: number;
-    currentDateOuverture: Date;
-    currentdateFermeture: Date;
+    currentDateOuverture: Date | null;
+    currentdateFermeture: Date | null;
     currentDlc: Date;
     currentEtat: number;
 }
@@ -51,7 +51,7 @@ const formatDate = (date: any) => {
 };
 
 
-export default function EditAccountModal({
+export default function EditAchatModal({
     isOpen,
     onClose,
     onSubmit,
@@ -69,8 +69,8 @@ export default function EditAccountModal({
     const [categorie, setCategorie] = useState<number>(currentCategorie);
     const [numLot, setNumLot] = useState<string>(currentNumLot);
     const [nbPortions, setNbPortions] = useState<number>(currentNbPortions);
-    const [dateOuverture, setDateOuverture] = useState<Date>(currentDateOuverture);
-    const [dateFermeture, setDateFermeture] = useState<Date>(currentdateFermeture);
+    const [dateOuverture, setDateOuverture] = useState<Date | null>(currentDateOuverture);
+    const [dateFermeture, setDateFermeture] = useState<Date | null>(currentdateFermeture);
     const [dlc, setDlc] = useState<any>(currentDlc);
     const [formatDlc, setFormatDlc] = useState(parseDate("2024-04-04"));
     const [etat, setEtat] = useState<number>(currentEtat);
@@ -111,7 +111,15 @@ export default function EditAccountModal({
     };
 
     const isEtatSelected = (accessSelected: string) => {
-        setEtat(Number(accessSelected)); // Update the selected access
+        const selectedEtat = Number(accessSelected);
+        setEtat(selectedEtat);
+        if (selectedEtat === EtatAchat.NonEntame) {
+            setDateOuverture(null); // Set the opening date to null
+            setDateFermeture(null); // Set the closing date to null
+        }
+        if (selectedEtat === EtatAchat.Ouvert) {
+            setDateFermeture(null); // Set the closing date to null
+        }
     }
 
     const handleSubmit = () => {
@@ -138,17 +146,17 @@ export default function EditAccountModal({
                         autoFocus
                         label="Numéro de lot"
                         type="string"
+                        variant="bordered"
                         value={numLot}
                         onChange={handleNumLotChange}
-                        variant="bordered"
                     />
 
                     <Input
                         label="Quantité de l'article"
                         type="number"
+                        variant="bordered"
                         value={String(nbPortions)}
                         onChange={handleNbPortionsChange}
-                        variant="bordered"
                     />
 
                     <RadioGroup
@@ -166,6 +174,7 @@ export default function EditAccountModal({
 
                     <DateInput
                         label="Date limite de consommation :"
+                        variant="faded"
                         value={formatDlc}
                         onChange={handleDlcChange}
                     />

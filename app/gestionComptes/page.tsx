@@ -163,7 +163,7 @@ export default function GestionComptePage() {
     <div>
       <div className="mb-4">
         <Input
-          isClearable
+          autoFocus
           placeholder="Rechercher..."
           onChange={(e) => setSearchTerm(e.target.value)}
         />
