@@ -1,7 +1,8 @@
 'use client';
 import React, { useState, useEffect } from "react";
-import { getPlanning, postPlanning, deletePlanning, getPlanningCourse, postPlanningCourse, deletePlanningCourse, getAllPlanning } from "@/config/api";
+import { getPlanning, postPlanning, deletePlanning, getPlanningCourse, postPlanningCourse, deletePlanningCourse, getAllPlanning, getComptes } from "@/config/api";
 import { jsPDF } from "jspdf";
+import 'jspdf-autotable';
 
 type Day = "Lundi" | "Mardi" | "Mercredi" | "Jeudi" | "Vendredi";
 
@@ -18,6 +19,19 @@ interface PlanningCourses {
   numCompte: number | null;
   numSemaine: number | null;
   prenom: string;
+}
+
+export interface Comptes {
+  acces: number;
+  email: string;
+  mdp: string;
+  montant: number;
+  nom: string;
+  numCompte: number;
+  prenom: string;
+  promo: number;
+  resetToken: string;
+  tokenExpiration: string;
 }
 
 const emptySlot: Slot = {
@@ -82,9 +96,8 @@ const PlanningServeur = () => {
       });
       setSlots(newSlots);
     } catch (error) {
-      console.error("Erreur lors de la récupération du planning :", error);
+      console.error("Erreur lors de la récupération du planning : planning vide ou bug", error);
       setSlots(initialSlots);
-      setError("Erreur lors de la récupération du planning");
     }
   };
 
@@ -239,9 +252,18 @@ const PlanningServeur = () => {
   const handleCalculateStats = async () => {
     try {
       const plannings = await getAllPlanning();
+      const allComptes = await getComptes();
+      const comptesMap = new Map<number, Comptes>(allComptes.map((compte: Comptes) => [compte.numCompte, compte]));
+
       const statsData: any = {};
 
-      plannings.forEach((planning: any) => {
+      // Filter users with access level 1 or 2
+      const filteredPlannings = plannings.filter((planning: any) => {
+        const compte = comptesMap.get(planning.numCompte);
+        return compte && (compte.acces === 1 || compte.acces === 2);
+      });
+
+      filteredPlannings.forEach((planning: any) => {
         const { prenom, numPoste } = planning;
         if (!statsData[prenom]) {
           statsData[prenom] = { inscrit: 0, courses: 0 };
@@ -272,28 +294,35 @@ const PlanningServeur = () => {
 
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
+
+    const addPodium = (title: string, data: any, startY: number, key: string) => {
+      doc.setFontSize(14);
+      doc.setTextColor(0);
+      doc.setFillColor(255, 255, 255);
+      doc.rect(10, startY - 10, 190, 8, 'F');
+      doc.text(title, 10, startY - 2);
+      
+      data.forEach((item: any, index: number) => {
+        let color;
+        if (index === 0) color = [255, 215, 0];
+        else if (index === 1) color = [192, 192, 192];
+        else if (index === 2) color = [205, 127, 50];
+        else color = [255, 255, 255];
+
+        doc.setFillColor.apply(doc, color as [number, number, number]);
+        doc.rect(10, startY + index * 10, 190, 8, 'F');
+        doc.setTextColor(0);
+        doc.text(`${index + 1}. ${item[0]} - ${item[1][key]} ${key}`, 15, startY + index * 10 + 6);
+      });
+    };
+
     doc.text("Statistiques des serveurs", 10, 10);
 
     if (stats) {
-      doc.text("Top 10 des moins inscrits", 10, 20);
-      stats.top10LeastInscrit.forEach((item: any, index: number) => {
-        doc.text(`${index + 1}. ${item[0]} - ${item[1].inscrit} inscriptions`, 10, 30 + index * 10);
-      });
-
-      doc.text("Top 10 des plus inscrits", 10, 80);
-      stats.top10MostInscrit.forEach((item: any, index: number) => {
-        doc.text(`${index + 1}. ${item[0]} - ${item[1].inscrit} inscriptions`, 10, 90 + index * 10);
-      });
-
-      doc.text("Top 10 des moins de courses", 10, 140);
-      stats.top10LeastCourses.forEach((item: any, index: number) => {
-        doc.text(`${index + 1}. ${item[0]} - ${item[1].courses} courses`, 10, 150 + index * 10);
-      });
-
-      doc.text("Top 10 des plus de courses", 10, 200);
-      stats.top10MostCourses.forEach((item: any, index: number) => {
-        doc.text(`${index + 1}. ${item[0]} - ${item[1].courses} courses`, 10, 210 + index * 10);
-      });
+      addPodium("Top 10 des moins inscrits", stats.top10LeastInscrit, 20, "inscrit");
+      addPodium("Top 10 des plus inscrits", stats.top10MostInscrit, 100, "inscrit");
+      addPodium("Top 10 des moins de courses", stats.top10LeastCourses, 180, "courses");
+      addPodium("Top 10 des plus de courses", stats.top10MostCourses, 260, "courses");
     }
 
     doc.save("server-stats.pdf");
@@ -440,7 +469,7 @@ const PlanningServeur = () => {
                     <h3 className="text-lg font-bold mb-2 p-2 border rounded ">Top 10 des moins de courses</h3>
                     {stats.top10LeastCourses.map((item: any, index: number) => (
                       <div key={index} className="mb-1">
-                        {index + 1}. {item[0]} - {item[1].courses} courses
+                        {index + 1}. {item[0]} - {item[1].courses}
                       </div>
                     ))}
                   </div>
@@ -448,7 +477,7 @@ const PlanningServeur = () => {
                     <h3 className="text-lg font-bold mb-2 p-2 border rounded ">Top 10 des plus de courses</h3>
                     {stats.top10MostCourses.map((item: any, index: number) => (
                       <div key={index} className="mb-1">
-                        {index + 1}. {item[0]} - {item[1].courses} courses
+                        {index + 1}. {item[0]} - {item[1].courses}
                       </div>
                     ))}
                   </div>
