@@ -1,11 +1,15 @@
 'use client'; // Indique que ce composant doit être rendu côté client.
 import React, { useState, useEffect } from "react";
-import { getUser, getCommandesByIdUser } from "@/config/api";
+import { getUser, getCommandesByIdUser, getBoissons, getSnacks } from "@/config/api";
+import { Card } from "@nextui-org/react";
 
 const Compte = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [commandes, setCommandes] = useState(null);
+  const [commandes, setCommandes] = useState([]);
+  const [boissonsAll, setBoissonsAll] = useState([]);
+  const [snacksAll, setSnacksAll] = useState([]);
+  const [commandesAffichees, setCommandesAffichees] = useState(5);
 
   useEffect(() => {
     async function fetchData() {
@@ -14,12 +18,17 @@ const Compte = () => {
         setUser(fetchedUser);
         const fetchedCommandes = await getCommandesByIdUser(587);
         setCommandes(fetchedCommandes);
+        const fetchedBoissons = await getBoissons();
+        setBoissonsAll(fetchedBoissons);
+        const fetchedSnacks = await getSnacks();
+        setSnacksAll(fetchedSnacks);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
         setIsLoading(false);
       }
     }
+
     fetchData();
   }, []);
 
@@ -32,62 +41,125 @@ const Compte = () => {
     const jour = ('0' + date.getDate()).slice(-2); // Obtient le jour avec un zéro initial si nécessaire
     const mois = ('0' + (date.getMonth() + 1)).slice(-2); // Obtient le mois avec un zéro initial si nécessaire
     const annee = date.getFullYear(); // Obtient l'année
-    const dateFormatted = `${jour}/${mois}/${annee}`;
-    return dateFormatted;
+    return `${jour}/${mois}/${annee}`;
+  };
+
+  const countPlats = (plats) => {
+    const platCounts = new Map();
+    plats.forEach(plat => {
+      platCounts.set(plat, (platCounts.get(plat) || 0) + 1);
+    });
+    return platCounts;
   };
 
   const commandeContenu = (commande) => {
-    const items = commande.contenu
-      .split("//")
-      .map(item => item.trim().split(":")[0]) // Prend seulement le nom du plat avant les ingrédients
-      .filter(item => item !== "");
+    let platsAffiche = "";
+    if (commande.contenu) {
+      const regex = /([A-Za-zÀ-ÖØ-öø-ÿ\s-]+)(?=:)/g;
+      const platsMatches = commande.contenu.match(regex);
+      if (platsMatches) {
+        const plats = platsMatches.map(match => match.trim());
+        const platCounts = countPlats(plats);
+        platsAffiche = "Plat(s) : " + [...platCounts.entries()].map(([plat, count]) => `${count} ${plat}`).join(", ");
+      }
+    }
 
-    const itemCounts = {};
-    items.forEach(item => {
-      itemCounts[item] = (itemCounts[item] || 0) + 1;
-    });
+    let boissonsAffiche = "";
+    if (commande.boissons && commande.boissons.length !== 0) {
+      boissonsAffiche = "Boisson(s) :";
+      for (const boissonElem of commande.boissons) {
+        boissonsAffiche += ` ${boissonElem[1]} ${boissonsAll[boissonElem[0]].nom},`;
+      }
+      boissonsAffiche = boissonsAffiche.slice(0, -1); // Supprimer la dernière virgule
+    }
 
-    return itemCounts;
+    let snacksAffiche = "";
+    if (commande.snacks && commande.snacks.length !== 0) {
+      snacksAffiche = "Snack(s) :";
+      for (const snackElem of commande.snacks) {
+        snacksAffiche += ` ${snackElem[1]} ${snacksAll[snackElem[0]].nom},`;
+      }
+      snacksAffiche = snacksAffiche.slice(0, -1); // Supprimer la dernière virgule
+    }
+
+    return [platsAffiche, boissonsAffiche, snacksAffiche].filter(Boolean).join("<br>");
+  };
+
+  const handleShowMore = () => {
+    setCommandesAffichees(prevCount => Math.min(prevCount + 5, commandes.length));
+  };
+
+  const handleShowLess = () => {
+    setCommandesAffichees(prevCount => Math.max(prevCount - 5, 5));
   };
 
   return (
-    <div className="min-h-screen flex flex-col p-8">
-      <h1 className="text-3xl font-bold mb-6">Compte</h1>
+    <div className="container mx-auto p-4 bg-black text-white min-h-screen">
       <div className="flex-grow flex w-full space-x-8">
-        <div id="gauche" className="w-1/2 p-6 shadow-md rounded-lg border-2 border-red-500">
-          <h2 className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Mes informations personnelles</h2>
+        <Card className="w-1/3 h-3/4">
+          <h2 className="text-2xl font-semibold mb-4 text-center">Mes informations personnelles</h2>
           <p className="mb-4">Pour modifier ces informations, merci de vous rendre au comptoir.</p>
-          <div className="space-y-2">
-            <p><strong>Nom : {user.nom}</strong> </p>
-            <p><strong>Prénom : {user.prenom}</strong> </p>
-            <p><strong>Identifiant : {user.numCompte}</strong> </p>
-            <p><strong>Adresse mail : {user.email}</strong> </p>
-            <p><strong>Promo : {user.promo}</strong> </p>
+          <div className="space-y-2 m-2">
+            <div className="text-left"><a className="font-bold">Nom :  </a>{user.nom}</div>
+            <div className="text-left"><a className="font-bold">Prénom :  </a>{user.prenom}</div>
+            <div className="text-left"><a className="font-bold">Identifiant :  </a>{user.numCompte}</div>
+            <div className="text-left"><a className="font-bold">Adresse mail :  </a>{user.email}</div>
+            <div className="text-left"><a className="font-bold">Promo :  </a>{user.promo}</div>
           </div>
-          <button className="mt-4 px-4 py-2 border-2 border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition">Me déconnecter</button>
-        </div>
-        <div id="droite" className="w-1/2 p-6 shadow-md rounded-lg border-2 border-red-500">
-          <h2 className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Mes transactions</h2>
-          <p className="mb-4">Solde actuel : {user.montant.toFixed(2)} €</p>
-          <ul>
-            {commandes.map((commande) => {
-              const itemCounts = commandeContenu(commande);
-              return (
-                <li key={commande.id} className="mb-2">
-                  <p className="font-semibold">{toDate(commande.date.$date.$numberLong)} :</p>
-                  <ul>
-                    {Object.entries(itemCounts).map(([item, count]) => (
-                      <li key={item}>{count} {item}</li>
-                    ))}
-                  </ul>
-                </li>
-              );
-            })}
-          </ul>
+          <button className="bg-red-500 text-white py-2 px-4 rounded">Me déconnecter</button>
+        </Card>
+        <div className="w-2/3">
+          <div className="flex justify-between mb-4">
+            <h2 className="text-2xl font-semibold mb-4 text-left">Mes transactions</h2>
+            <div className="bg-green-500 text-white px-7 p-4 rounded">Solde actuel : {user.montant.toFixed(2)} €</div>
+          </div>
+          <table className="min-w-full bg-black text-white shadow-md rounded-lg mb-4">
+            <thead className="bg-gray-700">
+              <tr>
+                <th className="py-2 px-4 border-b border-gray-600 text-center">Date</th>
+                <th className="py-2 px-4 border-b border-gray-600 text-left">Contenu</th>
+                <th className="py-2 px-4 border-b border-gray-600 text-center">Prix</th>
+              </tr>
+            </thead>
+            <tbody>
+              {commandes
+                .filter(commande => commande.prix > 0)
+                .slice(0, commandesAffichees)
+                .map((commande) => {
+                  const contenu = commandeContenu(commande);
+                  const prix = commande.prix.toFixed(2);
+                  return (
+                    <tr key={commande.id} className="hover:bg-gray-600 cursor-pointer">
+                      <td className="py-2 px-4 border-b border-gray-600 text-center">{toDate(commande.date.$date.$numberLong)}</td>
+                      <td className="py-2 px-4 border-b border-gray-600 text-left" dangerouslySetInnerHTML={{ __html: contenu }}></td>
+                      <td className="py-2 px-4 border-b border-gray-600 text-center">{prix} €</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+          <div className="flex justify-between mt-4">
+            {commandesAffichees < commandes.length && (
+              <button
+                onClick={handleShowMore}
+                className="bg-blue-500 text-white py-2 px-4 rounded"
+              >
+                Afficher plus
+              </button>
+            )}
+            {commandesAffichees > 5 && (
+              <button
+                onClick={handleShowLess}
+                className="bg-blue-500 text-white py-2 px-4 rounded"
+              >
+                Afficher moins
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Compte; // Exporte le composant Compte par défaut.
+export default Compte;

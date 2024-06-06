@@ -75,6 +75,7 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
       placement="top-center"
       isDismissable={false}
       isKeyboardDismissDisabled={true}
+      className="max-md:my-auto"
     >
       <ModalContent>
         {() => (

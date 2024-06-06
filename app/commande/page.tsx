@@ -7,7 +7,7 @@ import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/in
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from './paiement/page';
 import { Card, CardHeader, Divider, CardBody } from '@nextui-org/react';
-import { prepareCommande } from './logic';
+import { prepareCommande } from '@/config/logic';
 
 
 type NewMenus = {
@@ -252,7 +252,7 @@ export default function ChatPage() {
     const itemIndex = newRepas[type].findIndex((currentItem) => currentItem.id === item.id);
 
     if (type === "menu") {
-      console.log("delete menu");
+      // console.log("delete menu");
 
       const currentItem = item as NewMenus;
 
@@ -656,8 +656,8 @@ export default function ChatPage() {
   return (
     <>
     <h1 className={title()}>Commande !</h1>
-    <div className="flex justify-center min-h-screen mt-20">
-      <div className="flex w-3/4 h-3/4">
+    <div className="flex justify-center min-h-screen mt-20 max-md:mt-0">
+      <div className="flex flex-row max-md:flex-col w-5/6 h-3/4 ">
         <div className="flex-1 m-4 grid gap-32">
           <ChatNext
             repas={repas}
@@ -666,8 +666,10 @@ export default function ChatPage() {
             setCurrentStep={setCurrentStep}
           />
         </div>
+
         <div className="w-1 border-r-2 mx-2"></div>
-        <div className="flex-1 m-4 justify-end text-right">
+
+        <div className="flex-1 m-4 justify-end text-right max-md:grid max-md:justify-center">
           <RecapComponent repas={repas} />
           <DetailCommandeModal
             isOpen={isModalOpen}
