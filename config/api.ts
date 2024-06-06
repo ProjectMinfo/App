@@ -370,7 +370,7 @@ export const getPlanning = async (numSemaine: number) => {
 // Fonction pour poster le planning
 export const postPlanning = async (data: any) => {
   try {
-    const response = await api.post('/planning', JSON.stringify(data), {
+    const response = await api.post('/planning', data, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
@@ -382,6 +382,64 @@ export const postPlanning = async (data: any) => {
     throw error;
   }
 };
+
+export const deletePlanning = async (idPlanning: number) => {
+  try {
+    const response = await api.delete(`/planning/${idPlanning}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting planning:', error);
+    throw error;
+  }
+};
+
+export const getAllPlanning = async () => {
+  try {
+    const response = await api.get(`/planning`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching planning:', error);
+    throw error;
+  }
+};
+
+// Fonction pour obtenir le planning de la semaine
+export const getPlanningCourse = async (numSemaine: number) => {
+  try {
+    const response = await api.get(`/planning-courses/week/${numSemaine}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching planning:', error);
+    throw error;
+  }
+};
+
+// Fonction pour poster le planning
+export const postPlanningCourse = async (data: any) => {
+  try {
+    const response = await api.post('/planning-courses', data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error posting planning:', error);
+    throw error;
+  }
+};
+
+export const deletePlanningCourse = async (id: number) => {
+  try {
+    const response = await api.delete(`/planning-courses/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting planning:', error);
+    throw error;
+  }
+};
+
 
 export const postPlats = async (data: any) => {
   try {

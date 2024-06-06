@@ -165,7 +165,7 @@ export interface Planning {
 export interface PlanningCourses {
   id: number;
   date: string;
-  idUser: number;
+  numCompte: number;
   numSemaine: number;
   prenom: string;
 }
