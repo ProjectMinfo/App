@@ -1,12 +1,15 @@
 'use client';
 import React, { Key, useState, useEffect } from "react";
-import { Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
+import { Button, Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
 import { getAchats, postEditAchat, deleteAchats } from "@/config/api";
+import { FaShoppingCart } from "react-icons/fa";
 import { SlSocialDropbox } from "react-icons/sl";
 import { BsBoxSeam } from "react-icons/bs";
 import { FaSkullCrossbones } from "react-icons/fa6";
 import { EditIcon } from "@/public/EditIcon.jsx";
 import { DeleteIcon } from "@/public/DeleteIcon.jsx";
+import { BiRevision } from "react-icons/bi";
+import AddAchatModal from "@/components/AddAchatModal";
 import EditAchatModal from "@/components/EditAchatModal";
 import DeleteAchatModal from "@/components/DeleteAchatModal";
 
@@ -14,8 +17,8 @@ import DeleteAchatModal from "@/components/DeleteAchatModal";
 type Achat = {
   idAchat: number;
   categorie: number;
-  dateFermeture: Date;
-  dateOuverture: Date;
+  dateFermeture: Date | null;
+  dateOuverture: Date | null;
   dlc: Date;
   etat: number;
   idProduit: number;
@@ -102,19 +105,21 @@ function isDateExpired(achat: any) {
 }
 
 const convertDateToBDDFormat = (date: any) => {
-  if (date.$date) {
-    return date
-  }
+  if (date === null) { return null; }
+  if (date.$date) { return date }
 
   const newDate = new Date(date).toISOString();
   return {
-    $date: newDate
+    $date: {
+      $numberLong: String(new Date(newDate).getTime())
+    }
   };
 };
 
 
 export default function GestionAchatsPage() {
 
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentAchat, setCurrentAchat] = useState<Achat | null>(null);
@@ -137,19 +142,35 @@ export default function GestionAchatsPage() {
 
   const onChangementEtat = async (achat: Achat) => {
     const changedAchat = { ...achat };
-    if (achat.etat === EtatAchat.NonEntame) {
-      changedAchat.etat = EtatAchat.Ouvert; // Si l'achat est non entamé, on l'ouvre
-    }
-    else if (achat.etat === EtatAchat.Ouvert) {
-      changedAchat.etat = EtatAchat.Consomme; // Si l'achat est ouvert, on le consomme
-    }
-    else if (achat.etat === EtatAchat.Consomme) {
-      changedAchat.etat = EtatAchat.NonEntame; // Si l'achat est consommé, on le remet en stock
-    }
-    else if (achat.etat === EtatAchat.Perime) {
-      changedAchat.etat = EtatAchat.Perte; // Si l'achat est perimé, on le déclare comme une perte
-    }
+    switch (achat.etat) {
+      case EtatAchat.NonEntame:
+        changedAchat.etat = EtatAchat.Ouvert; // Si l'achat est non entamé, on l'ouvre
+        changedAchat.dateOuverture = convertDateToBDDFormat(new Date()); // On met la date d'ouverture à la date actuelle
+        changedAchat.dateFermeture = convertDateToBDDFormat(null); // On met la date de fermeture à la date actuelle
+        break;
 
+      case EtatAchat.Ouvert:
+        changedAchat.etat = EtatAchat.Consomme; // Si l'achat est ouvert, on le consomme
+        changedAchat.dateFermeture = convertDateToBDDFormat(new Date()); // On met la date de fermeture à la date actuelle
+        break;
+
+      case EtatAchat.Consomme:
+        changedAchat.etat = EtatAchat.NonEntame; // Si l'achat est consommé, on le remet en stock
+        changedAchat.dateOuverture = convertDateToBDDFormat(null); // On met la date d'ouverture à null
+        changedAchat.dateFermeture = convertDateToBDDFormat(null); // On met la date de fermeture à null
+        break;
+
+      case EtatAchat.Perime:
+        changedAchat.etat = EtatAchat.Perte; // Si l'achat est perimé, on le déclare comme une perte
+        changedAchat.dateFermeture = convertDateToBDDFormat(new Date()); // On met la date de fermeture à la date actuelle
+        break;
+
+      case EtatAchat.Perte:
+        changedAchat.etat = EtatAchat.Perime; // Si l'achat est perdu, on le remet en stock
+        changedAchat.dateOuverture = convertDateToBDDFormat(null); // On met la date d'ouverture à null
+        changedAchat.dateFermeture = convertDateToBDDFormat(null); // On met la date de fermeture à null
+        break;
+    }
     // On retire l'achat courant de la liste
     const newListAchats = achats.filter(achat => achat.idAchat !== changedAchat.idAchat)
 
@@ -171,6 +192,39 @@ export default function GestionAchatsPage() {
     }
   };
 
+  // ADD //
+
+  const onAddOpen = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const onAddClose = () => {
+    setIsAddModalOpen(false);
+  };
+
+  const onAddSubmit = async (newAchat: Achat) => {
+    if (newAchat && achats) {
+      const updatedAchats = [...achats, newAchat]; // On ajoute l'achat à la liste
+      updatedAchats.sort((a: Achat, b: Achat) => a.idAchat - b.idAchat); // On retrie la liste
+      setAchats(updatedAchats); // On met à jour la liste des achats
+      newAchat.idAchat = -1; // Pour créer un nouvel achat
+
+      try {
+        await postEditAchat(newAchat); // Appel à l'API pour enregistrer les modifications
+        console.log("Achat added successfully in the API");
+      }
+      catch (error) {
+        console.error("Error adding achat:", error);
+      }
+    }
+
+    onAddClose();
+  };
+
+
+
+
+
 
   // EDIT //
 
@@ -185,12 +239,13 @@ export default function GestionAchatsPage() {
     setCurrentAchat(null);
   };
 
-  const onEditSubmit = async (nomArticle: string,
+  const onEditSubmit = async (
+    nomArticle: string,
     categorie: number,
     numLot: string,
     nbPortions: number,
-    dateOuverture: Date,
-    dateFermeture: Date,
+    dateOuverture: Date | null,
+    dateFermeture: Date | null,
     dlc: Date,
     etat: number) => {
 
@@ -209,7 +264,11 @@ export default function GestionAchatsPage() {
     if (newCurrentAchat && achats) {
 
       // Mettre à jour l'achat courant avec les nouvelles données avant de l'envoyer à l'API
-      const updatedAchat: Achat = { ...currentAchat, ...newCurrentAchat, dlc: convertDateToBDDFormat(dlc) };
+      const updatedAchat: Achat = {
+        ...currentAchat,
+        ...newCurrentAchat,
+        dlc: convertDateToBDDFormat(dlc)
+      };
 
       // On retire l'achat courant de la liste
       const newListAchats = achats.filter(achat => achat.idAchat !== updatedAchat.idAchat)
@@ -351,7 +410,6 @@ export default function GestionAchatsPage() {
           </div>
         )
       case "etat":
-        console.log(achat.qtePerimee)
         if (isDateExpired(achat) === Expiration.DateExpirée
           && (achat.etat === EtatAchat.NonEntame || achat.etat === EtatAchat.Ouvert)) {
           achat.etat = EtatAchat.Perime; // Si l'achat est périmé on l'affiche comme tel
@@ -386,7 +444,7 @@ export default function GestionAchatsPage() {
                 achat.etat === EtatAchat.NonEntame ? <SlSocialDropbox /> // Ouverture de l'achat
                   : achat.etat === EtatAchat.Ouvert ? <BsBoxSeam /> // Jeter l'achat
                     : achat.etat === EtatAchat.Perime ? <FaSkullCrossbones /> // Jeter l'achat perimé
-                      : <></> // Default
+                      : <BiRevision /> // Remettre l'achat en stock
               }
             </span>
 
@@ -421,15 +479,33 @@ export default function GestionAchatsPage() {
 
   return (
     <div>
-      <div className="mb-4">
+
+      <div className="flex gap-4 mb-4">
+        <Button
+          variant="faded"
+          aria-label="Ajouter un achat"
+          onClick={() => onAddOpen()}
+        >
+          <AddAchatModal 
+            isOpen={isAddModalOpen}
+            onClose={onAddClose}
+            onSubmit={onAddSubmit}>
+          </AddAchatModal>
+
+          <FaShoppingCart /> {/* Icone de caddie */}
+
+        </Button>
+
         <Input
-          isClearable
+          autoFocus
           placeholder="Rechercher par article / numéro de lot"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-      </div>
 
-      <Checkbox onValueChange={setIsAfficherLesAchatsConsommes}>Afficher les articles consommé</Checkbox>
+        <Checkbox onValueChange={setIsAfficherLesAchatsConsommes} style={{ whiteSpace: 'nowrap' }}>
+          Afficher les achats consommés
+        </Checkbox>
+      </div>
 
       <Table aria-label="Liste des achats">
 
