@@ -45,8 +45,7 @@ type NewRepas = {
   boisson: NewBoissons[];
   complete: boolean;
   remainingPlats: number;
-  remainingBoissons: number;
-  remainingSnacks: number;
+  remainingPerifs: number;
   currentMenu?: NewMenus;
 };
 
@@ -76,8 +75,7 @@ export default function ChatPage() {
     boisson: [],
     complete: false,
     remainingPlats: 0,
-    remainingBoissons: 0,
-    remainingSnacks: 0
+    remainingPerifs: 0,
   });
 
   const [currentStep, setCurrentStep] = useState<string>("other");
@@ -179,8 +177,7 @@ export default function ChatPage() {
         newRepas.menu.push(item);
         newRepas.currentMenu = item
         newRepas.remainingPlats = item.menu.quantitePlat;
-        newRepas.remainingBoissons = item.menu.quantiteBoisson;
-        newRepas.remainingSnacks = item.menu.quantiteSnack;
+        newRepas.remainingPerifs = item.menu.quantiteBoisson + item.menu.quantiteSnack;
         setCurrentMenuId(item.menuId);
         setIsMenuDone(false);
         break;
@@ -201,7 +198,7 @@ export default function ChatPage() {
         break;
       case "snack":
         if (!isMenuDone) {
-          newRepas.remainingSnacks -= 1;
+          newRepas.remainingPerifs -= 1;
           const snackInMenu = item
           snackInMenu.snack.prix = 0;
           snackInMenu.snack.prixServeur = 0;
@@ -215,7 +212,7 @@ export default function ChatPage() {
         break;
       case "boisson":
         if (!isMenuDone) {
-          newRepas.remainingBoissons -= 1;
+          newRepas.remainingPerifs -= 1;
           const boissonInMenu = item
           boissonInMenu.boisson.prix = 0;
           boissonInMenu.boisson.prixServeur = 0;
@@ -229,7 +226,7 @@ export default function ChatPage() {
         break;
     }
 
-    if (newRepas.menu.length > 0 && newRepas.remainingPlats === 0 && newRepas.remainingBoissons === 0 && newRepas.remainingSnacks === 0) {
+    if (newRepas.menu.length > 0 && newRepas.remainingPlats === 0 && newRepas.remainingPerifs === 0) {
       setIsMenuDone(true);
     }
 
@@ -240,10 +237,6 @@ export default function ChatPage() {
   const getNextStep = (item: AllType, repas: NewRepas): string => {
     if (repas.remainingPlats > 0) {
       return "plat";
-    } else if (repas.remainingBoissons > 0) {
-      return "boisson";
-    } else if (repas.remainingSnacks > 0) {
-      return "snack";
     } else {
       return "other";
     }
@@ -322,8 +315,16 @@ export default function ChatPage() {
               </p>
             </CardBody>
           </div>
-          <Divider />
+          {/* <Divider /> */}
         </Card>
+        <Divider />
+        {repas.remainingPlats > 0 ? (
+          <div>
+            <h2>Il reste <span className='text-danger'>{repas.remainingPlats} plat(s)</span> à choisir</h2>
+          </div>
+        ) : (
+          null
+        )}
         <Card className="max-w-[400px]">
           <CardHeader className="flex gap-3">
             <div className="flex flex-col">
@@ -369,8 +370,17 @@ export default function ChatPage() {
               ))
             )}
           </div>
-          <Divider />
+          {/* <Divider /> */}
         </Card>
+        <Divider />
+        {repas.remainingPerifs > 0 ? (
+          <div>
+            <h2> Il reste <span className='text-danger'>{repas.remainingPerifs} accompagnement(s)</span> à choisir</h2>
+          </div>
+        ) : (
+          null
+        )}
+
         <Card className="max-w-[400px]">
           <CardHeader className="flex gap-3">
             <div className="flex flex-col">
@@ -407,7 +417,7 @@ export default function ChatPage() {
               </p>
             </CardBody>
           </div>
-          <Divider />
+          {/* <Divider /> */}
         </Card>
         <Card className="max-w-[400px]">
           <CardHeader className="flex gap-3">
@@ -445,7 +455,7 @@ export default function ChatPage() {
               </p>
             </CardBody>
           </div>
-          <Divider />
+          {/* <Divider /> */}
         </Card>
         <Divider />
         <h3 className="text-lg font-bold">Total : {prixTotal.toFixed(2)} €</h3>
@@ -458,12 +468,12 @@ export default function ChatPage() {
     if (repas.remainingPlats > 0) {
       return <ChatPlat setRepas={item => setRepasItem("plat", item)} />;
     }
-    else if (repas.remainingSnacks > 0) {
-      return <ChatSnack setRepas={item => setRepasItem("snack", item)} />;
-    }
-    else if (repas.remainingBoissons > 0) {
-      return <ChatBoisson setRepas={item => setRepasItem("boisson", item)} />;
-    }
+    // else if (repas.remainingSnacks > 0) {
+    //   return <ChatSnack setRepas={item => setRepasItem("snack", item)} />;
+    // }
+    // else if (repas.remainingBoissons > 0) {
+    //   return <ChatBoisson setRepas={item => setRepasItem("boisson", item)} />;
+    // }
     else {
       if (currentStep === "end") {
         return <ChatEnd repas={repas} allViandes={allViandes} />;

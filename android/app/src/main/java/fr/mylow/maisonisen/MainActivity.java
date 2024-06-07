@@ -1,4 +1,4 @@
-package maisonisen.mylow.fr;
+package fr.mylow.maisonisen;
 
 import com.getcapacitor.BridgeActivity;
 
