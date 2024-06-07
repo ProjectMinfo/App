@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">Maison Isen</string>
     <string name="title_activity_main">Maison Isen</string>
-    <string name="package_name">maisonisen.mylow.fr</string>
-    <string name="custom_url_scheme">maisonisen.mylow.fr</string>
+    <string name="package_name">fr.mylow.maisonisen</string>
+    <string name="custom_url_scheme">fr.mylow.maisonisen</string>
 </resources>
