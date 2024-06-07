@@ -190,10 +190,12 @@ export function prepareCommande(repas: NewRepas, allViandes: Viandes[]) {
 
     var inputDate = new Date().toISOString();
 
+    const numCompte = parseInt(window.localStorage.getItem("numCompte") || "0");
+
     const commande: NewCommandes = {
         "id": -1,
         "contenu": dataContenu,
-        "numCompte": 587,
+        "numCompte": numCompte,
         "date": { "$date": inputDate },
         "distribuee": false,
         "prix": dataPrix,
@@ -209,7 +211,11 @@ export function prepareCommande(repas: NewRepas, allViandes: Viandes[]) {
     // console.log(commande);
 
     const encryptedCommande = encryptCommande(JSON.stringify(commande));
-    console.log(encryptedCommande);
+    // console.log(encryptedCommande);
 
-    postCommande(encryptedCommande);
+    useEffect(() => {        
+        postCommande(encryptedCommande);
+    } , []);
+
+    return;
 }

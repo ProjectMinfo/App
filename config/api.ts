@@ -1,6 +1,7 @@
+'use client';
 import axios from 'axios';
 
-const baseURL = 'https://minfoapi.fly.dev';
+const baseURL = 'https://minfoapi2.fly.dev';
 
 
 
@@ -8,7 +9,9 @@ const api = axios.create({
   // baseURL: `${baseURL}:${basePORT}`,
   baseURL: `${baseURL}`,
 });
-const token = 'DEV_TOKEN'; // Ajoutez votre token ici
+
+// const token = window.localStorage.getItem("token"); // Ajoutez votre token ici
+const token = "DEV_TOKEN"; // Ajoutez votre token ici
 
 api.interceptors.request.use(config => {
   config.headers.Authorization = `Bearer ${token}`;
@@ -17,14 +20,9 @@ api.interceptors.request.use(config => {
 
 
 export const getAchats = async () => {
-  const token = "DEV_TOKEN";
 
   try {
-    const response = await api.get('/achats', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+    const response = await api.get('/achats')
     return (response.data);
 
   }
@@ -119,14 +117,9 @@ export const getSnacks = async () => {
 }
 
 export const getComptes = async () => {
-  const token = "DEV_TOKEN";
 
   try {
-    const response = await api.get('/users', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+    const response = await api.get('/users')
     return (response.data);
 
   }
@@ -139,12 +132,10 @@ export const getComptes = async () => {
 
 
 export const postEditAchat = async (achat: any) => {
-  const token = 'DEV_TOKEN'; // Add your token here
 
   try {
     const response = await api.post('/achats', JSON.stringify(achat), {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
@@ -156,12 +147,10 @@ export const postEditAchat = async (achat: any) => {
 };
 
 export const postEditCompte = async (user: any) => {
-  const token = 'DEV_TOKEN'; // Add your token here
 
   try {
     const response = await api.post('/user/update', JSON.stringify(user), {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
@@ -173,12 +162,10 @@ export const postEditCompte = async (user: any) => {
 }
 
 export const postViandes = async (data: any) => {
-  const token = 'DEV_TOKEN'; // Add your token here
 
   try {
     const response = await api.post('/viandes', JSON.stringify(data), {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
@@ -303,18 +290,13 @@ export const deleteBoissons = async (id: number) => {
 
 // Fonction pour mettre à jour une commande par son ID
 export const postCommande = async (data: any) => {
-  const token = 'DEV_TOKEN'; // Add your token here
-
   const newData = {
     "data" : data
   }
-
-
   try {
     // console.log('data', data);
-    const response = await api.post(`/commandes`, newData, {
+    const response = await api.post('/commandes', JSON.stringify(newData), {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
@@ -328,12 +310,10 @@ export const postCommande = async (data: any) => {
 
 // Fonction pour créer un nouveau compte
 export const postCreateCompte = async (data: any) => {
-  const token = 'DEV_TOKEN'; // Add your token here
 
   try {
     const response = await api.post('/user', JSON.stringify(data), {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
@@ -358,7 +338,6 @@ export const sendVerificationEmail = async (email: string) => {
   try {
     const response = await api.post('/send-verification-email', JSON.stringify({ email }), {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
@@ -385,7 +364,6 @@ export const postPlanning = async (data: any) => {
   try {
     const response = await api.post('/planning', data, {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
@@ -432,7 +410,6 @@ export const postPlanningCourse = async (data: any) => {
   try {
     const response = await api.post('/planning-courses', data, {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
@@ -523,11 +500,9 @@ export const getAllTemperatures = async()=>{
 }
 
 export const postTemperature= async (data :any)=>{
-  const token='DEV_TOKEN';//Add your token here
   try {
     const response = await api.post('/temperatures', JSON.stringify(data),{
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }     
     });
@@ -570,12 +545,9 @@ export const getCommandesByIdUser = async (id:number) => {
 
 // Fonction pour mettre à jour une commande par son ID
 export const postCommandeById = async (id: number, data: any) => {
-  const token = 'DEV_TOKEN'; // Add your token here
-
   try {
     const response = await api.post(`/commandes/${id}`, JSON.stringify(data), {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });

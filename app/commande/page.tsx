@@ -584,13 +584,11 @@ export default function ChatPage() {
 
   function ChatEnd({ repas, allViandes }: { repas: NewRepas, allViandes: Viandes[] }) {
 
-    prepareCommande(repas, allViandes);
-
     return (
       <div>
         <h2>Lancelot</h2>
-        <p>Parfait ! Comment veux-tu régler ta commande ? </p>
-        <Paiement />
+        <span>Parfait ! Comment veux-tu régler ta commande ? </span>
+        <Paiement repas={repas} allViandes={allViandes} />
       </div>
     );
   }
