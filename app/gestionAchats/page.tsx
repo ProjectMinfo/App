@@ -91,8 +91,8 @@ const formatDate = (date: any) => {
   }
 };
 
-function isDateExpired(achat: any) {
-  const dlcTimestamp = parseInt(achat.dlc.$date.$numberLong);
+function isDateExpired(dlc: any) {
+  const dlcTimestamp = parseInt(dlc.$date.$numberLong);
   const dlcDate = new Date(dlcTimestamp); // On converti le timestamp en date
   dlcDate.setHours(0, 0, 0, 0); // On met à 0 les heures et les minutes (seul le jour nous interesse)
 
@@ -131,7 +131,7 @@ export default function GestionAchatsPage() {
   useEffect(() => {
     async function fetchAchats() {
       const fetchedAchats = await getAchats();
-      fetchedAchats.sort((a: Achat, b: Achat) => a.idAchat - b.idAchat); // Trie par ordre de numero de compte
+      fetchedAchats.sort((a: Achat, b: Achat) => b.idAchat - a.idAchat); // Trie par ordre décroissant d'id d'achat
       setAchats(fetchedAchats);
     }
     fetchAchats();
@@ -178,7 +178,7 @@ export default function GestionAchatsPage() {
     const updatedAchats = [...newListAchats, changedAchat];
 
     // On retrie la liste
-    updatedAchats.sort((a: Achat, b: Achat) => a.idAchat - b.idAchat);
+    updatedAchats.sort((a: Achat, b: Achat) => b.idAchat - a.idAchat);
 
     // On met à jour la liste des achats
     setAchats(updatedAchats);
@@ -205,13 +205,14 @@ export default function GestionAchatsPage() {
   const onAddSubmit = async (newAchat: Achat) => {
     if (newAchat && achats) {
       const updatedAchats = [...achats, newAchat]; // On ajoute l'achat à la liste
-      updatedAchats.sort((a: Achat, b: Achat) => a.idAchat - b.idAchat); // On retrie la liste
+      updatedAchats.sort((a: Achat, b: Achat) => b.idAchat - a.idAchat); // On retrie la liste
       setAchats(updatedAchats); // On met à jour la liste des achats
       newAchat.idAchat = -1; // Pour créer un nouvel achat
 
       try {
         await postEditAchat(newAchat); // Appel à l'API pour enregistrer les modifications
         console.log("Achat added successfully in the API");
+        setAchats((await getAchats()).sort((a: Achat, b: Achat) => b.idAchat - a.idAchat));
       }
       catch (error) {
         console.error("Error adding achat:", error);
@@ -220,10 +221,6 @@ export default function GestionAchatsPage() {
 
     onAddClose();
   };
-
-
-
-
 
 
   // EDIT //
@@ -277,7 +274,7 @@ export default function GestionAchatsPage() {
       const updatedAchats = [...newListAchats, updatedAchat];
 
       // On retrie la liste
-      updatedAchats.sort((a: Achat, b: Achat) => a.idAchat - b.idAchat);
+      updatedAchats.sort((a: Achat, b: Achat) => b.idAchat - a.idAchat);
 
       // On met à jour la liste des achats
       setAchats(updatedAchats);
@@ -316,7 +313,7 @@ export default function GestionAchatsPage() {
       const updatedAchats = achats.filter(achat => achat.idAchat !== currentAchat.idAchat)
 
       // On retrie la liste
-      updatedAchats.sort((a: Achat, b: Achat) => a.idAchat - b.idAchat);
+      updatedAchats.sort((a: Achat, b: Achat) => b.idAchat - a.idAchat);
 
       // On met à jour la liste des achats
       setAchats(updatedAchats);
@@ -395,11 +392,11 @@ export default function GestionAchatsPage() {
           <div className="flex flex-col">
             <p className={`text-bold text-sm capitalize
             ${((achat.etat !== EtatAchat.Consomme && achat.etat !== EtatAchat.Perte) // Si l'achat n'est pas déjà consommé ou perdu
-                && isDateExpired(achat) === Expiration.DateExpirée) // ET si l'achat est perimé
+                && isDateExpired(achat.dlc) === Expiration.DateExpirée) // ET si l'achat est perimé
                 ? "text-danger" // On affiche la date en rouge
 
                 : ((achat.etat !== EtatAchat.Consomme && achat.etat !== EtatAchat.Perte) // Si l'achat n'est pas déjà consommé ou perdu
-                  && isDateExpired(achat) === Expiration.DateExpiréeDemain) // ET si l'achat perime le lendemain
+                  && isDateExpired(achat.dlc) === Expiration.DateExpiréeDemain) // ET si l'achat perime le lendemain
                   ? "text-warning" // On affiche la date en orange
 
                   : "default" // Sinon on affiche la date en default
@@ -410,11 +407,11 @@ export default function GestionAchatsPage() {
           </div>
         )
       case "etat":
-        if (isDateExpired(achat) === Expiration.DateExpirée
+        if (isDateExpired(achat.dlc) === Expiration.DateExpirée
           && (achat.etat === EtatAchat.NonEntame || achat.etat === EtatAchat.Ouvert)) {
           achat.etat = EtatAchat.Perime; // Si l'achat est périmé on l'affiche comme tel
         }
-        if ((isDateExpired(achat) === Expiration.DateNonExpirée || isDateExpired(achat) === Expiration.DateExpiréeDemain)
+        if ((isDateExpired(achat.dlc) === Expiration.DateNonExpirée || isDateExpired(achat.dlc) === Expiration.DateExpiréeDemain)
           && achat.etat === EtatAchat.Perime) {
           achat.etat = EtatAchat.NonEntame; // Si l'achat n'était en fait pas perimé on l'affiche comme non entamé
         }
@@ -482,18 +479,17 @@ export default function GestionAchatsPage() {
 
       <div className="flex gap-4 mb-4">
         <Button
+          isIconOnly
           variant="faded"
           aria-label="Ajouter un achat"
           onClick={() => onAddOpen()}
         >
-          <AddAchatModal 
+          <AddAchatModal
             isOpen={isAddModalOpen}
             onClose={onAddClose}
             onSubmit={onAddSubmit}>
           </AddAchatModal>
-
           <FaShoppingCart /> {/* Icone de caddie */}
-
         </Button>
 
         <Input
@@ -548,6 +544,11 @@ export default function GestionAchatsPage() {
           isOpen={isDeleteModalOpen}
           onClose={onDeleteClose}
           onSubmit={onDeleteSubmit}
+          currentIdAchat={currentAchat.idAchat}
+          currentNomArticle={currentAchat.nomArticle}
+          currentCategorie={currentAchat.categorie}
+          currentNumLot={currentAchat.numLot}
+          currentEtat={currentAchat.etat}
         />
       )}
     </div>
