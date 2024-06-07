@@ -1,7 +1,7 @@
 'use client'; // Indique que ce composant doit être rendu côté client.
 import React, { useState, useEffect } from "react";
 import { getUser, getCommandesByIdUser, getBoissons, getSnacks } from "@/config/api";
-import { Card } from "@nextui-org/react";
+import { Card, Link } from "@nextui-org/react";
 
 const Compte = () => {
   const [user, setUser] = useState(null);
@@ -10,13 +10,18 @@ const Compte = () => {
   const [boissonsAll, setBoissonsAll] = useState([]);
   const [snacksAll, setSnacksAll] = useState([]);
   const [commandesAffichees, setCommandesAffichees] = useState(5);
+  const userId = window.localStorage.getItem("numCompte");
+
+
+
+
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const fetchedUser = await getUser(587);
+        const fetchedUser = await getUser(userId);
         setUser(fetchedUser);
-        const fetchedCommandes = await getCommandesByIdUser(587);
+        const fetchedCommandes = await getCommandesByIdUser(userId);
         setCommandes(fetchedCommandes);
         const fetchedBoissons = await getBoissons();
         setBoissonsAll(fetchedBoissons);
@@ -106,13 +111,17 @@ const Compte = () => {
             <div className="text-left"><span className="font-bold">Adresse mail :  </span>{user.email}</div>
             <div className="text-left"><span className="font-bold">Promo :  </span>{user.promo}</div>
           </div>
-          <button className="bg-red-500 text-white py-2 px-4 rounded">Me déconnecter</button>
+          <button className="bg-red-500 text-white py-2 px-4 rounded">
+            <Link className="text-white" href="/connexion">
+              Déconnexion
+            </Link>
+          </button>
         </Card>
         <div className="lg:w-2/3 w-full flex flex-col items-center">
           <div className="flex justify-between items-center mb-4 w-full">
             <h2 className="text-xl lg:text-2xl font-semibold text-left">Mes transactions  </h2>
             <Card className="px-7 py-2 rounded">
-              <span className="text-base base:text-xl font-bold">Solde actuel :</span> 
+              <span className="text-base base:text-xl font-bold">Solde actuel :</span>
               <span className="text-lg lg:text-xl font-bold text-red-600">{user.montant.toFixed(2)} €</span>
             </Card>
           </div>
@@ -125,20 +134,26 @@ const Compte = () => {
               </tr>
             </thead>
             <tbody>
-              {commandes
-                .filter(commande => commande.prix > 0)
-                .slice(0, commandesAffichees)
-                .map((commande) => {
-                  const contenu = commandeContenu(commande);
-                  const prix = commande.prix.toFixed(2);
-                  return (
-                    <tr key={commande.id}>
-                      <td className="py-2 px-4 border-b border-gray-600 text-center whitespace-nowrap">{toDate(commande.date.$date.$numberLong)}</td>
-                      <td className="py-2 px-4 border-b border-gray-600 text-left whitespace-normal" dangerouslySetInnerHTML={{ __html: contenu }}></td>
-                      <td className="py-2 px-4 border-b border-gray-600 text-center whitespace-nowrap">{prix} €</td>
-                    </tr>
-                  );
-                })}
+              {commandes.length === 0 ? (
+                <tr>
+                  <td colSpan="3" className="py-2 px-4 border-b border-gray-600 text-center">Aucune commande passée</td>
+                </tr>
+              ) : (
+                commandes
+                  .filter(commande => commande.prix > 0)
+                  .slice(0, commandesAffichees)
+                  .map((commande) => {
+                    const contenu = commandeContenu(commande);
+                    const prix = commande.prix.toFixed(2);
+                    return (
+                      <tr key={commande.id}>
+                        <td className="py-2 px-4 border-b border-gray-600 text-center whitespace-nowrap">{toDate(commande.date.$date.$numberLong)}</td>
+                        <td className="py-2 px-4 border-b border-gray-600 text-left whitespace-normal" dangerouslySetInnerHTML={{ __html: contenu }}></td>
+                        <td className="py-2 px-4 border-b border-gray-600 text-center whitespace-nowrap">{prix} €</td>
+                      </tr>
+                    );
+                  })
+              )}
             </tbody>
           </table>
           <div className="flex justify-between w-full mt-4">
