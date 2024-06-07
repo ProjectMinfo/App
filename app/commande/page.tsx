@@ -91,6 +91,8 @@ export default function ChatPage() {
 
   const [prixTotal, setPrixTotal] = useState<number>(0.0);
 
+  const [commandeSend, setCommandeSend] = useState<boolean>(false);
+
   // Fetch data
   useEffect(() => {
     async function fetchData() {
@@ -582,16 +584,30 @@ export default function ChatPage() {
 
 
 
-  function ChatEnd({ repas, allViandes }: { repas: NewRepas, allViandes: Viandes[] }) {
+  const ChatEnd = React.memo(({ repas, allViandes }: { repas: NewRepas, allViandes: Viandes[] }) => {
+
+    const handleSave = (repas: NewRepas) => {
+      if (!commandeSend) {
+
+        prepareCommande(repas, allViandes);
+        setCommandeSend(true);
+      }
+      else {
+        console.log("Commande déjà envoyée");
+      }
+    }
+
+    handleSave(repas);
 
     return (
       <div>
         <h2>Lancelot</h2>
         <span>Parfait ! Comment veux-tu régler ta commande ? </span>
-        <Paiement repas={repas} allViandes={allViandes} />
+        <Paiement />
       </div>
     );
-  }
+  });
+
 
   function ChatLayout({ who, mainSentence, buttons, setRepas }: { who: string, mainSentence: string, buttons: AllType[] | OtherOption[], setRepas: (choice: AllType | OtherOption) => void }) {
     const [buttonClicked, setButtonClicked] = useState<boolean>(false);
@@ -653,33 +669,33 @@ export default function ChatPage() {
 
   return (
     <>
-    <h1 className={title()}>Commande !</h1>
-    <div className="flex justify-center min-h-screen mt-20 max-md:mt-0">
-      <div className="flex flex-row max-md:flex-col w-5/6 h-3/4 ">
-        <div className="flex-1 m-4 grid gap-32">
-          <ChatNext
-            repas={repas}
-            setRepasItem={handleSetRepasItem}
-            currentStep={currentStep}
-            setCurrentStep={setCurrentStep}
-          />
-        </div>
+      <h1 className={title()}>Commande !</h1>
+      <div className="flex justify-center min-h-screen mt-20 max-md:mt-0">
+        <div className="flex flex-row max-md:flex-col w-5/6 h-3/4 ">
+          <div className="flex-1 m-4 grid gap-32">
+            <ChatNext
+              repas={repas}
+              setRepasItem={handleSetRepasItem}
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+            />
+          </div>
 
-        <div className="w-1 border-r-2 mx-2"></div>
+          <div className="w-1 border-r-2 mx-2"></div>
 
-        <div className="flex-1 m-4 justify-end text-right max-md:grid max-md:justify-center">
-          <RecapComponent repas={repas} />
-          <DetailCommandeModal
-            isOpen={isModalOpen}
-            onClose={(values: { viandes: Viandes[], ingredients: Ingredients[] }) => {
-              setIsModalOpen(false);
-              setModalResponse(values);
-            }}
-            options={{ "ingredients": listIngredients, "viandes": listViandes, "currentPlat": currentPlat }}  // Pass the current plat to the modal
-          />
+          <div className="flex-1 m-4 justify-end text-right max-md:grid max-md:justify-center">
+            <RecapComponent repas={repas} />
+            <DetailCommandeModal
+              isOpen={isModalOpen}
+              onClose={(values: { viandes: Viandes[], ingredients: Ingredients[] }) => {
+                setIsModalOpen(false);
+                setModalResponse(values);
+              }}
+              options={{ "ingredients": listIngredients, "viandes": listViandes, "currentPlat": currentPlat }}  // Pass the current plat to the modal
+            />
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }

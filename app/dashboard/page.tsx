@@ -47,6 +47,18 @@ function getDate(NewCommandes: NewCommandes): Date {
     return new Date(parseInt(NewCommandes.date.$date.$numberLong));
 }
 
+function getWeekDay(date: Date): string {
+    // Array of weekday names
+    const weekDays = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+
+    // Get the day of the week as a number (0-6)
+    const dayIndex = date.getDay();
+
+    // Return the corresponding weekday name
+    return weekDays[dayIndex];
+}
+
+
 function getDatasetFromCollection(collection: Ingredients[] | Snacks[] | Boissons[] | Viandes[]): Object {
     const sortedCollection = collection.sort((a, b) => b.quantite - a.quantite);
     return {
@@ -84,22 +96,25 @@ function aggregateByTimeFrame(commandes: NewCommandes[], timeFrame: TimeFrame): 
         let key: string;
         switch (timeFrame) {
             case TimeFrame.Jour:
-                if (date.getFullYear() != currDate.getFullYear())
+                if (date.getDay() != currDate.getDay() || date.getMonth() != currDate.getMonth() || date.getFullYear() != currDate.getFullYear())
+                    break;
+                key = `${date.getHours()}:${date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()}`;
+                break;
+            case TimeFrame.Semaine:
+                // Skip of the commande date is more than a week old
+                if (date.getTime() < currDate.getTime() - 7 * 24 * 60 * 60 * 1000)
                     break;
                 key = date.toLocaleDateString();
                 break;
-            case TimeFrame.Semaine:
-                if (date.getFullYear() != currDate.getFullYear())
-                    break;
-                key = getWeekNumber(date.toLocaleDateString()).toString();
-                break;
             case TimeFrame.Mois:
-                if (date.getFullYear() != currDate.getFullYear())
+                if (date.getMonth() != currDate.getMonth() || date.getFullYear() != currDate.getFullYear())
                     break;
-                key = getMonthName(date.toLocaleDateString());
+                key = date.toLocaleDateString();
                 break;
             case TimeFrame.Annee:
-                key = date.getFullYear().toString();
+                if (date.getFullYear() != currDate.getFullYear())
+                    break;
+                key = date.toLocaleDateString();
                 break;
             case TimeFrame.Toujours:
                 key = date.toLocaleDateString();
@@ -134,7 +149,7 @@ type Temp = {
 }
 
 function getMonthName(dateStr: string): string {
-    const month = new Date(dateStr).getMonth();
+    const month = parseInt(dateStr.split('/')[1]);
     const lut = {
         1: "Janvier",
         2: "Février",
@@ -185,12 +200,13 @@ function getTemperaturesByTimeFrame(temperatures: Temperatures[], timeFrame: Tim
 
     // Calcule la moyenne en fonction du timeFrame
     let meanTemp = new Map<string, Temp>();
-    const currentDate = new Date();
+    const currDate = new Date();
     switch (timeFrame) {
         case TimeFrame.Jour:
             // Calcule la moyenne de chaque jour
             result.forEach((temp, date) => {
-                if (new Date(date).getFullYear() === currentDate.getFullYear()) {
+                const _date = new Date(date);
+                if (_date.getDay() == currDate.getDay() && _date.getMonth() == currDate.getMonth() && _date.getFullYear() == currDate.getFullYear()) {
                     // Calcule la moyenne des températures
                     let tmp: Temp = {tmp1: 0, tmp2: 0, tmp3: 0 || null};
                     temp.forEach((temperature) => {
@@ -201,7 +217,8 @@ function getTemperaturesByTimeFrame(temperatures: Temperatures[], timeFrame: Tim
                     tmp.tmp1 /= temp.length;
                     tmp.tmp2 /= temp.length;
                     tmp.tmp3 /= temp.length;
-                    meanTemp.set(date, tmp);
+                    let key = _date.toLocaleDateString();
+                    meanTemp.set(key, tmp);
                 }
             });
             break;
@@ -209,8 +226,10 @@ function getTemperaturesByTimeFrame(temperatures: Temperatures[], timeFrame: Tim
             // Calcule la moyenne de chaque semaine
             result.forEach((temp1, date1) => {
                 result.forEach((temp2, date2) => {
-                    if (new Date(date1).getFullYear() === currentDate.getFullYear()){
-                        if (getWeekNumber(date1) === getWeekNumber(date2)) {
+                    const _date1 = new Date(date2);
+                    const _date2 = new Date(date2);
+                    if (_date1.getFullYear() === _date2.getFullYear() && _date1.getFullYear() === currDate.getFullYear() && _date1.getMonth() == currDate.getMonth()) {
+                        if (_date1.getTime() - currDate.getTime() < 7 * 24 * 60 * 60 * 1000) {
                             // Calcule la moyenne des températures
                             let tmp: Temp = {tmp1: 0, tmp2: 0, tmp3: 0 || null};
                             temp1.forEach((temperature) => {
@@ -226,7 +245,7 @@ function getTemperaturesByTimeFrame(temperatures: Temperatures[], timeFrame: Tim
                             tmp.tmp1 /= temp1.length + temp2.length;
                             tmp.tmp2 /= temp1.length + temp2.length;
                             tmp.tmp3 /= temp1.length + temp2.length;
-                            meanTemp.set(getWeekNumber(date1), tmp);
+                            meanTemp.set(date1, tmp);
                         }
                     }
                 });
@@ -236,7 +255,9 @@ function getTemperaturesByTimeFrame(temperatures: Temperatures[], timeFrame: Tim
             // Calcule la moyenne de chaque mois
             result.forEach((temp1, date1) => {
                 result.forEach((temp2, date2) => {
-                    if (new Date(date1).getMonth() === new Date(date2).getMonth() && new Date(date1).getFullYear() === new Date(date2).getFullYear() && new Date(date1).getFullYear() === currentDate.getFullYear()) {
+                    const _date1 = new Date(date1);
+                    const _date2 = new Date(date2);
+                    if (_date1.getMonth() === _date2.getMonth() && _date1.getFullYear() === _date2.getFullYear() && _date1.getFullYear() === currDate.getFullYear()) {
                         // Calcule la moyenne des températures
                         let tmp: Temp = {tmp1: 0, tmp2: 0, tmp3: 0 || null};
                         temp1.forEach((temperature) => {
@@ -336,22 +357,7 @@ const Dashboard = () => {
     const commandesByTimeFrame = aggregateByTimeFrame(commandes, timeFrame);
     let mapArray = Array.from(commandesByTimeFrame.entries());
     mapArray.sort((a, b) => {
-        switch (timeFrame) {
-            case TimeFrame.Jour:
-                const dateA = new Date(a[0]);
-                const dateB = new Date(b[0]);
-                return dateA.getDate() - dateB.getDate();
-            case TimeFrame.Semaine:
-                return parseInt(a[0]) - parseInt(b[0]);
-            case TimeFrame.Mois:
-                return getMonthNumber(a[0]) - getMonthNumber(b[0]);
-            case TimeFrame.Annee:
-                return parseInt(a[0]) - parseInt(b[0]);
-            case TimeFrame.Toujours:
-                const dateC = new Date(a[0]);
-                const dateD = new Date(b[0]);
-                return dateC.getUTCDate() - dateD.getUTCDate();
-        }
+        return new Date(a[0]).getTime() - new Date(b[0]).getTime();
     });
     const sortedCommandes = new Map<string, number>(mapArray);
 

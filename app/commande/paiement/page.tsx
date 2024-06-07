@@ -46,12 +46,7 @@ type NewRepas = {
   currentMenu?: NewMenus;
 };
 
-export default function Paiement(repas: NewRepas, allViandes: Viandes[]) {
-
-  // useEffect(() => {
-  prepareCommande(repas, allViandes);
-  // } , []);
-
+export default function Paiement() {  
 
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 max-md:py-0">

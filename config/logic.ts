@@ -53,8 +53,6 @@ function aggregateQuantities(repas: NewRepas, allViandes: Viandes[], allPlats: P
     const listBoissons: item = [];
     const listSnacks: item = [];
 
-
-
     repas.plat.forEach((plat) => {
         plat.plat.ingredients.forEach((ingredient) => {
             if (listIngredients.some(currentIngredient => currentIngredient[0] === ingredient.id)) {
@@ -174,48 +172,43 @@ function encryptCommande(commande: any) {
 
 
 export function prepareCommande(repas: NewRepas, allViandes: Viandes[]) {
-
+    const [commandeEnvoyee, setCommandeEnvoyee] = useState(false);
     const [allPlats, setAllPlats] = useState<Plats[]>([]);
 
-    useEffect(() => {
-        getPlats().then((data) => {
-            setAllPlats(data);
-        });
-    }, []);
+    getPlats().then((data) => {
+        setAllPlats(data);
+    });
 
-    const dataPrepared = aggregateQuantities(repas, allViandes, allPlats);
-    const dataContenu = getAllNom(repas, allViandes);
-    const dataPrix = getPrice(repas);
+    if (!commandeEnvoyee) {
+        const dataPrepared = aggregateQuantities(repas, allViandes, allPlats);
+        const dataContenu = getAllNom(repas, allViandes);
+        const dataPrix = getPrice(repas);
 
+        var inputDate = new Date().toISOString();
+        const numCompte = parseInt(window.localStorage.getItem("numCompte") || "0");
 
-    var inputDate = new Date().toISOString();
+        const commande: NewCommandes = {
+            "id": -1,
+            "contenu": dataContenu,
+            "numCompte": numCompte,
+            "date": { "$date": inputDate },
+            "distribuee": false,
+            "prix": dataPrix,
+            "typePaiement": 1,
+            "commentaire": "",
+            "ingredients": dataPrepared.ingredients,
+            "viandes": dataPrepared.viandes,
+            "boissons": dataPrepared.boissons,
+            "snacks": dataPrepared.snacks,
+            "payee": true
+        };
 
-    const numCompte = parseInt(window.localStorage.getItem("numCompte") || "0");
+        const encryptedCommande = encryptCommande(JSON.stringify(commande));
 
-    const commande: NewCommandes = {
-        "id": -1,
-        "contenu": dataContenu,
-        "numCompte": numCompte,
-        "date": { "$date": inputDate },
-        "distribuee": false,
-        "prix": dataPrix,
-        "typePaiement": 1,
-        "commentaire": "",
-        "ingredients": dataPrepared.ingredients,
-        "viandes": dataPrepared.viandes,
-        "boissons": dataPrepared.boissons,
-        "snacks": dataPrepared.snacks,
-        "payee": true
-    };
-
-    // console.log(commande);
-
-    const encryptedCommande = encryptCommande(JSON.stringify(commande));
-    // console.log(encryptedCommande);
-
-    useEffect(() => {        
+        // console.log("Commande envoyée", encryptCommande.length);
         postCommande(encryptedCommande);
-    } , []);
+        setCommandeEnvoyee(true);
+    }
 
     return;
 }
