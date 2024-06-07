@@ -3,6 +3,10 @@
 import React, { useState } from 'react';
 import { Button } from "@nextui-org/button";
 import { Card, CardHeader, Avatar, CardBody, CardFooter, Input } from "@nextui-org/react";
+import { postCreateCompte } from '@/config/api';
+import { Comptes } from '@/types';
+import { EyeSlashFilledIcon } from '@/public/EyeSlashFilledIcon';
+import { EyeFilledIcon } from '@/public/EyeFilledIcon';
 
 function LancelotResponse({ lancelotText }: { lancelotText: string }) {
   return (
@@ -24,7 +28,8 @@ function LancelotResponse({ lancelotText }: { lancelotText: string }) {
   );
 }
 
-function UserResponse({ userText }: { userText: string }) {
+function UserResponse({ userText, step }: { userText: string, step: number }) {
+
   return (
     <div className="flex flex-col gap-8 items-end">
       <Card className="w-full max-w-sm">
@@ -44,7 +49,58 @@ function UserResponse({ userText }: { userText: string }) {
   );
 }
 
-function UserInput({ userInput, onInputChange, onSendClick, placeholder }: { userInput: string, onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void, onSendClick: () => void, placeholder: string }) {
+function UserInput({ userInput, onInputChange, onSendClick, placeholder, step }: { userInput: string, onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void, onSendClick: () => void, placeholder: string, step: number }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const [errorMessages, setErrorMessages] = useState("");
+  const [isInvalid, setIsInvalid] = useState(false);
+
+  function isReady(){
+    // console.log("step", step, "userInput", userInput);    
+
+    // step 0 = on s'en fout
+    // step 1 = email
+    // step 2 = promo
+    // step 3 = password
+
+    if (userInput.trim() === "") {
+      setErrorMessages("Ce champ ne peut pas être vide")
+      setIsInvalid(true)
+      return true;
+    }
+
+    if (step === 1){
+      if (userInput.includes("@") && userInput.endsWith("junia.com")){
+        setIsInvalid(false)
+        return onSendClick()
+      }
+      setErrorMessages("L'adresse mail doit être avoir un @ et finir par junia.com")
+      setIsInvalid(true)
+      return true
+    }
+    if (step === 2){
+      if (userInput.trim() === "" || isNaN(parseInt(userInput))) {
+        setErrorMessages("Le numéro de promo doit être un nombre")
+        setIsInvalid(true)
+        return true;
+      }
+      setIsInvalid(false)
+      return onSendClick()
+    }
+    if (step === 3){
+      if (userInput.trim().length < 4){
+        setErrorMessages("Le mot de passe doit faire au moins 4 caractères")
+        setIsInvalid(true)
+        return true;
+      }
+      setIsInvalid(false)
+      return onSendClick();
+    }
+    setIsInvalid(false)
+    return onSendClick()
+  }
+
   return (
     <div className="flex flex-col gap-8 items-end">
       <Card className="w-full max-w-sm">
@@ -57,11 +113,42 @@ function UserInput({ userInput, onInputChange, onSendClick, placeholder }: { use
           </div>
         </CardHeader>
         <CardBody className="px-3 py-0 text-default-400">
-          <Input value={userInput} onChange={onInputChange} placeholder={placeholder} />
+
+          {step !== 3 ? (
+            <Input 
+            value={userInput} 
+            onChange={onInputChange} 
+            placeholder={placeholder} 
+            isInvalid={isInvalid}
+            errorMessage={errorMessages}
+            />
+          ) : (
+            <Input
+              variant="bordered"
+              placeholder={placeholder}
+              endContent={
+                <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                  {isVisible ? (
+                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                  ) : (
+                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                  )}
+                </button>
+              }
+              type={isVisible ? "text" : "password"}
+              value={userInput}
+              onChange={onInputChange}
+              className=""
+              isInvalid={isInvalid}
+              errorMessage={errorMessages}
+            />
+          )}
+
+
         </CardBody>
         <CardFooter className="gap-3 justify-end">
           <div className="flex gap-2">
-            <Button onPress={onSendClick} className="text-small justify-end item-end hover:text-primary-500">
+            <Button onPress={isReady} className="text-small justify-end item-end hover:text-primary-500">
               Envoyer
             </Button>
           </div>
@@ -130,13 +217,10 @@ export default function InscriptionPage() {
           lancelotText = "Quel est votre email Junia ?";
           break;
         case 1:
-          lancelotText = "Quel est votre prénom ?";
+          lancelotText = "Ton numéro de promo ?";
           break;
         case 2:
-          lancelotText = "Quel est votre nom ?";
-          break;
-        case 3:
-          lancelotText = "Veuillez sélectionner votre école :";
+          lancelotText = "Et ton mot de passe (pas nécessairement le mdp Junia) ?";
           break;
         default:
           lancelotText = "Merci pour votre inscription !";
@@ -155,13 +239,47 @@ export default function InscriptionPage() {
     setMessages([...newMessages, { sender: "Lancelot", text: "Merci pour votre inscription !" }]);
   };
 
+
+  if (step === 4) {
+    const userResponse = messages.filter(message => message.sender === "User").map(message => message.text);
+
+    const email = userResponse[1];
+    const promo = userResponse[2];
+    const password = userResponse[3];
+
+    const firstName = email.split(".")[0];
+    const lastName = email.split(".")[1].split("@")[0];
+
+    const newUser: Comptes = {
+      "acces": 0,
+      "email": email,
+      "mdp": password,
+      "montant": 0,
+      "nom": lastName,
+      "numCompte": -1, // This field is not used in the API
+      "prenom": firstName,
+      "promo": parseInt(promo),
+      "resetToken": "",
+      "tokenExpiration": ""
+    };
+    // console.log(newUser);
+    
+
+    postCreateCompte(newUser);
+  }
+
+
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-1">
       {messages.map((message, index) => (
         message.sender === "Lancelot" ? (
           <LancelotResponse key={index} lancelotText={message.text} />
         ) : (
-          <UserResponse key={index} userText={message.text} />
+          index !== 7 ? (
+            <UserResponse key={index} userText={message.text} step={step} />
+          ) : (
+            <UserResponse key={index} userText={"*".repeat(Number(message.text.length))} step={step} />
+          )
         )
       ))}
       {step < 4 ? (
@@ -172,14 +290,15 @@ export default function InscriptionPage() {
           placeholder={
             step === 0 ? "Comment vas-tu aujourd'hui ?" :
               step === 1 ? "Quel est ton mail JUNIA ?" :
-                step === 2 ? "Ton beau prénom ?" :
-                  "Et ton magnifique nom ?"
+                    step === 2 ? "Ton numéro de promo ?" :
+                      "Et ton mot de passe ?"
           }
+          step={step}
         />
-      ) : ( step === 4 ? (
-        <SchoolSelection onSelectSchool={handleSelectSchool} />
-      ) : null
-      )}
+      ) : (null)}
+      {/* <SchoolSelection onSelectSchool={handleSelectSchool} /> */}
+      {/* ) : null */}
+      {/* )} */}
     </div>
   );
 }

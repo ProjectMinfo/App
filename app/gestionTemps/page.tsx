@@ -68,6 +68,7 @@ const GestionTemps = () => {
         openDetailsModal();
     }
 
+
     const handleSubmit = async () => {
         if (!newTmp1 || !newTmp2) {
             setErrorMessage("Veuillez remplir les températures des deux frigos.");
@@ -120,50 +121,59 @@ const GestionTemps = () => {
 
 
     return (
-        <div className="container mx-auto p-4 bg-black text-white min-h-screen">
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-bold">GESTION DES TEMPERATURES</h1>
-            </div>
-            <div className="flex mb-4">
-                <Input
-                    type="text"
-                    placeholder="Rechercher par date ou membre"
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    className="flex-grow border p-2 rounded mr-2 bg-gray-800 text-white placeholder-gray-400"
-                />
-                <Button className="bg-green-500 text-white py-2 px-4 rounded" onPress={() => handleAddModalOpen()}>Ajouter un relevé</Button>
-            </div>
-            <table className="min-w-full bg-gray-800 text-white shadow-md rounded-lg mb-4">
-                <thead className="bg-gray-700">
+        <div className="container mx-auto p-4 min-h-screen">
+        <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold text-center sm:text-left">GESTION DES TEMPERATURES</h1>
+        </div>
+        <div className="flex flex-col sm:flex-row items-center mb-4">
+            <Input
+                type="text"
+                placeholder="Rechercher par date ou membre"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="flex-grow border p-2 rounded mb-2 sm:mb-0 sm:mr-2 placeholder-gray-400"
+            />
+            <Button className="bg-green-500 text-white py-2 px-4 rounded" onPress={() => handleAddModalOpen()}>Ajouter un relevé</Button>
+        </div>
+        <div className="overflow-x-auto">
+            <table className="min-w-full shadow-md rounded-lg mb-4 table-auto">
+                <thead>
                     <tr>
-                        <th className="py-2 px-4 border-b border-gray-600 text-center">Date</th>
-                        <th className="py-2 px-4 border-b border-gray-600 text-center">Frigo 1</th>
-                        <th className="py-2 px-4 border-b border-gray-600 text-center">Frigo 2</th>
-                        <th className="py-2 px-4 border-b border-gray-600 text-center">Congélateur</th>
-                        <th className="py-2 px-4 border-b border-gray-600 text-center">Membre ayant effectué le relevé</th>
+                        <th className="py-2 px-4 border-b border-gray-600 text-center text-xs sm:text-sm">Date</th>
+                        <th className="py-2 px-4 border-b border-gray-600 text-center text-xs sm:text-sm">Températures</th>
+                        <th className="py-2 px-4 border-b border-gray-600 text-center text-xs sm:text-sm">Membre</th>
                     </tr>
                 </thead>
                 <tbody>
                     {filteredTemperatures.slice(0, visibleCount).map((temp) => (
-                        <tr key={temp.temperatureId} className="hover:bg-gray-600 cursor-pointer" onClick={() => handleRowClick(temp)}>
-                            <td className="py-2 px-4 border-b border-gray-600 text-center">{new Date(temp.date).toLocaleString()}</td>
-                            <td className="py-2 px-4 border-b border-gray-600 text-center">{temp.tmp1}</td>
-                            <td className="py-2 px-4 border-b border-gray-600 text-center">{temp.tmp2}</td>
-                            <td className="py-2 px-4 border-b border-gray-600 text-center">{temp.tmp3}</td>
-                            <td className="py-2 px-4 border-b border-gray-600 text-center">{temp.nomMembre}</td>
+                        <tr key={temp.temperatureId} className="hover: cursor-pointer" onClick={() => handleRowClick(temp)}>
+                            <td className="py-2 px-4 border-b border-gray-600 text-center text-xs sm:text-sm">{new Date(temp.date).toLocaleString()}</td>
+                            <td className="py-2 px-4 border-b border-gray-600 text-xs sm:text-sm">
+                                {/* Condition pour afficher une seule colonne sur les petits écrans */}
+                                <div className="flex flex-col sm:flex-row">
+                                    <p className="sm:w-1/3 sm:pr-2 hidden md:block">Frigo 1: {temp.tmp1}</p>
+                                    <p className="sm:w-1/3 sm:pr-2 hidden md:block">Frigo 2: {temp.tmp2}</p>
+                                    <p className="sm:w-1/3 hidden md:block">Congélateur: {temp.tmp3}</p>
+                                    {/* Pour les petits écrans, afficher une colonne avec un seul type de température */}
+                                    <p className="block md:hidden">Température: {temp.tmp1}</p>
+                                </div>
+                            </td>
+                            <td className="py-2 px-4 border-b border-gray-600 text-center text-xs sm:text-sm">{temp.nomMembre}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <div className="flex justify-between mt-4">
-                {visibleCount < filteredTemperatures.length && (
-                    <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={loadMore}>Afficher plus</button>
-                )}
-                {visibleCount > 10 && (
-                    <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={loadLess}>Afficher moins</button>
-                )}
-            </div>
+        </div>
+        <div className="flex justify-between mt-4">
+            {visibleCount < filteredTemperatures.length && (
+                <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={loadMore}>Afficher plus</button>
+            )}
+            {visibleCount > 10 && (
+                <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={loadLess}>Afficher moins</button>
+            )}
+        </div>
+    
+            {/* Modals */}
             <Modal isOpen={isAddModalOpen} onClose={closeAddModal}>
                 <ModalContent>
                     {(onClose) => (
@@ -175,34 +185,34 @@ const GestionTemps = () => {
                                     type="number"
                                     value={newTmp1}
                                     onChange={(e) => setNewTmp1(e.target.value)}
-                                    className="border p-2 mb-4 w-full rounded bg-gray-800 text-white"
+                                    className="border p-2 mb-4 w-full rounded"
                                 />
                                 <Input
                                     label="Température Frigo 2"
                                     type="number"
                                     value={newTmp2}
                                     onChange={(e) => setNewTmp2(e.target.value)}
-                                    className="border p-2 mb-4 w-full rounded bg-gray-800 text-white"
+                                    className="border p-2 mb-4 w-full rounded"
                                 />
                                 <Input
                                     label="Température Congélateur"
                                     type="number"
                                     value={newTmp3}
                                     onChange={(e) => setNewTmp3(e.target.value)}
-                                    className="border p-2 mb-4 w-full rounded bg-gray-800 text-white"
+                                    className="border p-2 mb-4 w-full rounded"
                                 />
                             </ModalBody>
                             <ModalFooter>
                                 {errorMessage && (
                                     <div className="text-red-500 mb-4">{errorMessage}</div>
                                 )}
-                                <Button className="bg-red-500 text-white py-2 px-4 rounded" variant="light" onPress={closeAddModal}>Close</Button>
                                 <Button className="bg-blue-500 text-white py-2 px-4 rounded" onPress={handleSubmit}>Ajouter</Button>
                             </ModalFooter>
                         </>
                     )}
                 </ModalContent>
             </Modal>
+    
             <Modal isOpen={isDetailsModalOpen} onClose={closeDetailsModal}>
                 <ModalContent>
                     {(onClose) => (
@@ -215,7 +225,7 @@ const GestionTemps = () => {
                                         <p>Température Frigo 1: {selectedTemperature.tmp1}</p>
                                         <p>Température Frigo 2: {selectedTemperature.tmp2}</p>
                                         <p>Température Congélateur: {selectedTemperature.tmp3}</p>
-                                        <p>Membre ayant effectué le relevé: {selectedTemperature.nomMembre}</p>
+                                        <p>Membre: {selectedTemperature.nomMembre}</p>
                                     </>
                                 )}
                             </ModalBody>
@@ -223,8 +233,7 @@ const GestionTemps = () => {
                                 {errorMessage && (
                                     <div className="text-red-500 mb-4">{errorMessage}</div>
                                 )}
-                                <Button className="bg-red-500 text-white py-2 px-4 rounded" variant="light" onPress={closeDetailsModal}>Fermer</Button>
-                                <Button className="bg-blue-500 text-white py-2 px-4 rounded" onPress={handleDelete}>Supprimer</Button>
+                                <Button className="bg-red-500 text-white py-2 px-4 rounded" onPress={handleDelete}>Supprimer relevé</Button>
                             </ModalFooter>
                         </>
                     )}
@@ -232,6 +241,12 @@ const GestionTemps = () => {
             </Modal>
         </div>
     );
-};
+    
+
+    
+
+
+
+}
 
 export default GestionTemps;

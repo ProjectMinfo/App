@@ -2,8 +2,57 @@ import { Link } from "@nextui-org/link";
 import { button as buttonStyles } from "@nextui-org/theme";
 
 import { subtitle } from "@/components/primitives";
+import { prepareCommande } from "@/config/logic";
+import { Menus, Plats, Snacks, Boissons, Viandes } from "@/types";
 
-export default function Paiement() {
+
+type NewMenus = {
+  id: number;
+  type: "menu";
+  menu: Menus;
+  menuId: number;
+};
+
+type NewPlats = {
+  id: number;
+  type: "plat";
+  plat: Plats;
+  menuId?: number;
+};
+
+type NewSnacks = {
+  id: number;
+  type: "snack";
+  snack: Snacks;
+  menuId?: number;
+};
+
+type NewBoissons = {
+  id: number;
+  type: "boisson";
+  boisson: Boissons;
+  menuId?: number;
+};
+
+type NewRepas = {
+  menu: NewMenus[];
+  plat: NewPlats[];
+  snack: NewSnacks[];
+  boisson: NewBoissons[];
+  complete: boolean;
+  remainingPlats: number;
+  remainingBoissons: number;
+  remainingSnacks: number;
+  currentMenu?: NewMenus;
+};
+
+export default function Paiement(repas: NewRepas, allViandes: Viandes[]) {
+
+  // useEffect(() => {
+  prepareCommande(repas, allViandes);
+  // } , []);
+
+
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 max-md:py-0">
       <div className="inline-block max-w-lg text-center justify-center">
