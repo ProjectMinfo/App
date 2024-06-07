@@ -11,7 +11,9 @@ import { postLogin } from "@/config/api";
 
 export default function Home() {
 
-  postLogin({ email: window.localStorage.getItem('email'), mdp: window.localStorage.getItem('mdp') });
+  if (typeof window !== 'undefined') {
+    postLogin({ email: window.localStorage.getItem('email'), mdp: window.localStorage.getItem('mdp') });
+  }
 
 
   return (

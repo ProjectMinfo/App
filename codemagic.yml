@@ -1,0 +1,123 @@
+workflows:
+  android-workflow:
+    name: Ionic Capacitor Android Workflow
+    max_build_duration: 120
+    environment:
+      android_signing:
+        - keystore_reference
+      groups:
+        - google_play
+      vars:
+        PACKAGE_NAME: "fr.mylow.maisonisen"
+        GOOGLE_PLAY_TRACK: alpha
+      node: latest
+    scripts:
+      - name: Install npm dependencies for Ionic Capacitor project
+        script: | 
+          npm install
+      - name: Build app
+        script: |
+          npm run build
+      - name: Set up local.properties
+        script: | 
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Update dependencies and copy web assets to native project
+        script: | 
+          # if you don't need to update native dependencies, use this:
+          # npx cap copy
+          #
+          # to update native dependencies, use this command:
+          npx cap sync
+      - name: Build Android release
+        script: | 
+          LATEST_GOOGLE_PLAY_BUILD_NUMBER=$(google-play get-latest-build-number --package-name "$PACKAGE_NAME")
+          if [ -z $LATEST_GOOGLE_PLAY_BUILD_NUMBER ]; then
+            # fallback in case no build number was found from Google Play.
+            # Alternatively, you can `exit 1` to fail the build
+            # BUILD_NUMBER is a Codemagic built-in variable tracking the number
+            # of times this workflow has been built
+            UPDATED_BUILD_NUMBER=$BUILD_NUMBER
+          else
+            UPDATED_BUILD_NUMBER=$(($LATEST_GOOGLE_PLAY_BUILD_NUMBER + 1))
+          fi
+          cd android
+          ./gradlew bundleRelease \
+            -PversionCode=$UPDATED_BUILD_NUMBER \
+            -PversionName=1.0.$UPDATED_BUILD_NUMBER
+    artifacts:
+      - android/app/build/outputs/**/*.apk
+    publishing:
+      email:
+        recipients:
+          - user_1@example.com
+          - user_2@example.com
+        notify:
+          success: true
+          failure: false
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: true
+
+  ios-workflow:
+    name: iOS Workflow
+    max_build_duration: 120
+    integrations:
+      app_store_connect: Milo
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: fr.mylow.maisonisen
+      vars:
+        BUNDLE_ID: "fr.mylow.maisonisen"
+        APP_STORE_APPLE_ID: 6504090590
+        XCODE_WORKSPACE: "App.xcworkspace"
+        XCODE_SCHEME: "App"
+    scripts:
+      - name: Install npm dependencies for Ionic Capacitor project
+        script: | 
+          npm install
+      - name: Build app
+        script: |
+          npm run build   
+          # VERIFIER QUE LE BUILD SORT DES FICHIERS STATICS  (cf : next.config.js)
+      - name: Cocoapods installation
+        script: | 
+          cd ios/App && pod install
+      - name: Update dependencies and copy web assets to native project
+        script: | 
+          # if you don't need to update native dependencies, use this:
+          # npx cap copy
+          #
+          # to update native dependencies, use this command:
+          npx cap sync
+      - name: Set up code signing settings on Xcode project
+        script: | 
+          xcode-project use-profiles
+      - name: Increment build number
+        script: | 
+          cd $CM_BUILD_DIR/ios/App
+          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID")
+          agvtool new-version -all $(($LATEST_BUILD_NUMBER + 1))
+      - name: Build ipa for distribution
+        script: | 
+          cd $CM_BUILD_DIR/ios/App
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - ios/App/build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+
+        # Configuration related to TestFlight (optional)
+        # Note: This action is performed during post-processing.
+        submit_to_testflight: true
+        beta_groups: # Specify the names of beta tester groups that will get access to the build once it has passed beta review.
+          - Yessie
+
+        # Configuration related to App Store (optional)
+        # Note: This action is performed during post-processing.
+        submit_to_app_store: false
