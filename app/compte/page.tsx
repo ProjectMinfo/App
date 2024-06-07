@@ -94,27 +94,30 @@ const Compte = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 bg-black text-white min-h-screen">
-      <div className="flex-grow flex w-full space-x-8">
-        <Card className="w-1/3 h-3/4">
+    <div className="container mx-auto p-4 min-h-screen">
+      <div className="flex flex-col lg:flex-row w-full lg:space-x-8">
+        <Card className="lg:w-1/3 h-full w-full mb-4 lg:mb-0">
           <h2 className="text-2xl font-semibold mb-4 text-center">Mes informations personnelles</h2>
           <p className="mb-4">Pour modifier ces informations, merci de vous rendre au comptoir.</p>
           <div className="space-y-2 m-2">
-            <div className="text-left"><a className="font-bold">Nom :  </a>{user.nom}</div>
-            <div className="text-left"><a className="font-bold">Prénom :  </a>{user.prenom}</div>
-            <div className="text-left"><a className="font-bold">Identifiant :  </a>{user.numCompte}</div>
-            <div className="text-left"><a className="font-bold">Adresse mail :  </a>{user.email}</div>
-            <div className="text-left"><a className="font-bold">Promo :  </a>{user.promo}</div>
+            <div className="text-left"><span className="font-bold">Nom :  </span>{user.nom}</div>
+            <div className="text-left"><span className="font-bold">Prénom :  </span>{user.prenom}</div>
+            <div className="text-left"><span className="font-bold">Identifiant :  </span>{user.numCompte}</div>
+            <div className="text-left"><span className="font-bold">Adresse mail :  </span>{user.email}</div>
+            <div className="text-left"><span className="font-bold">Promo :  </span>{user.promo}</div>
           </div>
           <button className="bg-red-500 text-white py-2 px-4 rounded">Me déconnecter</button>
         </Card>
-        <div className="w-2/3">
-          <div className="flex justify-between mb-4">
-            <h2 className="text-2xl font-semibold mb-4 text-left">Mes transactions</h2>
-            <div className="bg-green-500 text-white px-7 p-4 rounded">Solde actuel : {user.montant.toFixed(2)} €</div>
+        <div className="lg:w-2/3 w-full flex flex-col items-center">
+          <div className="flex justify-between items-center mb-4 w-full">
+            <h2 className="text-xl lg:text-2xl font-semibold text-left">Mes transactions  </h2>
+            <Card className="px-7 py-2 rounded">
+              <span className="text-base base:text-xl font-bold">Solde actuel :</span> 
+              <span className="text-lg lg:text-xl font-bold text-red-600">{user.montant.toFixed(2)} €</span>
+            </Card>
           </div>
-          <table className="min-w-full bg-black text-white shadow-md rounded-lg mb-4">
-            <thead className="bg-gray-700">
+          <table className="min-w-full shadow-md rounded-lg mb-4 table-auto">
+            <thead>
               <tr>
                 <th className="py-2 px-4 border-b border-gray-600 text-center">Date</th>
                 <th className="py-2 px-4 border-b border-gray-600 text-left">Contenu</th>
@@ -129,16 +132,16 @@ const Compte = () => {
                   const contenu = commandeContenu(commande);
                   const prix = commande.prix.toFixed(2);
                   return (
-                    <tr key={commande.id} className="hover:bg-gray-600 cursor-pointer">
-                      <td className="py-2 px-4 border-b border-gray-600 text-center">{toDate(commande.date.$date.$numberLong)}</td>
-                      <td className="py-2 px-4 border-b border-gray-600 text-left" dangerouslySetInnerHTML={{ __html: contenu }}></td>
-                      <td className="py-2 px-4 border-b border-gray-600 text-center">{prix} €</td>
+                    <tr key={commande.id}>
+                      <td className="py-2 px-4 border-b border-gray-600 text-center whitespace-nowrap">{toDate(commande.date.$date.$numberLong)}</td>
+                      <td className="py-2 px-4 border-b border-gray-600 text-left whitespace-normal" dangerouslySetInnerHTML={{ __html: contenu }}></td>
+                      <td className="py-2 px-4 border-b border-gray-600 text-center whitespace-nowrap">{prix} €</td>
                     </tr>
                   );
                 })}
             </tbody>
           </table>
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between w-full mt-4">
             {commandesAffichees < commandes.length && (
               <button
                 onClick={handleShowMore}
