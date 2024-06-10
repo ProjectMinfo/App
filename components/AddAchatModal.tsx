@@ -24,7 +24,7 @@ type Achat = {
 interface AddAchatModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (newAchat: Achat) => void;
+    onSubmit: (newAchat: Achat, duplication: number) => void;
 }
 
 type Produit = {
@@ -135,7 +135,6 @@ export default function AddAchatModal({
 
         // Mettre à jour l'état dlc avec la date standard JavaScript
         setDlc({ "$date": { $numberLong: timestampDate.toString() } });
-
     };
 
     const handleNbPortionsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -161,7 +160,7 @@ export default function AddAchatModal({
             numLot: numLot,
             qtePerimee: 0
         }
-        onSubmit(newAchat);
+        onSubmit(newAchat, duplication);
         onClose();
     };
 
@@ -242,7 +241,7 @@ export default function AddAchatModal({
                         label="Dupliquer l'achat"
                         type="number"
                         variant="bordered"
-                        value="1"
+                        value={String(duplication)}
                         onChange={handleDuplicationChange}
                     />
 

@@ -138,7 +138,7 @@ export default function GestionAchatsPage() {
   }, []);
 
 
-  // OUVRIR ACHAT
+  // OUVRIR FERMER JETER ACHAT
 
   const onChangementEtat = async (achat: Achat) => {
     const changedAchat = { ...achat };
@@ -192,6 +192,7 @@ export default function GestionAchatsPage() {
     }
   };
 
+
   // ADD //
 
   const onAddOpen = () => {
@@ -202,23 +203,24 @@ export default function GestionAchatsPage() {
     setIsAddModalOpen(false);
   };
 
-  const onAddSubmit = async (newAchat: Achat) => {
+  const onAddSubmit = async (newAchat: Achat, duplication: number) => {
     if (newAchat && achats) {
-      const updatedAchats = [...achats, newAchat]; // On ajoute l'achat à la liste
-      updatedAchats.sort((a: Achat, b: Achat) => b.idAchat - a.idAchat); // On retrie la liste
-      setAchats(updatedAchats); // On met à jour la liste des achats
-      newAchat.idAchat = -1; // Pour créer un nouvel achat
+      for (let i = 0; i < duplication; i++) { // On duplique l'achat autant de fois que demandé
+        const updatedAchats = [...achats, newAchat]; // On ajoute l'achat à la liste
+        updatedAchats.sort((a: Achat, b: Achat) => b.idAchat - a.idAchat); // On retrie la liste
+        setAchats(updatedAchats); // On met à jour la liste des achats
+        newAchat.idAchat = -1; // Pour créer un nouvel achat
 
-      try {
-        await postEditAchat(newAchat); // Appel à l'API pour enregistrer les modifications
-        console.log("Achat added successfully in the API");
-        setAchats((await getAchats()).sort((a: Achat, b: Achat) => b.idAchat - a.idAchat));
-      }
-      catch (error) {
-        console.error("Error adding achat:", error);
+        try {
+          await postEditAchat(newAchat); // Appel à l'API pour enregistrer les modifications
+          console.log("Achat added successfully in the API");
+          setAchats((await getAchats()).sort((a: Achat, b: Achat) => b.idAchat - a.idAchat));
+        }
+        catch (error) {
+          console.error("Error adding achat:", error);
+        }
       }
     }
-
     onAddClose();
   };
 
