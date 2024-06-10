@@ -1,7 +1,7 @@
 'use client';
 import axios from 'axios';
 
-const baseURL = 'https://minfoapi2.fly.dev';
+const baseURL = 'https://minfoapi.fly.dev';
 
 
 
@@ -75,7 +75,8 @@ export const getPlats = async () => {
 
 export const getUser = async (id: number) => {
   try {
-    const response = await api.get(`/user/${id}`);
+    // const response = await api.get(`/user/${id}`);
+    const response = await api.get(`/users/${id}`);
     return (response.data);
   } catch (error) {
     console.error('Error fetching id:', error);
@@ -149,7 +150,7 @@ export const postEditAchat = async (achat: any) => {
 export const postEditCompte = async (user: any) => {
 
   try {
-    const response = await api.post('/user/update', JSON.stringify(user), {
+    const response = await api.post(/*'/user/update'*/'/users/update', JSON.stringify(user), {
       headers: {
         "Content-Type": "application/json"
       }
@@ -312,7 +313,7 @@ export const postCommande = async (data: any) => {
 export const postCreateCompte = async (data: any) => {
 
   try {
-    const response = await api.post('/user', JSON.stringify(data), {
+    const response = await api.post(/*'/user'*/ '/users', JSON.stringify(data), {
       headers: {
         "Content-Type": "application/json"
       }
@@ -351,7 +352,8 @@ export const sendVerificationEmail = async (email: string) => {
 // Fonction pour obtenir le planning de la semaine
 export const getPlanning = async (numSemaine: number) => {
   try {
-    const response = await api.get(`/planning/week/${numSemaine}`);
+    // const response = await api.get(`/planning/week/${numSemaine}`);
+    const response = await api.get(`/plannings/week/${numSemaine}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching planning:', error);
@@ -362,7 +364,9 @@ export const getPlanning = async (numSemaine: number) => {
 // Fonction pour poster le planning
 export const postPlanning = async (data: any) => {
   try {
-    const response = await api.post('/planning', data, {
+    // const response = await api.post('/planning', data, {
+    const response = await api.post('/plannings', data, {
+
       headers: {
         "Content-Type": "application/json"
       }
@@ -376,7 +380,9 @@ export const postPlanning = async (data: any) => {
 
 export const deletePlanning = async (idPlanning: number) => {
   try {
-    const response = await api.delete(`/planning/${idPlanning}`);
+    // const response = await api.delete(`/planning/${idPlanning}`);
+    const response = await api.delete(`/plannings/${idPlanning}`);
+
     return response.data;
   } catch (error) {
     console.error('Error deleting planning:', error);
@@ -386,7 +392,9 @@ export const deletePlanning = async (idPlanning: number) => {
 
 export const getAllPlanning = async () => {
   try {
-    const response = await api.get(`/planning`);
+    // const response = await api.get(`/planning`);
+    const response = await api.get(`/plannings`);
+
     return response.data;
   } catch (error) {
     console.error('Error fetching planning:', error);
@@ -535,7 +543,9 @@ export const getBoissonById = async (id: number)=>{
 
 export const getCommandesByIdUser = async (id:number) => {
   try {
-    const response = await api.get(`/commandes/user/${id}`);
+    // const response = await api.get(`/commandes/user/${id}`);
+    const response = await api.get(`/commandes/users/${id}`);
+
     return response.data;
   } catch (error) {
     console.error('Error fetching commandes:', error);
