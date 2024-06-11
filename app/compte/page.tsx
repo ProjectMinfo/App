@@ -3,14 +3,35 @@ import React, { useState, useEffect } from "react";
 import { getUser, getCommandesByIdUser, getBoissons, getSnacks } from "@/config/api";
 import { Card, Link } from "@nextui-org/react";
 
+interface User {
+  nom: string;
+  prenom: string;
+  numCompte: string;
+  email: string;
+  promo: string;
+  montant: number;
+  // Ajoutez d'autres propriétés si nécessaire
+}
+
+type Commande = {
+  prix: number;
+  id: string;
+  date: { $date: { $numberLong: string } };
+  // Ajoutez d'autres propriétés si nécessaire
+};
+
+
+
 const Compte = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null); // Définir le type de 'user' explicitement
   const [isLoading, setIsLoading] = useState(true);
-  const [commandes, setCommandes] = useState([]);
+  const [commandes, setCommandes] = useState<Commande[]>([]);
   const [boissonsAll, setBoissonsAll] = useState([]);
   const [snacksAll, setSnacksAll] = useState([]);
   const [commandesAffichees, setCommandesAffichees] = useState(5);
-  const userId = window.localStorage.getItem("numCompte");
+  const userIdString = window.localStorage.getItem("numCompte");
+  const userId = userIdString !== null ? parseInt(userIdString) : null;
+
 
 
 
@@ -18,19 +39,21 @@ const Compte = () => {
 
   useEffect(() => {
     async function fetchData() {
-      try {
-        const fetchedUser = await getUser(userId);
-        setUser(fetchedUser);
-        const fetchedCommandes = await getCommandesByIdUser(userId);
-        setCommandes(fetchedCommandes);
-        const fetchedBoissons = await getBoissons();
-        setBoissonsAll(fetchedBoissons);
-        const fetchedSnacks = await getSnacks();
-        setSnacksAll(fetchedSnacks);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(false);
+      if (userId !== null) {
+        try {
+          const fetchedUser = await getUser(userId);
+          setUser(fetchedUser);
+          const fetchedCommandes = await getCommandesByIdUser(userId);
+          setCommandes(fetchedCommandes);
+          const fetchedBoissons = await getBoissons();
+          setBoissonsAll(fetchedBoissons);
+          const fetchedSnacks = await getSnacks();
+          setSnacksAll(fetchedSnacks);
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          setIsLoading(false);
+        }
       }
     }
 
@@ -41,7 +64,7 @@ const Compte = () => {
     return <div>Chargement...</div>;
   }
 
-  const toDate = (dateNumber) => {
+  const toDate = (dateNumber: number) => {
     const date = new Date(Number(dateNumber));
     const jour = ('0' + date.getDate()).slice(-2); // Obtient le jour avec un zéro initial si nécessaire
     const mois = ('0' + (date.getMonth() + 1)).slice(-2); // Obtient le mois avec un zéro initial si nécessaire
@@ -49,7 +72,7 @@ const Compte = () => {
     return `${jour}/${mois}/${annee}`;
   };
 
-  const countPlats = (plats) => {
+  const countPlats = (plats: string[]) => {
     const platCounts = new Map();
     plats.forEach(plat => {
       platCounts.set(plat, (platCounts.get(plat) || 0) + 1);
@@ -57,15 +80,15 @@ const Compte = () => {
     return platCounts;
   };
 
-  const commandeContenu = (commande) => {
+  const commandeContenu = (commande: { contenu?: string, boissons?: [string, number][], snacks?: [string, number][] }, boissonsAll: any, snacksAll: any) => {
     let platsAffiche = "";
     if (commande.contenu) {
       const regex = /([A-Za-zÀ-ÖØ-öø-ÿ\s-]+)(?=:)/g;
       const platsMatches = commande.contenu.match(regex);
       if (platsMatches) {
-        const plats = platsMatches.map(match => match.trim());
+        const plats: string[] = platsMatches.map((match: string) => match.trim());
         const platCounts = countPlats(plats);
-        platsAffiche = "Plat(s) : " + [...platCounts.entries()].map(([plat, count]) => `${count} ${plat}`).join(", ");
+        platsAffiche = "Plat(s) : " + Array.from(platCounts.entries()).map(([plat, count]: [string, number]) => `${count} ${plat}`).join(", ");
       }
     }
 
@@ -73,7 +96,9 @@ const Compte = () => {
     if (commande.boissons && commande.boissons.length !== 0) {
       boissonsAffiche = "Boisson(s) :";
       for (const boissonElem of commande.boissons) {
-        boissonsAffiche += ` ${boissonElem[1]} ${boissonsAll[boissonElem[0]].nom},`;
+        if (boissonsAll && boissonsAll[boissonElem[0]]) {
+          boissonsAffiche += ` ${boissonElem[1]} ${boissonsAll[boissonElem[0]].nom},`;
+        }
       }
       boissonsAffiche = boissonsAffiche.slice(0, -1); // Supprimer la dernière virgule
     }
@@ -82,7 +107,9 @@ const Compte = () => {
     if (commande.snacks && commande.snacks.length !== 0) {
       snacksAffiche = "Snack(s) :";
       for (const snackElem of commande.snacks) {
-        snacksAffiche += ` ${snackElem[1]} ${snacksAll[snackElem[0]].nom},`;
+        if (snacksAll && snacksAll[snackElem[0]]) {
+          snacksAffiche += ` ${snackElem[1]} ${snacksAll[snackElem[0]].nom},`;
+        }
       }
       snacksAffiche = snacksAffiche.slice(0, -1); // Supprimer la dernière virgule
     }
@@ -105,11 +132,15 @@ const Compte = () => {
           <h2 className="text-2xl font-semibold mb-4 text-center">Mes informations personnelles</h2>
           <p className="mb-4">Pour modifier ces informations, merci de vous rendre au comptoir.</p>
           <div className="space-y-2 m-2">
-            <div className="text-left"><span className="font-bold">Nom :  </span>{user.nom}</div>
-            <div className="text-left"><span className="font-bold">Prénom :  </span>{user.prenom}</div>
-            <div className="text-left"><span className="font-bold">Identifiant :  </span>{user.numCompte}</div>
-            <div className="text-left"><span className="font-bold">Adresse mail :  </span>{user.email}</div>
-            <div className="text-left"><span className="font-bold">Promo :  </span>{user.promo}</div>
+            {user && (
+              <>
+                <div className="text-left"><span className="font-bold">Nom :  </span>{user.nom}</div>
+                <div className="text-left"><span className="font-bold">Prénom :  </span>{user.prenom}</div>
+                <div className="text-left"><span className="font-bold">Identifiant :  </span>{user.numCompte}</div>
+                <div className="text-left"><span className="font-bold">Adresse mail :  </span>{user.email}</div>
+                <div className="text-left"><span className="font-bold">Promo :  </span>{user.promo}</div>
+              </>
+            )}
           </div>
           <button className="bg-red-500 text-white py-2 px-4 rounded">
             <Link className="text-white" href="/connexion">
@@ -122,7 +153,11 @@ const Compte = () => {
             <h2 className="text-xl lg:text-2xl font-semibold text-left">Mes transactions  </h2>
             <Card className="px-7 py-2 rounded">
               <span className="text-base base:text-xl font-bold">Solde actuel :</span>
-              <span className="text-lg lg:text-xl font-bold text-red-600">{user.montant.toFixed(2)} €</span>
+              {user && (
+                <span className="text-lg lg:text-xl font-bold text-red-600">
+                  {user.montant.toFixed(2)} €
+                </span>
+              )}
             </Card>
           </div>
           <table className="min-w-full shadow-md rounded-lg mb-4 table-auto">
@@ -136,14 +171,15 @@ const Compte = () => {
             <tbody>
               {commandes.length === 0 ? (
                 <tr>
-                  <td colSpan="3" className="py-2 px-4 border-b border-gray-600 text-center">Aucune commande passée</td>
+                  <td colSpan={3} className="py-2 px-4 border-b border-gray-600 text-center">Aucune commande passée</td>
                 </tr>
               ) : (
                 commandes
+                  .filter((commande): commande is Commande => !!commande && typeof commande === 'object')
                   .filter(commande => commande.prix > 0)
                   .slice(0, commandesAffichees)
                   .map((commande) => {
-                    const contenu = commandeContenu(commande);
+                    const contenu = commandeContenu(commande, boissonsAll, snacksAll);
                     const prix = commande.prix.toFixed(2);
                     return (
                       <tr key={commande.id}>
