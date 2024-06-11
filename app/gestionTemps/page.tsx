@@ -12,25 +12,28 @@ interface Temperature {
     nomMembre: string;
 }
 
+type FridgeKey = 'tmp1' | 'tmp2' | 'tmp3';
+
+
 const GestionTemps = () => {
     let user = null;
     const userString = window.localStorage.getItem("user");
     if (userString) {
         user = JSON.parse(userString);
-    }    const prenom = user.prenom;
+    } const prenom = user.prenom;
     const nom = user.nom;
     const userName = prenom + " " + nom;
 
     const { isOpen: isAddModalOpen, onOpen: openAddModal, onClose: closeAddModal } = useDisclosure();
     const { isOpen: isDetailsModalOpen, onOpen: openDetailsModal, onClose: closeDetailsModal } = useDisclosure();
-    const [temperatures, setTemperatures] = useState([]);
+    const [temperatures, setTemperatures] = useState<Temperature[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [visibleCount, setVisibleCount] = useState(10);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedTemperature, setSelectedTemperature] = useState<Temperature | null>(null);
 
     const [errorMessage, setErrorMessage] = useState("");
-    const [selectedFridge, setSelectedFridge] = useState("tmp1");
+    const [selectedFridge, setSelectedFridge] = useState<FridgeKey>('tmp1');
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     const [newTmp1, setNewTmp1] = useState("");
@@ -74,7 +77,7 @@ const GestionTemps = () => {
         setVisibleCount(prevCount => prevCount - 10);
     };
 
-    const handleSearchChange = (event : any) => {
+    const handleSearchChange = (event: any) => {
         setSearchTerm(event.target.value);
     };
 
@@ -92,7 +95,7 @@ const GestionTemps = () => {
         openAddModal();
     };
 
-    const handleRowClick = (temp : any) => {
+    const handleRowClick = (temp: any) => {
         setSelectedTemperature(temp);
         openDetailsModal();
     };
@@ -112,7 +115,7 @@ const GestionTemps = () => {
             setErrorMessage("Veuillez remplir les températures des deux frigos.");
             return;
         }
-    
+
         const newTemperature = {
             temperatureId: -1, // Ceci peut être généré par le backend
             date: new Date().toISOString(),
@@ -121,7 +124,7 @@ const GestionTemps = () => {
             tmp3: parseInt(newTmp3),
             nomMembre: userName
         };
-    
+
         try {
             await postTemperature(newTemperature);
             setNewTmp1("");
@@ -130,7 +133,7 @@ const GestionTemps = () => {
             setErrorMessage("");
             closeAddModal();
             await updateTemperatures(); // Mettre à jour les températures après l'ajout
-        } catch (error:any) {
+        } catch (error: any) {
             console.error('Error posting temperature:', error.response?.data || error.message);
             setErrorMessage(error.response?.data?.message || "Une erreur est survenue lors de l'ajout du relevé.");
         }
@@ -154,7 +157,7 @@ const GestionTemps = () => {
         }
     };
 
-    const handleFridgeSelection = (fridge:any) => {
+    const handleFridgeSelection = (fridge: any) => {
         setSelectedFridge(fridge);
     };
 
@@ -227,7 +230,7 @@ const GestionTemps = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredTemperatures.slice(0, visibleCount).map((temp) => (
+                                {filteredTemperatures.slice(0, visibleCount).map((temp: Temperature) => (
                                     <tr key={temp.temperatureId} className="hover: cursor-pointer" onClick={() => handleRowClick(temp)}>
                                         <td className="py-2 px-4 border-b border-gray-600 text-center text-xs md:text-sm">{new Date(temp.date).toLocaleString()}</td>
                                         <td className="py-2 px-4 border-b border-gray-600 text-center text-xs md:text-sm">{temp.tmp1}</td>
