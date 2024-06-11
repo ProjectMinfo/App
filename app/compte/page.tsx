@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { getUser, getCommandesByIdUser, getBoissons, getSnacks } from "@/config/api";
 import { Card, Link } from "@nextui-org/react";
+import {redirect} from "next/navigation"
 
 interface User {
   nom: string;
@@ -33,11 +34,14 @@ const Compte = () => {
   // const userId = userIdString !== null ? parseInt(userIdString) : null;
 
 
-  let userId = 587;
+  let userId=0;
   if (typeof window !== 'undefined') {
-   userId = parseInt(window.localStorage.getItem("numCompte") || "587") || 587;
+    userId = parseInt(window.localStorage.getItem("numCompte") || "-1");
   }
 
+  if(userId==-1){
+    redirect("/connexion")
+  }
 
 
 
@@ -147,7 +151,12 @@ const Compte = () => {
             )}
           </div>
           <button className="bg-red-500 text-white py-2 px-4 rounded">
-            <Link className="text-white" href="/connexion">
+            <Link className="text-white" href="/connexion" onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.localStorage.clear();
+                redirect("/connexion")
+              }
+            }}>
               Déconnexion
             </Link>
           </button>

@@ -14,7 +14,6 @@ interface Temperature {
 
 type FridgeKey = 'tmp1' | 'tmp2' | 'tmp3';
 
-
 const GestionTemps = () => {
     let user = null;
     let prenom = "";
@@ -29,8 +28,6 @@ const GestionTemps = () => {
     }
     const userName = prenom + " " + nom;
 
-
-
     const { isOpen: isAddModalOpen, onOpen: openAddModal, onClose: closeAddModal } = useDisclosure();
     const { isOpen: isDetailsModalOpen, onOpen: openDetailsModal, onClose: closeDetailsModal } = useDisclosure();
     const [temperatures, setTemperatures] = useState<Temperature[]>([]);
@@ -38,7 +35,6 @@ const GestionTemps = () => {
     const [visibleCount, setVisibleCount] = useState(10);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedTemperature, setSelectedTemperature] = useState<Temperature | null>(null);
-
     const [errorMessage, setErrorMessage] = useState("");
     const [selectedFridge, setSelectedFridge] = useState<FridgeKey>('tmp1');
     const [windowWidth, setWindowWidth] = useState(0);
@@ -52,6 +48,7 @@ const GestionTemps = () => {
             setWindowWidth(window.innerWidth);
         };
         window.addEventListener("resize", handleResize);
+        handleResize(); // Initial call to set windowWidth
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
@@ -87,7 +84,6 @@ const GestionTemps = () => {
     const handleSearchChange = (event: any) => {
         setSearchTerm(event.target.value);
     };
-
 
     const filteredTemperatures = temperatures.filter((temp: Temperature) => {
         const dateMatch = new Date(temp.date).toLocaleString().includes(searchTerm);
@@ -168,7 +164,6 @@ const GestionTemps = () => {
         setSelectedFridge(fridge);
     };
 
-
     return (
         <div className="container mx-auto p-4 min-h-screen">
             <div className="flex justify-between items-center mb-4">
@@ -200,7 +195,7 @@ const GestionTemps = () => {
             {/* Affichage du tableau */}
             <div className="overflow-x-auto">
                 {/* Tableau pour les petits écrans */}
-                {isSmallScreen && (
+                {isSmallScreen ? (
                     <div className="md:flex md:flex-col">
                         <table className="min-w-full shadow-md rounded-lg mb-4 table-auto md:w-auto md:overflow-x-auto">
                             <thead>
@@ -221,10 +216,7 @@ const GestionTemps = () => {
                             </tbody>
                         </table>
                     </div>
-                )}
-
-                {/* Tableau pour les grands écrans */}
-                {!isSmallScreen && (
+                ) : (
                     <div className="md:flex md:flex-col">
                         <table className="min-w-full shadow-md rounded-lg mb-4 table-auto md:w-auto md:overflow-x-auto">
                             <thead>

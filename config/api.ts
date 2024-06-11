@@ -544,7 +544,7 @@ export const getBoissonById = async (id: number)=>{
 export const getCommandesByIdUser = async (id:number) => {
   try {
     // const response = await api.get(`/commandes/user/${id}`);
-    const response = await api.get(`/commandes/users/${id}`);
+    const response = await api.get(`/commandes/user/${id}`);
 
     return response.data;
   } catch (error) {
