@@ -29,10 +29,14 @@ const Compte = () => {
   const [boissonsAll, setBoissonsAll] = useState([]);
   const [snacksAll, setSnacksAll] = useState([]);
   const [commandesAffichees, setCommandesAffichees] = useState(5);
-  const userIdString = window.localStorage.getItem("numCompte");
-  const userId = userIdString !== null ? parseInt(userIdString) : null;
+  // const userIdString = window.localStorage.getItem("numCompte");
+  // const userId = userIdString !== null ? parseInt(userIdString) : null;
 
 
+  let userId = 587;
+  if (typeof window !== 'undefined') {
+   userId = parseInt(window.localStorage.getItem("numCompte") || "587") || 587;
+  }
 
 
 

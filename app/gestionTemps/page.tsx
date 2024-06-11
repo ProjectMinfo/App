@@ -17,12 +17,19 @@ type FridgeKey = 'tmp1' | 'tmp2' | 'tmp3';
 
 const GestionTemps = () => {
     let user = null;
-    const userString = window.localStorage.getItem("user");
-    if (userString) {
-        user = JSON.parse(userString);
-    } const prenom = user.prenom;
-    const nom = user.nom;
+    let prenom = "";
+    let nom = "";
+    if (typeof window !== 'undefined') {
+        user = window.localStorage.getItem("user");
+    }
+    if (user !== null) {
+        user = JSON.parse(user);
+        prenom = user.prenom || "Jean";
+        nom = user.nom || "Dupont";
+    }
     const userName = prenom + " " + nom;
+
+
 
     const { isOpen: isAddModalOpen, onOpen: openAddModal, onClose: closeAddModal } = useDisclosure();
     const { isOpen: isDetailsModalOpen, onOpen: openDetailsModal, onClose: closeDetailsModal } = useDisclosure();
@@ -34,7 +41,7 @@ const GestionTemps = () => {
 
     const [errorMessage, setErrorMessage] = useState("");
     const [selectedFridge, setSelectedFridge] = useState<FridgeKey>('tmp1');
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [windowWidth, setWindowWidth] = useState(0);
 
     const [newTmp1, setNewTmp1] = useState("");
     const [newTmp2, setNewTmp2] = useState("");

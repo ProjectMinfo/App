@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Modal, Input, ModalHeader, ModalBody, ModalFooter, ModalContent, Switch } from '@nextui-org/react';
 import { Menus, Boissons, Plats, Snacks, Ingredients, Viandes } from '@/types/index';
 import { TrashIcon } from '@/public/TrashIcon';
-import { getIngredients } from '@/config/api';
+import { getIngredients, getViandes } from '@/config/api';
 
 type MenuItem = Menus | Boissons | Plats | Snacks | Ingredients | Viandes;
 
@@ -43,8 +43,9 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await getIngredients();
-                setListIngredients(response);
+                const responseIngredients = await getIngredients();
+                const responseViandes = await getViandes();
+                setListIngredients([...responseIngredients, ...responseViandes])
             } catch (error) {
                 console.error('Error fetching ingredients:', error);
             }
