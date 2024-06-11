@@ -3,22 +3,35 @@ import React, { useState, useEffect } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
 import { getAllTemperatures, postTemperature, deleteTemperature } from "@/config/api";
 
+interface Temperature {
+    temperatureId: number;
+    date: string;
+    tmp1: number;
+    tmp2: number;
+    tmp3: number;
+    nomMembre: string;
+}
+
 const GestionTemps = () => {
-    const user = JSON.parse(window.localStorage.getItem("user"));
-    const prenom = user.prenom;
+    let user = null;
+    const userString = window.localStorage.getItem("user");
+    if (userString) {
+        user = JSON.parse(userString);
+    }    const prenom = user.prenom;
     const nom = user.nom;
     const userName = prenom + " " + nom;
+
     const { isOpen: isAddModalOpen, onOpen: openAddModal, onClose: closeAddModal } = useDisclosure();
     const { isOpen: isDetailsModalOpen, onOpen: openDetailsModal, onClose: closeDetailsModal } = useDisclosure();
-    const [temperatures, setTemperatures] = useState(null);
+    const [temperatures, setTemperatures] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [visibleCount, setVisibleCount] = useState(10);
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedTemperature, setSelectedTemperature] = useState(null);
+    const [selectedTemperature, setSelectedTemperature] = useState<Temperature | null>(null);
+
     const [errorMessage, setErrorMessage] = useState("");
     const [selectedFridge, setSelectedFridge] = useState("tmp1");
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
 
     const [newTmp1, setNewTmp1] = useState("");
     const [newTmp2, setNewTmp2] = useState("");
@@ -34,10 +47,14 @@ const GestionTemps = () => {
 
     useEffect(() => {
         async function fetchTemperatures() {
-            const fetchedTemperatures: Date = await getAllTemperatures();
-            fetchedTemperatures.sort((a, b) => new Date(b.date) - new Date(a.date));
-            setTemperatures(fetchedTemperatures);
-            setIsLoading(false);
+            try {
+                const fetchedTemperatures = await getAllTemperatures();
+                fetchedTemperatures.sort((a: Temperature, b: Temperature) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                setTemperatures(fetchedTemperatures);
+                setIsLoading(false);
+            } catch (error) {
+                console.error('Error fetching temperatures:', error);
+            }
         }
 
         fetchTemperatures();
@@ -57,13 +74,14 @@ const GestionTemps = () => {
         setVisibleCount(prevCount => prevCount - 10);
     };
 
-    const handleSearchChange = (event: { target: { value: any; }; }) => {
+    const handleSearchChange = (event : any) => {
         setSearchTerm(event.target.value);
     };
 
-    const filteredTemperatures = temperatures.filter((temp) => {
+
+    const filteredTemperatures = temperatures.filter((temp: Temperature) => {
         const dateMatch = new Date(temp.date).toLocaleString().includes(searchTerm);
-        const memberMatch = temp.nomMembre.toLowerCase().includes(searchTerm.toLowerCase());
+        const memberMatch = temp.nomMembre && temp.nomMembre.toLowerCase().includes(searchTerm.toLowerCase());
         return dateMatch || memberMatch;
     });
 
@@ -74,9 +92,19 @@ const GestionTemps = () => {
         openAddModal();
     };
 
-    const handleRowClick = (temp: React.SetStateAction<null>) => {
+    const handleRowClick = (temp : any) => {
         setSelectedTemperature(temp);
         openDetailsModal();
+    };
+
+    const updateTemperatures = async () => {
+        try {
+            const fetchedTemperatures = await getAllTemperatures();
+            fetchedTemperatures.sort((a: Temperature, b: Temperature) => new Date(b.date).getTime() - new Date(a.date).getTime());
+            setTemperatures(fetchedTemperatures);
+        } catch (error) {
+            console.error('Error updating temperatures:', error);
+        }
     };
 
     const handleSubmit = async () => {
@@ -84,50 +112,52 @@ const GestionTemps = () => {
             setErrorMessage("Veuillez remplir les températures des deux frigos.");
             return;
         }
-
+    
         const newTemperature = {
-            temperatureId: -1,
+            temperatureId: -1, // Ceci peut être généré par le backend
             date: new Date().toISOString(),
             tmp1: parseInt(newTmp1),
             tmp2: parseInt(newTmp2),
             tmp3: parseInt(newTmp3),
             nomMembre: userName
         };
-
+    
         try {
             await postTemperature(newTemperature);
-            setTemperatures([...temperatures, newTemperature]);
             setNewTmp1("");
             setNewTmp2("");
             setNewTmp3("");
             setErrorMessage("");
             closeAddModal();
-            window.location.reload();
-        } catch (error) {
+            await updateTemperatures(); // Mettre à jour les températures après l'ajout
+        } catch (error:any) {
             console.error('Error posting temperature:', error.response?.data || error.message);
             setErrorMessage(error.response?.data?.message || "Une erreur est survenue lors de l'ajout du relevé.");
         }
     };
 
     const handleDelete = async () => {
-        if (selectedTemperature) {
-            const { temperatureId } = selectedTemperature;
+        if (selectedTemperature !== null) { // Utilisation de la vérification stricte
+            const { temperatureId } = selectedTemperature; // TypeScript sait maintenant que selectedTemperature est de type Temperature
             try {
                 await deleteTemperature(temperatureId);
+                setTemperatures((prevTemperatures) =>
+                    prevTemperatures.filter((temp) => temp.temperatureId !== temperatureId)
+                );
                 setSelectedTemperature(null);
                 setErrorMessage("");
                 closeDetailsModal();
-                window.location.reload();
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Error deleting temperature:', error.response?.data || error.message);
                 setErrorMessage(error.response?.data?.message || "Une erreur est survenue lors de la suppression du relevé.");
             }
         }
     };
 
-    const handleFridgeSelection = (fridge) => {
+    const handleFridgeSelection = (fridge:any) => {
         setSelectedFridge(fridge);
     };
+
 
     return (
         <div className="container mx-auto p-4 min-h-screen">
