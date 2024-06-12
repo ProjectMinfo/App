@@ -121,8 +121,8 @@ const Navbarr = () => {
 
 
 
-            <div className={isActive('/tresorerie')}>
-              <Link href="/tresorerie" onClick={handleLinkClick}>
+            <div className={isActive('/dashboard')}>
+              <Link href="/dashboard" onClick={handleLinkClick}>
                 Trésorerie
               </Link>
             </div>

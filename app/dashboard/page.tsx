@@ -168,7 +168,7 @@ const Dashboard = () => {
                 </Card>
 
 
-                <Card className="col-span-2 row-span-1 p-2">
+                <Card className="col-span-2 row-span-1 p-2 max-md:max-h-[300px]">
                     <CardHeader className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Dernières
                         Commandes</CardHeader>
                     <CardBody>
@@ -182,7 +182,7 @@ const Dashboard = () => {
                     </CardBody>
                 </Card>
 
-                <Card className="col-span-2 row-span-1 p-2">
+                <Card className="col-span-2 row-span-1 p-2 max-md:max-h-[300px]">
                     <CardHeader className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Dernières
                         Commandes</CardHeader>
                     <CardBody>
