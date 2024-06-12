@@ -1,42 +1,40 @@
 'use client';
-import React, { useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import React, {useEffect, useState} from 'react';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-
-// Fix pour les importations Webpack (si nécessaire)
-pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.js`;
-
-const pdfUrl = "./TD_BDD_1.pdf"; // Remplacez par le chemin réel de votre PDF
+import {getCarte} from "@/config/api";
 
 const Carte = () => {
-  const [numPages, setNumPages] = useState<number | null>(null);
+    const [carte1, setCarte1] = useState<string>("");
+    const [carte2, setCarte2] = useState<string>("");
 
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
-    console.log(`Document loaded with ${numPages} pages.`);
-  };
+    useEffect(() => {
+        getCarte(1).then((url) => {
+            setCarte1(url);
+        }).catch(error => console.error('Erreur de récupération de la carte 1:', error));
 
-  const onDocumentLoadError = (error: Error) => {
-    console.error('Failed to load PDF document:', error);
-  };
+        getCarte(2).then((url) => {
+            setCarte2(url);
+        }).catch(error => console.error('Erreur de récupération de la carte 2:', error));
+    }, []);
 
-  return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-semibold text-center mb-8">Menu</h1>
-      <div className="pdf-container">
-        <Document
-          file={pdfUrl}
-          onLoadSuccess={onDocumentLoadSuccess}
-          onLoadError={onDocumentLoadError}
-        >
-          {numPages && Array.from(new Array(numPages), (el, index) => (
-            <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-          ))}
-        </Document>
-      </div>
-    </div>
-  );
+    return (
+        <div className="container mx-auto py-8 min-h-screen flex flex-col items-center">
+            <h1 className="text-3xl font-semibold text-center mb-8">Menu</h1>
+            <div className="flex-1 flex flex-col items-center w-full">
+                {carte1 ? (
+                    <img src={carte1} alt="Carte 1" className="w-full h-auto object-cover"/>
+                ) : (
+                    <p>Chargement de la carte...</p>
+                )}
+                {carte2 ? (
+                    <img src={carte2} alt="Carte 2" className="w-full h-auto object-cover mt-4"/>
+                ) : (
+                    <p>Chargement de la carte...</p>
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default Carte;
