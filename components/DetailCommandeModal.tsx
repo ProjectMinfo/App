@@ -88,20 +88,20 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
         options.currentPlat.plat.ingredients.forEach((element) => {          
           if (element.ingredient.id == ingredient.id) {                    
             if (element.ingredient.dispo == true) {
-              console.log(element.ingredient.nom);
+              // console.log(element.ingredient.nom);
               
               newIngredient.dispo = true;
               return newIngredient;
             }
             else {
-              console.log(element.ingredient.nom);
+              // console.log(element.ingredient.nom);
 
               newIngredient.dispo = false;
               return newIngredient;
             }
           }
           else {
-            console.log(element.ingredient.nom);
+            // console.log(element.ingredient.nom);
 
             newIngredient.dispo = false;
             return newIngredient;
@@ -138,9 +138,9 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
     setPossibleViandes(listViandes);
   }
 
-  useEffect(() => {
-    getPossibleItems();
-  }, [options.currentPlat]);
+  // useEffect(() => {
+  //   getPossibleItems();
+  // }, [options.currentPlat]);
 
 
   return (
@@ -160,7 +160,7 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
             </ModalHeader>
             <ModalBody className="grid grid-cols-3 gap-2">
               {step === 1
-                ? possibleViandes.filter((option) => option.dispo).map((option, index) => (
+                ? options.viandes.filter((option) => option.dispo).map((option, index) => (
                   <Button
                     color="primary"
                     variant={selectedViande.includes(option) ? "flat" : "ghost"}
@@ -170,7 +170,7 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
                     {option.nom}
                   </Button>
                 ))
-                : possibleIngredients.filter((option) => option.dispo).map((option, index) => (
+                : options.ingredients.filter((option) => option.dispo).map((option, index) => (
                   <Button
                     color="primary"
                     variant={selectedIngredients.includes(option) ? "flat" : "ghost"}
