@@ -1,5 +1,6 @@
 'use client';
 import axios from 'axios';
+import crypto from "crypto";
 
 const baseURL = 'https://minfoapi.fly.dev';
 
@@ -283,10 +284,27 @@ export const deleteBoissons = async (id: number) => {
     }
 };
 
+function encryptCommande(commande: any) {
+
+    try {
+        const ENC_KEY = "vuAoN8t3jAmrrUpkjgpY6YgRc4hyjQ8p";
+        const IV = "D2H*wUKNwwii#CH!";
+
+        let cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV);
+        let encrypted = cipher.update(commande, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+        return encrypted;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 // Fonction pour mettre à jour une commande par son ID
 export const postCommande = async (data: any) => {
+    const encryptedCommande = encryptCommande(JSON.stringify(data));
+
     const newData = {
-        "data": data
+        "data": encryptedCommande
     }
     try {
         // console.log('data', data);

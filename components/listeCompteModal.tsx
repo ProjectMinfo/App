@@ -70,7 +70,7 @@ export default function ListeComptesModal({ isOpen, onClose }: ListeComptesModal
 
     useEffect(() => {
         const query = searchQuery.toLowerCase();
-        if (query.length < 3) {
+        if (query.length < 2) {
             setFilteredComptes([]);
             return;
         }
@@ -114,7 +114,7 @@ export default function ListeComptesModal({ isOpen, onClose }: ListeComptesModal
                                 <TableColumn>Actions</TableColumn>
                             </TableHeader>
                             <TableBody>
-                                {filteredComptes.map(compte => (
+                                {filteredComptes.slice(0,10).map(compte => (
                                     <TableRow key={compte.numCompte}>
                                         <TableCell>{compte.nom}</TableCell>
                                         <TableCell>{compte.prenom}</TableCell>
@@ -129,6 +129,15 @@ export default function ListeComptesModal({ isOpen, onClose }: ListeComptesModal
                                         </TableCell>
                                     </TableRow>
                                 ))}
+                                {filteredComptes.length > 10 && (
+                                    <TableRow>
+                                        <TableCell></TableCell>
+                                        <TableCell></TableCell>
+                                        <TableCell className="text-center">...</TableCell>
+                                        <TableCell></TableCell>
+                                        <TableCell></TableCell>
+                                    </TableRow>
+                                )}
                             </TableBody>
                         </Table>
                     </ModalBody>
