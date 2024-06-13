@@ -103,6 +103,42 @@ export const getCommande = async () => {
 };
 
 
+export const deleteCarte = async (id: number) => {
+    try {
+      const response = await api.delete(`/fichiers/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting carte:', error);
+      throw error;
+    }
+  };
+
+  
+  export const postUpload = async (formData: FormData) => {
+    try {
+      const response = await api.post('/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw error;
+    }
+  };
+
+  export const getFileCount = async () => {
+    try {
+      const response = await api.get('/fichiers/num');
+      return response.data; // Assurez-vous que l'API renvoie un objet avec une clé 'count'
+    } catch (error) {
+      console.error('Error fetching file count:', error);
+      throw error;
+    }
+  };
+
+
 export const getSnacks = async () => {
     try {
         const response = await api.get('/snacks');
@@ -407,6 +443,7 @@ export const getPlanningCourse = async (numSemaine: number) => {
     }
 };
 
+
 // Fonction pour poster le planning
 export const postPlanningCourse = async (data: any) => {
     try {
@@ -598,19 +635,30 @@ export const postLogin = async (data: any) => {
     }
 };
 
-export const getCarte = async (id: number) => {
+
+  
+export const renameCarte = async (oldId: number, newId: number) => {
+  try {
+    const response = await api.put(`/fichiers/${oldId}`, { newId });
+    return response.data;
+  } catch (error) {
+    console.error('Error renaming carte:', error);
+    throw error;
+  }
+};
+
+
+  export const getCarte = async (id: number) => {
     try {
-        const response = await api.get(`/fichiers/${id}`, {
-            responseType: 'blob',
-            maxBodyLength: Infinity,
-        });
-        console.log('Response received:', response);
-        const blob = new Blob([response.data], { type: 'image/png' });
-        const url = URL.createObjectURL(blob);
-        console.log('Generated URL:', url);
-        return url;
+      const response = await api.get(`/fichiers/${id}`, {
+        responseType: 'blob',
+        maxBodyLength: Infinity,
+      });
+      const blob = new Blob([response.data], { type: 'image/png' });
+      const url = URL.createObjectURL(blob);
+      return url;
     } catch (error) {
-        console.error('Error fetching carte:', error);
-        throw error;
+      console.error('Error fetching carte:', error);
+      throw error;
     }
-}
+  };

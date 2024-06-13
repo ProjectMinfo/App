@@ -1,51 +1,35 @@
-'use client';  // Indique que ce composant doit être rendu côté client.
-import React, { useState } from 'react';  // Import de React et du hook useState.
+'use client';
+import React, { useState } from 'react';
+import FileUpload from '@/components/FileUpload';  // Importer le composant FileUpload
 
 const Settings = () => {
-  const [eventMode, setEventMode] = useState(false);  // État pour le mode événement.
-  const [orderTaking, setOrderTaking] = useState(false);  // État pour la prise de commande.
-  const [pdfFile, setPdfFile] = useState<File | null>(null);  // État pour stocker le fichier PDF sélectionné.
-  const [openingTime, setOpeningTime] = useState('08:00');  // État pour l'heure d'ouverture des commandes.
-  const [closingTime, setClosingTime] = useState('20:00');  // État pour l'heure de fermeture des commandes.
+  const [eventMode, setEventMode] = useState(false);
+  const [orderTaking, setOrderTaking] = useState(false);
+  const [openingTime, setOpeningTime] = useState('08:00');
+  const [closingTime, setClosingTime] = useState('20:00');
 
-  // Fonction pour gérer le changement du mode événement.
   const handleEventModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEventMode(event.target.value === 'enabled');
   };
 
-  // Fonction pour gérer le changement de la prise de commande.
   const handleOrderTakingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOrderTaking(event.target.value === 'enabled');
   };
 
-  // Fonction pour gérer le changement du fichier PDF.
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setPdfFile(event.target.files[0]);
-    }
-  };
-
-  // Fonction pour gérer le changement de l'heure d'ouverture.
   const handleOpeningTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOpeningTime(event.target.value);
   };
 
-  // Fonction pour gérer le changement de l'heure de fermeture.
   const handleClosingTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setClosingTime(event.target.value);
   };
 
-  // Fonction pour gérer la soumission du formulaire.
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Logic to handle settings submission
     console.log('Event Mode:', eventMode);
     console.log('Order Taking:', orderTaking);
     console.log('Opening Time:', openingTime);
     console.log('Closing Time:', closingTime);
-    if (pdfFile) {
-      console.log('PDF File:', pdfFile.name);
-    }
   };
 
   return (
@@ -131,16 +115,7 @@ const Settings = () => {
             </div>
           </div>
         )}
-        <div className="mb-6">
-          <h3 className="text-lg font-medium mb-2 text-gray-800">Changer le PDF de la Carte</h3>
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={handleFileChange}
-            className="form-input"
-          />
-          {pdfFile && <p className="mt-2 text-gray-600">Fichier sélectionné : {pdfFile.name}</p>}
-        </div>
+        <FileUpload />
         <button
           type="submit"
           className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
@@ -152,4 +127,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;  // Exporte le composant Settings par défaut.
+export default Settings;
