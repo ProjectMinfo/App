@@ -257,6 +257,15 @@ def fixPriceRound():
         print(f"{name} done")
     
     
+def removeCommandeNew():
+    collection = db.commandesNew
+    
+    for x in collection.find():
+        collection.delete_one({"_id": x["_id"]})
+        
+    print("done")
+    
+    
 # getViandes()
 # getIngredients()
 # getSnacks()
@@ -270,3 +279,4 @@ def fixPriceRound():
 # changeIDuserInPlanning()
 # removeposteInPlanning()
 # fixPriceRound()
+# removeCommandeNew()

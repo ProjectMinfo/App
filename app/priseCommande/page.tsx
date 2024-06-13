@@ -329,7 +329,6 @@ export default function ChatPage() {
               </p>
             </CardBody>
           </div>
-          <Divider />
         </Card>
         <Card className="max-w-[400px]">
           <CardHeader className="flex gap-3">
@@ -376,7 +375,6 @@ export default function ChatPage() {
               ))
             )}
           </div>
-          <Divider />
         </Card>
         <Card className="max-w-[400px]">
           <CardHeader className="flex gap-3">
@@ -414,7 +412,6 @@ export default function ChatPage() {
               </p>
             </CardBody>
           </div>
-          <Divider />
         </Card>
         <Card className="max-w-[400px]">
           <CardHeader className="flex gap-3">
@@ -452,7 +449,6 @@ export default function ChatPage() {
               </p>
             </CardBody>
           </div>
-          <Divider />
         </Card>
         <Divider />
         <h3 className="text-lg font-bold">Total : {prixTotal.toFixed(2)} €</h3>
@@ -465,12 +461,12 @@ export default function ChatPage() {
     if (repas.remainingPlats > 0) {
       return <ChatPlat setRepas={item => setRepasItem("plat", item)} />;
     }
-    else if (repas.remainingSnacks > 0) {
-      return <ChatSnack setRepas={item => setRepasItem("snack", item)} />;
-    }
-    else if (repas.remainingBoissons > 0) {
-      return <ChatBoisson setRepas={item => setRepasItem("boisson", item)} />;
-    }
+    // else if (repas.remainingSnacks > 0) {
+    //   return <ChatSnack setRepas={item => setRepasItem("snack", item)} />;
+    // }
+    // else if (repas.remainingBoissons > 0) {
+    //   return <ChatBoisson setRepas={item => setRepasItem("boisson", item)} />;
+    // }
     else {
       if (currentStep === "end") {
         return <ChatEnd repas={repas} allViandes={allViandes} />;
