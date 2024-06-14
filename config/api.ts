@@ -214,6 +214,16 @@ export const getIngredients = async () => {
   }
 }
 
+export const getIngredientById=async(id: number)=>{
+  try{
+    const response=await api.get(`/ingredients/${id}`);
+    return(response.data);
+  } catch(error){
+    console.error('Error fetching ingeredients :', error);
+    throw error;
+  }
+}
+
 
 export const postIngredients = async (data: any) => {
   try {
