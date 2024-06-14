@@ -33,9 +33,13 @@ const FileUpload = () => {
     if (event.target.files) {
       const file = event.target.files[0];
 
+      // Renommer le fichier avec un timestamp
+      const timestamp = Date.now();
+      const renamedFile = new File([file], `${timestamp}-${file.name}`, { type: file.type });
+
       // Create FormData and upload file
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', renamedFile);
 
       try {
         await postUpload(formData);
@@ -73,7 +77,7 @@ const FileUpload = () => {
               <>
                 <img src={previews[index]} alt={`Preview ${index + 1}`} className="object-cover w-full h-full" />
                 <button
-                  className="absolute top-2 right-2 bg-red-500  rounded-full p-1"
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDeleteClick(index);
