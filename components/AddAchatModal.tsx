@@ -86,10 +86,7 @@ export default function AddAchatModal({
     }, []);
 
     useEffect(() => {
-        if (isOpen) {
-            resetForm();
-            console.log("reset")
-        }
+        if (isOpen) { resetForm() }
     }, [isOpen]);
 
     const resetForm = () => {
@@ -189,9 +186,6 @@ export default function AddAchatModal({
                 qtePerimee: 0
             };
             onSubmit(newAchat, duplication);
-        }
-        else {
-            console.log("Il manque des informations pour ajouter un achat");
         }
         onClose();
     };
