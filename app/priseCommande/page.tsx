@@ -6,10 +6,11 @@ import { getBoissons, getIngredients, getMenus, getPlats, getSnacks, getViandes 
 import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from './paiement/page';
-import { Card, CardHeader, Divider, CardBody } from '@nextui-org/react';
+import { Card, CardHeader, CardBody } from '@nextui-org/react';
 import { prepareCommande } from '@/config/logic';
 import ListeComptesModal from '@/components/listeCompteModal';
 import ListeCommandeModal from '@/components/listeCommandeModal';
+import { RecapComponent } from '@/components/CommandeCompos';
 
 
 type NewMenus = {
@@ -53,14 +54,7 @@ type NewRepas = {
 };
 
 
-type IngredientsInPlat = {
-  ingredient: Ingredients;
-  qmin: number;
-  qmax: number;
-}
-
-
-type AllType = NewMenus | NewPlats | NewSnacks | NewBoissons | { type: "other" } | { type: "end" };
+type AllType = NewMenus | NewPlats | NewSnacks | NewBoissons | { type: "other" } | { type: "end" } | Menus | Plats | Snacks | Boissons;
 
 export default function ChatPage() {
 
@@ -92,7 +86,6 @@ export default function ChatPage() {
   const [allViandes, setAllViandes] = useState<Viandes[]>([]);
   const [currentMenuId, setCurrentMenuId] = useState<number>(0);
 
-  const [prixTotal, setPrixTotal] = useState<number>(0.0);
   const [serveur, isServeur] = useState<boolean>(false);
 
   const [isModalCompteOpen, setIsModalCompteOpen] = useState<boolean>(false);
@@ -146,36 +139,6 @@ export default function ChatPage() {
     }
   }, [modalResponse]);
 
-  function getPriceTotal(repas: NewRepas): void {
-    let total = 0;
-
-    repas.menu.map((currentMenu) => {
-      if (serveur) {
-        total += currentMenu.menu.prixServeur;
-      }
-      else total += currentMenu.menu.prix;
-    });
-    repas.plat.map((currentPlat) => {
-      if (serveur) {
-        total += currentPlat.plat.prixServeur;
-      }
-      else total += currentPlat.plat.prix;
-    });
-    repas.snack.map((currentSnack) => {
-      if (serveur) {
-        total += currentSnack.snack.prixServeur;
-      }
-      else total += currentSnack.snack.prix;
-    });
-    repas.boisson.map((currentBoisson) => {
-      // console.log(currentBoisson);
-      if (serveur) {
-        total += currentBoisson.boisson.prixServeur;
-      }
-      else total += currentBoisson.boisson.prix;
-    });
-    setPrixTotal(total);
-  }
 
   // Ajout des items dans le repas
   const handleSetRepasItem = (type: keyof NewRepas, item: AllType) => {
@@ -285,178 +248,6 @@ export default function ChatPage() {
   }
 
 
-  function RecapComponent({ repas }: { repas: NewRepas }) {
-    getPriceTotal(repas);
-
-    // console.log(repas, allViandes);
-    return (
-      <div className="flex flex-col gap-4 max-w-[300px] min-w-[300px] text-justify">
-        <h2 className="text-lg font-bold">Récapitulatif de la commande :</h2>
-        <Card className="max-w-[400px]">
-          <CardHeader className="flex gap-3">
-            <div className="flex flex-col">
-              <p className="text-lg font-semibold">Menu 🍱</p>
-            </div>
-          </CardHeader>
-          <Divider />
-          <div className="max-h-[80px] h-[80px] overflow-scroll">
-            <CardBody>
-              <p className="text-default-500 font-bold">
-                {repas.menu.length > 0
-                  ? repas.menu.map((menu, index) => (
-                    <div className="flex flex-row" key={menu.id}>
-
-
-                      <span key={menu.id}>
-                        <a
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDeleteItem("menu", menu);
-                          }}
-                          className="text-link"
-                        >
-                          {menu.menu.nom}
-                        </a>
-                        {index < repas.menu.length - 1 ? ", " : ""}
-                      </span>
-                      <span className="ml-auto">
-                        {!serveur ? menu.menu.prix.toFixed(2) : menu.menu.prixServeur.toFixed(2)}
-                      </span>
-                    </div>
-                  ))
-                  : "Pas de menu"}
-              </p>
-            </CardBody>
-          </div>
-        </Card>
-        <Card className="max-w-[400px]">
-          <CardHeader className="flex gap-3">
-            <div className="flex flex-col">
-              <p className="text-lg font-semibold">Plat 🌭</p>
-            </div>
-          </CardHeader>
-          <Divider />
-          <div className="max-h-[150px] h-[150px] overflow-scroll">
-            {repas.plat.length === 0 ? (
-              <CardBody>
-                <p className="text-default-500 font-bold">Pas de plat</p>
-              </CardBody>
-            ) : (
-              repas.plat.map((plat: NewPlats, index) => (
-                <CardBody key={plat.id}>
-                  <p className="text-default-500 font-bold">
-                    <div className="flex flex-row">
-                      <span>
-                        <a
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDeleteItem("plat", plat);
-                          }}
-                          className="text-link"
-                        >
-                          {plat.plat.nom}
-                        </a>
-                        {index < repas.plat.length - 1 ? ", " : ""}
-                      </span>
-                      <span className="ml-auto">
-                        {!serveur ? plat.plat.prix.toFixed(2) : plat.plat.prixServeur.toFixed(2)}
-                      </span>
-                    </div>
-                  </p>
-                  <ul>
-                    {plat.plat.ingredients.map((currentIngredient: IngredientsInPlat) => (
-                      <li className="text-default-500" key={currentIngredient.nom} >{currentIngredient.nom}</li>
-                    ))}
-
-                  </ul>
-                </CardBody>
-              ))
-            )}
-          </div>
-        </Card>
-        <Card className="max-w-[400px]">
-          <CardHeader className="flex gap-3">
-            <div className="flex flex-col">
-              <p className="text-lg font-semibold">Snack 🍪</p>
-            </div>
-          </CardHeader>
-          <Divider />
-          <div className="max-h-[80px] h-[80px] overflow-scroll">
-
-            <CardBody>
-              <p className="text-default-500 font-bold">
-                {repas.snack.length > 0
-                  ? repas.snack.map((snack, index) => (
-                    <div className="flex flex-row" key={snack.id}>
-                      <span key={snack.id}>
-                        <a
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDeleteItem("snack", snack);
-                          }}
-                          className="text-link"
-                        >
-                          {snack.snack.nom}
-                        </a>
-                        {/* {index < repas.snack.length - 1 ? ", " : ""} */}
-                      </span>
-                      <span className="ml-auto">
-                        {!serveur ? snack.snack.prix.toFixed(2) : snack.snack.prixServeur.toFixed(2)}
-                      </span>
-                    </div>
-                  ))
-                  : "Pas de snack"}
-              </p>
-            </CardBody>
-          </div>
-        </Card>
-        <Card className="max-w-[400px]">
-          <CardHeader className="flex gap-3">
-            <div className="flex flex-col">
-              <p className="text-lg font-semibold">Boisson 🥤</p>
-            </div>
-          </CardHeader>
-          <Divider />
-          <div className="max-h-[80px] h-[80px] overflow-scroll">
-
-            <CardBody>
-              <p className="text-default-500 font-bold">
-                {repas.boisson.length > 0
-                  ? repas.boisson.map((boisson, index) => (
-                    <div className="flex flex-row" key={boisson.id}>
-                      <span key={boisson.id}>
-                        <a
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDeleteItem("boisson", boisson);
-                          }}
-                          className="text-link"
-                        >
-                          {boisson.boisson.nom}
-                        </a>
-                        {/* {index < repas.boisson.length - 1 ? ", " : ""} */}
-                      </span>
-                      <span className="ml-auto">
-                        {!serveur ? boisson.boisson.prix.toFixed(2) : boisson.boisson.prixServeur.toFixed(2)}
-                      </span>
-                    </div>
-                  ))
-                  : "Pas de boisson"}
-              </p>
-            </CardBody>
-          </div>
-        </Card>
-        <Divider />
-        <h3 className="text-lg font-bold">Total : {prixTotal.toFixed(2)} €</h3>
-      </div>
-
-    );
-  }
-
   function ChatNext({ repas, setRepasItem, currentStep, setCurrentStep }: { repas: NewRepas, setRepasItem: (type: keyof NewRepas, item: AllType) => void, currentStep: string, setCurrentStep: (step: string) => void }) {
     if (repas.remainingPlats > 0) {
       return <ChatPlat setRepas={item => setRepasItem("plat", item)} />;
@@ -488,60 +279,34 @@ export default function ChatPage() {
   }
 
 
-  function ChatMenu({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const menuId = Math.floor(Math.random() * 1000) + 1;
-    const menu: NewMenus[] = listMenus.map((menu) => ({ id: menu.id, type: "menu", menu, menuId }));
+  function ChatOption({ setRepas, type, items }: { setRepas: (item: AllType) => void, type: keyof NewRepas, items: AllType[] }) {
+    const id = Math.floor(Math.random() * 1000) + 1;
+    const options = items.map((item) => ({ id: id, type: type, [type]: item }));
 
     return (
       <ChatLayout
         who="Lancelot"
-        mainSentence="Bonjour ! Que souhaites-tu aujourd'hui ?"
-        buttons={menu}
+        mainSentence="C'est noté ! Et avec quoi ?"
+        buttons={options}
         setRepas={setRepas}
       />
     );
+  }
+
+  function ChatMenu({ setRepas }: { setRepas: (item: AllType) => void }) {
+    return <ChatOption setRepas={setRepas} type="menu" items={listMenus} />;
   }
 
   function ChatPlat({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const id = Math.floor(Math.random() * 1000) + 1;
-    const plat: NewPlats[] = listPlats.map((plat) => ({ id: id, type: "plat", plat }));
-
-    return (
-      <ChatLayout
-        who="Lancelot"
-        mainSentence="C'est noté ! Et avec quoi ?"
-        buttons={plat}
-        setRepas={setRepas}
-      />
-    );
+    return <ChatOption setRepas={setRepas} type="plat" items={listPlats} />;
   }
 
   function ChatSnack({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const id = Math.floor(Math.random() * 1000) + 1;
-    const snack: NewSnacks[] = listSnacks.map((snack) => ({ id: id, type: "snack", snack }));
-
-    return (
-      <ChatLayout
-        who="Lancelot"
-        mainSentence="C'est noté ! Et avec quoi ?"
-        buttons={snack}
-        setRepas={setRepas}
-      />
-    );
+    return <ChatOption setRepas={setRepas} type="snack" items={listSnacks} />;
   }
 
   function ChatBoisson({ setRepas }: { setRepas: (item: AllType) => void }) {
-    const id = Math.floor(Math.random() * 1000) + 1;
-    const boisson: NewBoissons[] = listBoissons.map((boisson) => ({ id: id, type: "boisson", boisson }));
-
-    return (
-      <ChatLayout
-        who="Lancelot"
-        mainSentence="C'est noté ! Et avec quoi ?"
-        buttons={boisson}
-        setRepas={setRepas}
-      />
-    );
+    return <ChatOption setRepas={setRepas} type="boisson" items={listBoissons} />;
   }
 
   type OtherOption = {
@@ -724,7 +489,7 @@ export default function ChatPage() {
           <div className="w-1 border-r-2 mx-2"></div>
 
           <div className="flex-1 m-4 justify-end text-right max-md:grid max-md:justify-center">
-            <RecapComponent repas={repas} />
+            <RecapComponent handleDeleteItem={handleDeleteItem} repas={repas} />
             <DetailCommandeModal
               isOpen={isModalOpen}
               onClose={(values: { viandes: Viandes[], ingredients: Ingredients[] }) => {

@@ -266,6 +266,27 @@ def removeCommandeNew():
     print("done")
     
     
+def addEventParms():
+    collection = db.menus
+    for x in collection.find():
+        collection.update_one(
+            {"_id": x["_id"]},
+            {"$set": {
+                "event": False 
+            }}
+        )
+    
+    
+    collection = db.plats
+    for x in collection.find():
+        collection.update_one(
+            {"_id": x["_id"]},
+            {"$set": {
+                "event": False 
+            }}
+        )
+
+    
 # getViandes()
 # getIngredients()
 # getSnacks()
@@ -280,3 +301,4 @@ def removeCommandeNew():
 # removeposteInPlanning()
 # fixPriceRound()
 # removeCommandeNew()
+# addEventParms()

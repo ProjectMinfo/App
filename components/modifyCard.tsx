@@ -74,6 +74,9 @@ export default function ModifyCard({ item, type }: ModifyCardProps) {
             <p className="text-xl font-semibold">{currentItem.nom}</p>
             <div className="p-4 rounded-md text-left">
               <p className="text-gray-500"><strong>Disponibilité:</strong> {currentItem.dispo ? 'Oui' : 'Non'}</p>
+              {( 'event' in currentItem) && (
+                <p className="text-gray-500"><strong>Evenement:</strong> {currentItem.event ? 'Oui' : 'Non'}</p>
+              )}
               {('prix' && 'prixServeur') in currentItem && (
                 <>
                   <p className="text-gray-500"><strong>Prix:</strong> {currentItem.prix} €</p>
