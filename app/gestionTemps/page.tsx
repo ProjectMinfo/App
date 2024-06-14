@@ -179,7 +179,7 @@ const GestionTemps = () => {
                 />
 
                 <div className="w-full md:w-auto">
-                    <Button className="bg-green-500 text-white py-2 px-4 rounded w-full md:w-auto" onPress={handleAddModalOpen}>
+                    <Button className="bg-green-500  py-2 px-4 rounded w-full md:w-auto" onPress={handleAddModalOpen}>
                         Ajouter un relevé
                     </Button>
                 </div>
@@ -246,10 +246,10 @@ const GestionTemps = () => {
 
             <div className="flex justify-between mt-4">
                 {visibleCount < filteredTemperatures.length && (
-                    <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={loadMore}>Afficher plus</button>
+                    <button className="bg-blue-500  py-2 px-4 rounded" onClick={loadMore}>Afficher plus</button>
                 )}
                 {visibleCount > 10 && (
-                    <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={loadLess}>Afficher moins</button>
+                    <button className="bg-blue-500  py-2 px-4 rounded" onClick={loadLess}>Afficher moins</button>
                 )}
             </div>
 
@@ -285,7 +285,7 @@ const GestionTemps = () => {
                                 {errorMessage && (
                                     <div className="text-red-500 mb-4">{errorMessage}</div>
                                 )}
-                                <Button className="bg-blue-500 text-white py-2 px-4 rounded" onPress={handleSubmit}>Ajouter</Button>
+                                <Button className="bg-blue-500  py-2 px-4 rounded" onPress={handleSubmit}>Ajouter</Button>
                             </ModalFooter>
                         </>
                     )}
@@ -312,7 +312,7 @@ const GestionTemps = () => {
                                 {errorMessage && (
                                     <div className="text-red-500 mb-4">{errorMessage}</div>
                                 )}
-                                <Button className="bg-red-500 text-white py-2 px-4 rounded" onPress={handleDelete}>Supprimer relevé</Button>
+                                <Button className="bg-red-500  py-2 px-4 rounded" onPress={handleDelete}>Supprimer relevé</Button>
                             </ModalFooter>
                         </>
                     )}

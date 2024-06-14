@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { getPlanning, postPlanning, deletePlanning, getPlanningCourse, postPlanningCourse, deletePlanningCourse, getAllPlanning, getComptes } from "@/config/api";
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/modal";
+import { Button, Card, CardHeader, Divider } from "@nextui-org/react";
 
 type Day = "Lundi" | "Mardi" | "Mercredi" | "Jeudi" | "Vendredi";
 
@@ -255,12 +257,12 @@ const PlanningServeur = () => {
       const allComptes = await getComptes();
       const comptesMap = new Map<number, Comptes>(allComptes.map((compte: Comptes) => [compte.numCompte, compte]));
 
-      const statsData: any = {};
+      const statsData: any = {};      
 
       // Filter users with access level 1 or 2
       const filteredPlannings = plannings.filter((planning: any) => {
         const compte = comptesMap.get(planning.numCompte);
-        return compte && (compte.acces === 1 || compte.acces === 2);
+        return compte;
       });
 
       filteredPlannings.forEach((planning: any) => {
@@ -272,12 +274,12 @@ const PlanningServeur = () => {
         if (numPoste === 2) {
           statsData[prenom].courses += 1;
         }
-      });
+      });      
 
       const sortedStats = (key: string, isAsc = true) => {
         return Object.entries(statsData)
           .sort((a: any, b: any) => (isAsc ? a[1][key] - b[1][key] : b[1][key] - a[1][key]))
-          .slice(0, 10);
+          .slice(0, 3);
       };
 
       setStats({
@@ -301,7 +303,7 @@ const PlanningServeur = () => {
       doc.setFillColor(255, 255, 255);
       doc.rect(10, startY - 10, 190, 8, 'F');
       doc.text(title, 10, startY - 2);
-      
+
       data.forEach((item: any, index: number) => {
         let color;
         if (index === 0) color = [255, 215, 0];
@@ -329,178 +331,176 @@ const PlanningServeur = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-center text-2xl font-bold mb-4">Planning Serveur</h1>
-      <div className="flex justify-center items-center mb-4">
-        <button className="border px-2 py-1 rounded mr-2" onClick={handlePreviousWeek}>&lt;</button>
-        <label className="mr-2">Semaine :</label>
-        <select value={selectedWeek} onChange={handleWeekChange} className="border p-1 rounded">
-          {weekOptions.map((week) => (
-            <option key={week} value={week}>
-              Semaine {week}
-            </option>
-          ))}
-        </select>
-        <button className="border px-2 py-1 rounded ml-2" onClick={handleNextWeek}>&gt;</button>
-        <button className="border px-2 py-1 rounded ml-4" onClick={handleCurrentWeek}>Semaine Actuelle</button>
-      </div>
+    <>
+      <div className="p-4">
+        <h1 className="text-center text-2xl font-bold mb-4">Planning Serveur</h1>
+        <div className="flex justify-center items-center mb-4">
+          <button className="border px-2 py-1 rounded mr-2" onClick={handlePreviousWeek}>&lt;</button>
+          <label className="mr-2">Semaine :</label>
+          <select value={selectedWeek} onChange={handleWeekChange} className="border p-1 rounded">
+            {weekOptions.map((week) => (
+              <option key={week} value={week}>
+                Semaine {week}
+              </option>
+            ))}
+          </select>
+          <button className="border px-2 py-1 rounded ml-2" onClick={handleNextWeek}>&gt;</button>
+          <button className="border px-2 py-1 rounded ml-4" onClick={handleCurrentWeek}>Semaine Actuelle</button>
+        </div>
 
-      {error && <div className="text-red-500">{error}</div>}
+        {error && <div className="text-red-500">{error}</div>}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {Object.entries(slots).map(([day, daySlots]) => (
-          <div key={day} className="border p-4 rounded-lg">
-            <h2 className="text-xl font-bold mb-2">{day}</h2>
-            <table className="w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="border p-2">Devant</th>
-                  <th className="border p-2">Derrière</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Array(3).fill(null).map((_, index) => (
-                  <tr key={index} className="border-t">
-                    <td
-                      className={`border p-2 cursor-pointer ${daySlots.devant[index].prenom ? "bg-white hover:bg-red-500 text-black" : "bg-red-500 hover:bg-white hover:text-black"}`}
-                      onClick={() => daySlots.devant[index].prenom ? handleDesinscription(day as Day, "devant", index) : handleInscription(day as Day, "devant", index)}
-                      onMouseEnter={() => setHoveredCell({ day: day as Day, index, position: "devant" })}
-                      onMouseLeave={() => setHoveredCell(null)}
-                    >
-                      {hoveredCell?.day === day && hoveredCell?.index === index && hoveredCell?.position === "devant" && daySlots.devant[index].prenom ? "✖" : daySlots.devant[index].prenom || "Inscription"}
-                    </td>
-                    <td
-                      className={`border p-2 cursor-pointer ${daySlots.derriere[index].prenom ? "bg-white hover:bg-red-500 text-black" : "bg-red-500 hover:bg-white hover:text-black"}`}
-                      onClick={() => daySlots.derriere[index].prenom ? handleDesinscription(day as Day, "derriere", index) : handleInscription(day as Day, "derriere", index)}
-                      onMouseEnter={() => setHoveredCell({ day: day as Day, index, position: "derriere" })}
-                      onMouseLeave={() => setHoveredCell(null)}
-                    >
-                      {hoveredCell?.day === day && hoveredCell?.index === index && hoveredCell?.position === "derriere" && daySlots.derriere[index].prenom ? "✖" : daySlots.derriere[index].prenom || "Inscription"}
-                    </td>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {Object.entries(slots).map(([day, daySlots]) => (
+            <div key={day} className="border p-4 rounded-lg">
+              <h2 className="text-xl font-bold mb-2">{day}</h2>
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th className="border p-2">Devant</th>
+                    <th className="border p-2">Derrière</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))}
+                </thead>
+                <tbody>
+                  {Array(3).fill(null).map((_, index) => (
+                    <tr key={index} className="border-t">
+                      <td
+                        className={`border p-2 cursor-pointer ${daySlots.devant[index].prenom ? "bg-white hover:bg-red-500 text-black" : "bg-red-500 hover:bg-white hover:text-black"}`}
+                        onClick={() => daySlots.devant[index].prenom ? handleDesinscription(day as Day, "devant", index) : handleInscription(day as Day, "devant", index)}
+                        onMouseEnter={() => setHoveredCell({ day: day as Day, index, position: "devant" })}
+                        onMouseLeave={() => setHoveredCell(null)}
+                      >
+                        {hoveredCell?.day === day && hoveredCell?.index === index && hoveredCell?.position === "devant" && daySlots.devant[index].prenom ? "✖" : daySlots.devant[index].prenom || "Inscription"}
+                      </td>
+                      <td
+                        className={`border p-2 cursor-pointer ${daySlots.derriere[index].prenom ? "bg-white hover:bg-red-500 text-black" : "bg-red-500 hover:bg-white hover:text-black"}`}
+                        onClick={() => daySlots.derriere[index].prenom ? handleDesinscription(day as Day, "derriere", index) : handleInscription(day as Day, "derriere", index)}
+                        onMouseEnter={() => setHoveredCell({ day: day as Day, index, position: "derriere" })}
+                        onMouseLeave={() => setHoveredCell(null)}
+                      >
+                        {hoveredCell?.day === day && hoveredCell?.index === index && hoveredCell?.position === "derriere" && daySlots.derriere[index].prenom ? "✖" : daySlots.derriere[index].prenom || "Inscription"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </div>
+
+        <h2 className="text-center text-2xl font-bold mt-8 mb-4">Planning Courses</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {Object.entries(courseSlots).map(([day, slot]) => (
+            <div key={day} className="border p-4 rounded-lg">
+              <h2 className="text-xl font-bold mb-2">{day}</h2>
+              <div
+                className={`border p-2 cursor-pointer ${slot.prenom ? "bg-white hover:bg-red-500 text-black" : "bg-red-500 hover:bg-white hover:text-black"}`}
+                onClick={() => slot.prenom ? handleDesinscriptionCourse(day as Day) : handleInscriptionCourse(day as Day)}
+                onMouseEnter={() => setHoveredCell({ day: day as Day, index: 0 })}
+                onMouseLeave={() => setHoveredCell(null)}
+              >
+                {hoveredCell?.day === day && hoveredCell?.index === 0 && slot.prenom ? "✖" : slot.prenom || "Inscription"}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button
+          className="px-2 py-1 rounded border text-black bg-blue-500  mt-4"
+          onClick={() => { setShowStatsModal(true); handleCalculateStats(); }}
+        >
+          Voir les statistiques
+        </button>
       </div>
 
-      <h2 className="text-center text-2xl font-bold mt-8 mb-4">Planning Courses</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {Object.entries(courseSlots).map(([day, slot]) => (
-          <div key={day} className="border p-4 rounded-lg">
-            <h2 className="text-xl font-bold mb-2">{day}</h2>
-            <div
-              className={`border p-2 cursor-pointer ${slot.prenom ? "bg-white hover:bg-red-500 text-black" : "bg-red-500 hover:bg-white hover:text-black"}`}
-              onClick={() => slot.prenom ? handleDesinscriptionCourse(day as Day) : handleInscriptionCourse(day as Day)}
-              onMouseEnter={() => setHoveredCell({ day: day as Day, index: 0 })}
-              onMouseLeave={() => setHoveredCell(null)}
-            >
-              {hoveredCell?.day === day && hoveredCell?.index === 0 && slot.prenom ? "✖" : slot.prenom || "Inscription"}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <button
-        className="px-2 py-1 rounded border text-black bg-blue-500 text-white mt-4"
-        onClick={() => setShowStatsModal(true)}
-      >
-        Voir les statistiques
-      </button>
-
-      {showStatsModal && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg max-w-4xl w-full overflow-auto" style={{ maxHeight: "90vh" }}>
-            <h2 className="text-xl font-bold mb-4 text-black">Statistiques des serveurs</h2>
-            <div className="mb-4 flex space-x-2">
-              <button
-                className={`px-2 py-1 rounded border text-black ${period === "week" ? "bg-blue-500 text-white" : "bg-white"}`}
-                onClick={() => setPeriod("week")}
-              >
-                Semaine
-              </button>
-              <button
-                className={`px-2 py-1 rounded border text-black ${period === "month" ? "bg-blue-500 text-white" : "bg-white"}`}
-                onClick={() => setPeriod("month")}
-              >
-                Mois
-              </button>
-              <button
-                className={`px-2 py-1 rounded border text-black ${period === "year" ? "bg-blue-500 text-white" : "bg-white"}`}
-                onClick={() => setPeriod("year")}
-              >
-                Année
-              </button>
-              <button
-                className={`px-2 py-1 rounded border text-black  ${period === "all" ? "bg-blue-500 text-white" : "bg-white"}`}
-                onClick={() => setPeriod("all")}
-              >
-                Depuis le début
-              </button>
-              <button
-                className="px-2 py-1 rounded border text-black bg-green-500 text-white"
-                onClick={handleCalculateStats}
-              >
-                Calculer
-              </button>
-            </div>
-
-            <div className="flex flex-col space-y-4">
-              {stats && (
-                <>
-                  <div className="p-2 border rounded mb-2 text-black black">
-                    <h3 className="text-lg font-bold mb-2 p-2 border rounded ">Top 10 des moins inscrits</h3> 
-                    {stats.top10LeastInscrit.map((item: any, index: number) => (
-                      <div key={index} className="mb-1">
-                        {index + 1}. {item[0]} - {item[1].inscrit} inscriptions
-                      </div>
-                    ))}
-                  </div>
-                  <div className="p-2 border rounded mb-2 text-black black">
-                    <h3 className="text-lg font-bold mb-2 p-2 border rounded ">Top 10 des plus inscrits</h3>
-                    {stats.top10MostInscrit.map((item: any, index: number) => (
-                      <div key={index} className="mb-1">
-                        {index + 1}. {item[0]} - {item[1].inscrit} inscriptions
-                      </div>
-                    ))}
-                  </div>
-                  <div className="p-2 border rounded mb-2 text-black black">
-                    <h3 className="text-lg font-bold mb-2 p-2 border rounded ">Top 10 des moins de courses</h3>
-                    {stats.top10LeastCourses.map((item: any, index: number) => (
-                      <div key={index} className="mb-1">
-                        {index + 1}. {item[0]} - {item[1].courses}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="p-2 border rounded mb-2 text-black black">
-                    <h3 className="text-lg font-bold mb-2 p-2 border rounded ">Top 10 des plus de courses</h3>
-                    {stats.top10MostCourses.map((item: any, index: number) => (
-                      <div key={index} className="mb-1">
-                        {index + 1}. {item[0]} - {item[1].courses}
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
+      <Modal isOpen={showStatsModal} onOpenChange={() => setShowStatsModal(false)} isDismissable={true} className="inset-0 flex justify-center items-center">
+        <ModalContent className="p-8 rounded-lg max-w-4xl w-full overflow-auto" style={{ maxHeight: "90vh" }}>
+          <ModalHeader className="text-xl font-bold mb-4">Statistiques des serveurs</ModalHeader>
+          <ModalBody className="mb-4 flex-row  space-x-2">
             <button
-              className="px-2 py-1 rounded border text-black bg-blue-500 text-white mt-4"
+              className={`px-2 py-1 rounded  ${period === "week" ? "bg-blue-500" : "text-black bg-white"}`}
+              onClick={() => { setPeriod("week"); handleCalculateStats(); }}
+            >
+              Semaine
+            </button>
+            {/* <button
+              className={`px-2 py-1 rounded border ${period === "month" ? "bg-blue-500" : "bg-white"}`}
+              onClick={() => {setPeriod("month"); handleCalculateStats();}}
+            >
+              Mois
+            </button>
+            <button
+              className={`px-2 py-1 rounded border ${period === "year" ? "bg-blue-500" : "bg-white"}`}
+              onClick={() => {setPeriod("year"); handleCalculateStats();}}
+            >
+              Année
+            </button> */}
+            <button
+              className={`px-2 py-1 rounded ${period === "all" ? "bg-blue-500" : " text-black bg-white"}`}
+              onClick={() => { setPeriod("all"); handleCalculateStats(); }}
+            >
+              Depuis le début
+            </button>
+          </ModalBody>
+
+          <ModalBody className="flex flex-col">
+            {stats && (
+              <>
+                <Card className="p-2">
+                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 3 des moins inscrits</CardHeader>
+                  {stats.top10LeastInscrit.map((item: any, index: number) => (
+                    <div key={index} className="mb-1">
+                      {index + 1}. {item[0]} - {item[1].inscrit} inscriptions
+                    </div>
+                  ))}
+                </Card>
+                <Card className="p-2">
+                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 3 des plus inscrits</CardHeader>
+                  {stats.top10MostInscrit.map((item: any, index: number) => (
+                    <div key={index} className="mb-1">
+                      {index + 1}. {item[0]} - {item[1].inscrit} inscriptions
+                    </div>
+                  ))}
+                </Card>
+                <Card className="p-2">
+                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 3 des moins de courses</CardHeader>
+                  {stats.top10LeastCourses.map((item: any, index: number) => (
+                    <div key={index} className="mb-1">
+                      {index + 1}. {item[0]} - {item[1].courses}
+                    </div>
+                  ))}
+                </Card>
+                <Card className="p-2 ">
+                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 3 des plus de courses</CardHeader>
+                  {stats.top10MostCourses.map((item: any, index: number) => (
+                    <div key={index} className="mb-1">
+                      {index + 1}. {item[0]} - {item[1].courses}
+                    </div>
+                  ))}
+                </Card>
+              </>
+            )}
+          </ModalBody>
+
+          <Divider className="mt-3" />
+
+          <ModalFooter className="flex justify-center items-center">
+            <Button
+              className="px-2 py-1 rounded border text-black bg-blue-500 "
               onClick={handleDownloadPDF}
             >
               Télécharger le PDF
-            </button>
-            <button
-              className="px-2 py-1 rounded border text-black bg-red-500 text-white mt-4 ml-2"
+            </Button>
+            <Button
+              className="px-2 py-1 rounded border text-black bg-red-500  "
               onClick={() => setShowStatsModal(false)}
             >
               Fermer
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

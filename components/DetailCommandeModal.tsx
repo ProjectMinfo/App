@@ -16,7 +16,6 @@ interface DetailCommandeModalProps {
     viandes: Viandes[];
     currentPlat: NewPlats;
   };
-  // Add this line
 };
 
 
@@ -25,11 +24,8 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
   const [selectedIngredients, setSelectedIngredients] = useState<Ingredients[]>([]);
   const [step, setStep] = useState(1);
 
-
   const [possibleIngredients, setPossibleIngredients] = useState<Ingredients[]>([]);
   const [possibleViandes, setPossibleViandes] = useState<Viandes[]>([]);
-  // console.log(options);
-
 
 
   const handleViandeClick = (viande: Viandes) => {
@@ -51,6 +47,8 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
   const reset = () => {
     setSelectedViande([]);
     setSelectedIngredients([]);
+    setPossibleViandes([]);
+    setPossibleIngredients([]);
     setStep(1);
   }
 
@@ -75,72 +73,31 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
     onClose({ viandes: [], ingredients: [], plat: options.currentPlat });
   };
 
-  // useEffect(() => {
-  //   setPossibleIngredients(options.ingredients);
-  //   setPossibleViandes(options.viandes);
-  // }, [options]);
 
-  function getPossibleItems() {
+  const getPossibleItems = () => {
+    const listIngredients: Ingredients[] = [];
+    options.currentPlat.plat.ingredients.forEach((element) => {
+      const ingredient = options.ingredients.find((ingredient) => ingredient.nom === element.ingredient.nom);
+      if (ingredient) {
+        listIngredients.push(ingredient);
+      }
+    });
 
-    const listIngredients: Ingredients[] =
-      options.ingredients.map((ingredient) => {
-        const newIngredient = ingredient;
-        options.currentPlat.plat.ingredients.forEach((element) => {          
-          if (element.ingredient.id == ingredient.id) {                    
-            if (element.ingredient.dispo == true) {
-              console.log(element.ingredient.nom);
-              
-              newIngredient.dispo = true;
-              return newIngredient;
-            }
-            else {
-              console.log(element.ingredient.nom);
-
-              newIngredient.dispo = false;
-              return newIngredient;
-            }
-          }
-          else {
-            console.log(element.ingredient.nom);
-
-            newIngredient.dispo = false;
-            return newIngredient;
-          }
-        })
-
-        console.log(newIngredient);
-        return newIngredient;
-      });
-
-    const listViandes: Viandes[] =
-      options.viandes.map((viande) => {
-        const newViande = viande;
-        options.currentPlat.plat.ingredients.forEach((element) => {
-          if (element.ingredient.id == viande.id) {
-            if (element.ingredient.dispo == true) {
-              newViande.dispo = true;
-              return newViande;
-            }
-            else {
-              newViande.dispo = false;
-              return newViande;
-            }
-          }
-          else {
-            newViande.dispo = false;
-            return newViande;
-          }
-        })
-        return newViande;
-      });
+    const listViandes: Viandes[] = [];
+    options.currentPlat.plat.ingredients.forEach((element) => {
+      const viande = options.viandes.find((viande) => viande.nom === element.ingredient.nom);
+      if (viande) {
+        listViandes.push(viande);
+      }
+    });
 
     setPossibleIngredients(listIngredients);
     setPossibleViandes(listViandes);
   }
 
-  useEffect(() => {
+  if (isOpen && possibleIngredients.length == 0 && possibleViandes.length == 0) {
     getPossibleItems();
-  }, [options.currentPlat]);
+  }
 
 
   return (
@@ -160,25 +117,47 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
             </ModalHeader>
             <ModalBody className="grid grid-cols-3 gap-2">
               {step === 1
-                ? possibleViandes.filter((option) => option.dispo).map((option, index) => (
-                  <Button
-                    color="primary"
-                    variant={selectedViande.includes(option) ? "flat" : "ghost"}
-                    key={index}
-                    onPress={() => handleViandeClick(option)}
-                  >
-                    {option.nom}
-                  </Button>
+                ? possibleViandes.map((option, index) => (
+                  option.dispo == true ? (
+                    <Button
+                      color="primary"
+                      variant={selectedViande.includes(option) ? "flat" : "ghost"}
+                      key={index}
+                      onPress={() => handleViandeClick(option)}
+                    >
+                      {option.nom}
+                    </Button>
+                  ) : (
+                    <Button
+                      color="warning"
+                      variant={selectedViande.includes(option) ? "flat" : "ghost"}
+                      key={index}
+                      onPress={() => handleViandeClick(option)}
+                    >
+                      {option.nom}
+                    </Button>
+                  )
                 ))
                 : possibleIngredients.filter((option) => option.dispo).map((option, index) => (
-                  <Button
-                    color="primary"
-                    variant={selectedIngredients.includes(option) ? "flat" : "ghost"}
-                    key={index}
-                    onPress={() => handleIngredientClick(option)}
-                  >
-                    {option.nom}
-                  </Button>
+                  option.dispo == true ? (
+                    <Button
+                      color="primary"
+                      variant={selectedIngredients.includes(option) ? "flat" : "ghost"}
+                      key={index}
+                      onPress={() => handleIngredientClick(option)}
+                    >
+                      {option.nom}
+                    </Button>
+                  ) : (
+                    <Button
+                      color="warning"
+                      variant={selectedIngredients.includes(option) ? "flat" : "ghost"}
+                      key={index}
+                      onPress={() => handleIngredientClick(option)}
+                    >
+                      {option.nom}
+                    </Button>
+                  )
                 ))}
             </ModalBody>
             <ModalFooter>

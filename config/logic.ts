@@ -1,7 +1,6 @@
 import { postCommande, getPlats } from "@/config/api";
 import { Boissons, Menus, NewCommandes, Plats, Snacks, Viandes } from "@/types";
-import { useEffect, useState } from "react";
-import crypto from "crypto";
+import { useState } from "react";
 
 type NewMenus = {
     id: number;
@@ -154,32 +153,15 @@ function getPrice(repas: NewRepas) {
 }
 
 
-function encryptCommande(commande: any) {
-
-    try {
-        const ENC_KEY = "vuAoN8t3jAmrrUpkjgpY6YgRc4hyjQ8p";
-        const IV = "D2H*wUKNwwii#CH!";
-
-        let cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV);
-        let encrypted = cipher.update(commande, 'utf8', 'hex');
-        encrypted += cipher.final('hex');
-        return encrypted;
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-
 
 export function prepareCommande(repas: NewRepas, allViandes: Viandes[]) {
     const [commandeEnvoyee, setCommandeEnvoyee] = useState(false);
     const [allPlats, setAllPlats] = useState<Plats[]>([]);
 
-    getPlats().then((data) => {
-        setAllPlats(data);
-    });
-
     if (!commandeEnvoyee) {
+        getPlats().then((data) => {
+            setAllPlats(data);
+        });
         const dataPrepared = aggregateQuantities(repas, allViandes, allPlats);
         const dataContenu = getAllNom(repas, allViandes);
         const dataPrix = getPrice(repas);
@@ -200,15 +182,12 @@ export function prepareCommande(repas: NewRepas, allViandes: Viandes[]) {
             "viandes": dataPrepared.viandes,
             "boissons": dataPrepared.boissons,
             "snacks": dataPrepared.snacks,
-            "payee": true
+            "payee": false
         };
 
-        const encryptedCommande = encryptCommande(JSON.stringify(commande));
-
         // console.log("Commande envoyée", encryptCommande.length);
-        postCommande(encryptedCommande);
+        postCommande(commande);
         setCommandeEnvoyee(true);
     }
-
     return;
 }

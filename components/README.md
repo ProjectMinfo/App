@@ -125,12 +125,12 @@ Le composant `Navbarr` est un menu de navigation latéral qui permet aux utilisa
 return (
   <div className="flex z-50 max-md:w-0 w-1/6">
     {/* Navbar */}
-    <div className={`fixed top-0 left-0 h-full bg-red-500 text-white py-4 px-4 w-64 md:w-1/6 z-10 transform ${isNavOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 overflow-y-auto `}>
+    <div className={`fixed top-0 left-0 h-full bg-red-500  py-4 px-4 w-64 md:w-1/6 z-10 transform ${isNavOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 overflow-y-auto `}>
       <div className="flex flex-col space-y-4">
         <div className="flex items-center justify-center h-32">
           <Link href="/" className="flex flex-col items-center justify-center space-y-2" onClick={handleLinkClick}>
             <img src="logo.png" alt="Logo" className="h-16 w-auto" />
-            <h2 className="text-white text-4xl font-semibold">CHTI'MI</h2>
+            <h2 className=" text-4xl font-semibold">CHTI'MI</h2>
           </Link>
         </div>
 

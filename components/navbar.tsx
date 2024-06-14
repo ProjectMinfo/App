@@ -14,7 +14,7 @@ const Navbarr = () => {
 
   const icons = {
     chevron: <ChevronDown fill="currentColor" size={16} height={undefined} width={undefined} />,
-    menu: <MenuIcon className="h-6 w-6 text-white" />,
+    menu: <MenuIcon className="h-6 w-6 " />,
     close: <XIcon className="h-6 w-6 text-white" />,
   };
 
@@ -50,7 +50,7 @@ const Navbarr = () => {
           <div className="flex items-center justify-center h-32">
             <Link href="/" className="flex flex-col items-center justify-center space-y-2" onClick={handleLinkClick}>
               <img src="logo.png" alt="Logo" className="h-16 w-auto" />
-              <h2 className="text-white text-4xl font-semibold">CHTI'MI</h2>
+              <h2 className=" text-4xl font-semibold">CHTI'MI</h2>
             </Link>
           </div>
 
@@ -95,7 +95,7 @@ const Navbarr = () => {
                 <span className="ml-2">{icons.chevron}</span>
               </div>
               {isDropdownOpen && (
-                <div className="absolute top-12 left-0 bg-red-500 border-3 border-red-800 shadow-lg rounded-lg mt-2 z-10 text-white text-left w-full text-base p-2">
+                <div className="absolute top-12 left-0 bg-red-500 border-3 border-red-800 shadow-lg rounded-lg mt-2 z-10  text-left w-full text-base p-2">
                   <div className="py-2 space-y-2">
                     <div className={isActive('/gestionStock')}>
                       <Link href="/gestionStock" onClick={handleLinkClick}>Gestion des stocks</Link>
@@ -121,8 +121,8 @@ const Navbarr = () => {
 
 
 
-            <div className={isActive('/tresorerie')}>
-              <Link href="/tresorerie" onClick={handleLinkClick}>
+            <div className={isActive('/dashboard')}>
+              <Link href="/dashboard" onClick={handleLinkClick}>
                 Trésorerie
               </Link>
             </div>

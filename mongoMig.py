@@ -257,6 +257,36 @@ def fixPriceRound():
         print(f"{name} done")
     
     
+def removeCommandeNew():
+    collection = db.commandesNew
+    
+    for x in collection.find():
+        collection.delete_one({"_id": x["_id"]})
+        
+    print("done")
+    
+    
+def addEventParms():
+    collection = db.menus
+    for x in collection.find():
+        collection.update_one(
+            {"_id": x["_id"]},
+            {"$set": {
+                "event": False 
+            }}
+        )
+    
+    
+    collection = db.plats
+    for x in collection.find():
+        collection.update_one(
+            {"_id": x["_id"]},
+            {"$set": {
+                "event": False 
+            }}
+        )
+
+    
 # getViandes()
 # getIngredients()
 # getSnacks()
@@ -270,3 +300,5 @@ def fixPriceRound():
 # changeIDuserInPlanning()
 # removeposteInPlanning()
 # fixPriceRound()
+# removeCommandeNew()
+# addEventParms()
