@@ -11,6 +11,7 @@ import { prepareCommande } from '@/config/logic';
 import ListeComptesModal from '@/components/listeCompteModal';
 import ListeCommandeModal from '@/components/listeCommandeModal';
 import { RecapComponent } from '@/components/CommandeCompos';
+import GestionBaguetteModal from '@/components/GestionBaguettesModal';
 
 
 type NewMenus = {
@@ -65,6 +66,9 @@ export default function ChatPage() {
   const [listSnacks, setListSnacks] = useState<Snacks[]>([]);
   const [listBoissons, setListBoissons] = useState<Boissons[]>([]);
 
+  const [allBaguetteId, setAllBaguetteId] = useState<Ingredients>();
+  const [newBaguetteId, setNewBaguetteId] = useState<Ingredients>();
+
 
   const [repas, setRepas] = useState<NewRepas>({
     menu: [],
@@ -90,6 +94,7 @@ export default function ChatPage() {
 
   const [isModalCompteOpen, setIsModalCompteOpen] = useState<boolean>(false);
   const [isModalCommandeOpen, setIsModalCommandeOpen] = useState<boolean>(false);
+  const [isModalBaguetteOpen, setIsModalBaguetteOpen] = useState<boolean>(false);
 
 
 
@@ -116,7 +121,6 @@ export default function ChatPage() {
 
   // Gestion des réponses du modal pour les plats
   useEffect(() => {
-
     if (modalResponse && modalResponse.viandes && modalResponse.ingredients) {
       const nextRepas = { ...repas };
       const resultIngredients = [...modalResponse.ingredients, ...modalResponse.viandes];
@@ -138,6 +142,21 @@ export default function ChatPage() {
       }
     }
   }, [modalResponse]);
+
+
+  useEffect(() => {
+    if (listIngredients) {
+      const baguette = listIngredients.find((ingredient) => ingredient.nom === "Baguette Fraiche");
+      if (baguette) {
+        setNewBaguetteId(baguette);
+      }
+      const allBaguette = listIngredients.find((ingredient) => ingredient.nom === "Baguette Totale");
+      if (allBaguette) {
+        setAllBaguetteId(allBaguette);
+      }
+      // console.log("Baguette Fraiche", baguette, "Baguette Totale", allBaguette);
+    }
+  }, [listIngredients]);
 
 
   // Ajout des items dans le repas
@@ -418,7 +437,6 @@ export default function ChatPage() {
   }
 
 
-
   return (
     <>
       <h1 className={title()}>Prise de commande </h1>
@@ -440,10 +458,10 @@ export default function ChatPage() {
                   <Button
                     color="default"
                     variant="solid"
-                    onClick={() => isServeur(!serveur)}
-                    isDisabled
+                    onClick={() => setIsModalBaguetteOpen(!isModalBaguetteOpen)}
+                  // isDisabled
                   >
-                    Baguette(s) restante(s) : {0}
+                    Baguettes fraiches : {newBaguetteId ? newBaguetteId.quantite : 0}  / totales : {allBaguetteId ? allBaguetteId.quantite : 0}
                   </Button>
 
                   <Button
@@ -483,6 +501,18 @@ export default function ChatPage() {
                   onClose={() => setIsModalCommandeOpen(false)}
                 />
               )}
+              {isModalBaguetteOpen && (
+                <GestionBaguetteModal
+                  isOpen={isModalBaguetteOpen}
+                  onClose={(newBaguette, allBaguette) => {
+                    setIsModalBaguetteOpen(false);
+                    setNewBaguetteId(newBaguette);
+                    setAllBaguetteId(allBaguette);
+                  }}
+                  nbBaguette={newBaguetteId}
+                  nbAllBaguette={allBaguetteId}
+                />
+              )}
             </div>
           </div>
 
@@ -498,6 +528,7 @@ export default function ChatPage() {
               }}
               options={{ "ingredients": listIngredients, "viandes": listViandes, "currentPlat": currentPlat }}  // Pass the current plat to the modal
             />
+
           </div>
         </div>
       </div>
