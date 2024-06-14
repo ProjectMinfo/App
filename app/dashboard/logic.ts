@@ -60,6 +60,22 @@ export function getDatasetFromCollectionType(collectionType: CollectionType, ing
     }
 }
 
+export function getChiffreAffaire(commandes: NewCommandes[]): Map<string, number> {
+    const result = new Map<string, number>();
+    commandes.forEach((commande) => {
+        const date = getDate(commande);
+        let key = date.toLocaleDateString();
+        if (result.has(key)) {
+            result.set(key, result.get(key) + commande.prix);
+            // console.log(key, ":", result.get(key) + commande.prix);
+        } else {
+            result.set(key, commande.prix);
+            // console.log(key, ":", result.get(key));
+        }
+    });
+    return result;
+}
+
 export function aggregateByTimeFrame(commandes: NewCommandes[], timeFrame: TimeFrame): Map<string, number> {
     const result = new Map<string, number>();
     const currDate = new Date();
@@ -68,7 +84,7 @@ export function aggregateByTimeFrame(commandes: NewCommandes[], timeFrame: TimeF
         let key: string;
         switch (timeFrame) {
             case TimeFrame.Jour:
-                if (date.getDay() != currDate.getDay() || date.getMonth() != currDate.getMonth() || date.getFullYear() != currDate.getFullYear())
+                if (date.toLocaleDateString() != currDate.toLocaleDateString())
                     break;
                 key = `${date.getHours()}:${date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()}`;
                 break;
@@ -79,7 +95,7 @@ export function aggregateByTimeFrame(commandes: NewCommandes[], timeFrame: TimeF
                 key = date.toLocaleDateString();
                 break;
             case TimeFrame.Mois:
-                if (date.getMonth() != currDate.getMonth() || date.getFullYear() != currDate.getFullYear())
+                if (date.getMonth() != currDate.getMonth() && date.getFullYear() != currDate.getFullYear())
                     break;
                 key = date.toLocaleDateString();
                 break;
@@ -98,7 +114,29 @@ export function aggregateByTimeFrame(commandes: NewCommandes[], timeFrame: TimeF
             result.set(key, 1);
         }
     });
-    return result;
+
+    // Sort the map by key
+    let mapArray = Array.from(result.entries());
+    mapArray.sort((a, b) => {
+/*        switch (timeFrame) {
+            case TimeFrame.Jour:
+                const dateA = new Date(a[0]);
+                const dateB = new Date(b[0]);
+                return dateA.getTime() - dateB.getTime();
+            case TimeFrame.Semaine:
+                return parseInt(a[0]) - parseInt(b[0]);
+            case TimeFrame.Mois:
+                return getMonthNumber(a[0]) - getMonthNumber(b[0]);
+            case TimeFrame.Annee:
+                return parseInt(a[0]) - parseInt(b[0]);
+            case TimeFrame.Toujours:
+                const dateC = new Date(a[0]);
+                const dateD = new Date(b[0]);
+                return dateC.getTime() - dateD.getTime();
+        }*/
+        return parseInt(a[0]) - parseInt(b[0]);
+    });
+    return new Map<string, number>(mapArray);
 }
 
 export function getWeekNumber(dateStr: string) {
