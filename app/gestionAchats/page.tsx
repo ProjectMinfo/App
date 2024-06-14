@@ -1,7 +1,7 @@
 'use client';
 import React, { Key, useState, useEffect } from "react";
-import { Button, Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
-import { getAchats, postEditAchat, deleteAchats } from "@/config/api";
+import { Button, Card, Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
+import { getAchats, postEditAchat, deleteAchats, insertManyAchats } from "@/config/api";
 import { FaShoppingCart } from "react-icons/fa";
 import { SlSocialDropbox } from "react-icons/sl";
 import { BsBoxSeam } from "react-icons/bs";
@@ -12,6 +12,7 @@ import { BiRevision } from "react-icons/bi";
 import AddAchatModal from "@/components/AddAchatModal";
 import EditAchatModal from "@/components/EditAchatModal";
 import DeleteAchatModal from "@/components/DeleteAchatModal";
+import './styles.css';
 
 // Define types for achats
 type Achat = {
@@ -205,20 +206,18 @@ export default function GestionAchatsPage() {
 
   const onAddSubmit = async (newAchat: Achat, duplication: number) => {
     if (newAchat && achats) {
+      let tabNewAchat = []; // On crée un tableau pour stocker les duplications
       for (let i = 0; i < duplication; i++) { // On duplique l'achat autant de fois que demandé
-        const updatedAchats = [...achats, newAchat]; // On ajoute l'achat à la liste
-        updatedAchats.sort((a: Achat, b: Achat) => b.idAchat - a.idAchat); // On retrie la liste
-        setAchats(updatedAchats); // On met à jour la liste des achats
-        newAchat.idAchat = -1; // Pour créer un nouvel achat
-
-        try {
-          await postEditAchat(newAchat); // Appel à l'API pour enregistrer les modifications
-          console.log("Achat added successfully in the API");
-          setAchats((await getAchats()).sort((a: Achat, b: Achat) => b.idAchat - a.idAchat));
-        }
-        catch (error) {
-          console.error("Error adding achat:", error);
-        }
+        tabNewAchat.push(newAchat);
+      }
+      
+      try {
+        await insertManyAchats(tabNewAchat); // Appel à l'API pour enregistrer les modifications
+        console.log("Achats added successfully in the API");
+        setAchats((await getAchats()).sort((a: Achat, b: Achat) => b.idAchat - a.idAchat));
+      }
+      catch (error) {
+        console.error("Error adding achats:", error);
       }
     }
     onAddClose();
@@ -509,9 +508,9 @@ export default function GestionAchatsPage() {
 
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn key={column.uid}>
+            <TableColumn key={column.uid} className="center-text">
               {column.name}
-            </TableColumn>)}
+            </TableColumn>)}  
         </TableHeader>
 
         <TableBody items={filteredAchats}>

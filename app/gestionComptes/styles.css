@@ -1,0 +1,48 @@
+/* styles.css */
+
+/* Styles pour rendre la page responsive */
+.container {
+    padding: 16px;
+  }
+  
+  .input-container {
+    margin-bottom: 16px;
+  }
+  
+  /* Styles pour rendre la table responsive */
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  /* Styles pour rendre la table responsive */
+  .table-container .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  /* Styles pour rendre chaque colonne de la table responsive */
+  .table-container .table-header .table-column,
+  .table-container .table-body .table-row > .table-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Styles pour rendre les cellules de la table plus compactes sur les petits écrans */
+  .table-container .table-body .table-row > .table-cell {
+    padding: 8px;
+  }
+  
+  /* Styles pour rendre les boutons de taille plus petite sur les petits écrans */
+  .table-container .tooltip-content {
+    font-size: 12px;
+  }
+  
+  /* Styles pour rendre le bouton de modification plus petit sur les petits écrans */
+  .table-container .edit-icon {
+    font-size: 16px;
+  }
+
+  .center-text {
+    text-align: center;
+  }
