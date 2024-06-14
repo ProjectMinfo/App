@@ -53,15 +53,19 @@ export default function AddAchatModal({
     const [categorie, setCategorie] = useState<number>(-1);
     const [numLot, setNumLot] = useState<string>("");
     const [nbPortions, setNbPortions] = useState<number>(0);
-    const [dlc, setDlc] = useState<any>();
+    const [dlc, setDlc] = useState<any>(null);
     const [ingredients, setIngredients] = useState<Produit[]>([]);
     const [viandes, setViandes] = useState<Produit[]>([]);
     const [boissons, setBoissons] = useState<Produit[]>([]);
     const [snacks, setSnacks] = useState<Produit[]>([]);
     const [idProduit, setIdProduit] = useState<number>(-1);
-    const [selectedProduit, setSelectedProduit] = useState<Produit>();
+    const [selectedProduit, setSelectedProduit] = useState<Produit | null>(null);
     const [duplication, setDuplication] = useState<number>(1);
-    const [isSubmitClicked, setIsSubmitClicked] = useState<boolean>(false);
+    const [isTypeValid, setIsTypeValid] = useState<boolean>(false);
+    const [isNumLotValid, setIsNumLotValid] = useState<boolean>(false);
+    const [isDlcValid, setIsDlcValid] = useState<boolean>(false);
+    const [isNbPortionsValid, setIsNbPortionsValid] = useState<boolean>(false);
+    const [isDuplicationValid, setIsDuplicationValid] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchProduits = async () => {
@@ -82,9 +86,7 @@ export default function AddAchatModal({
     }, []);
 
     useEffect(() => {
-        if (isOpen) {
-            resetForm();
-        }
+        if (isOpen) { resetForm() }
     }, [isOpen]);
 
     const resetForm = () => {
@@ -92,13 +94,25 @@ export default function AddAchatModal({
         setCategorie(-1);
         setNumLot("");
         setNbPortions(0);
-        setDlc(undefined);
+        setDlc(null);
+        setIdProduit(-1);
+        setSelectedProduit(null);
         setDuplication(1);
     };
 
 
     const handleTypeChange = (event: SelectChangeEvent) => {
-        setCategorie(Number(event.target.value));
+        const newCategory = Number(event.target.value);
+        setCategorie(newCategory);
+        const defaultProduit = (
+            newCategory === 0 ? ingredients
+                : newCategory === 1 ? viandes
+                    : newCategory === 2 ? boissons
+                        : snacks)[0]; // Choisissez le premier produit de la nouvelle catégorie
+        setSelectedProduit(defaultProduit);
+        setNomArticle(defaultProduit.nom);
+        setIdProduit(defaultProduit.id);
+        setIsTypeValid(true);
     };
 
     const handleProduitChange = (event: SelectChangeEvent) => {
@@ -114,59 +128,71 @@ export default function AddAchatModal({
         ).find(produit => produit.id === newIdProduit);
 
         if (selectedProduct) {
-            // Mettre à jour le produit sélectionné
-            setSelectedProduit(selectedProduct);
-
-            // Mettre à jour le nom de l'article avec le nom du produit sélectionné
-            setNomArticle(selectedProduct.nom);
+            setSelectedProduit(selectedProduct); // Mettre à jour le produit sélectionné
+            setNomArticle(selectedProduct.nom); // Mettre à jour le nom de l'article avec le nom du produit sélectionné
+        } else {
+            setSelectedProduit(null);
+            setNomArticle("");
         }
-
     };
 
     const handleNumLotChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNumLot(event.target.value);
+        if (event.target.value === "") { setIsNumLotValid(false) }
+        else { setIsNumLotValid(true) }
     };
 
     const handleDlcChange = (newDate: DateValue) => {
-        // Convertir l'objet CalendarDate en une instance de Date standard
-        const jsDate = new Date(newDate.year, newDate.month - 1, newDate.day)
+        if (newDate && newDate.year >= 1900 && newDate.year <= 2099) {
+            // Convertir l'objet CalendarDate en une instance de Date standard
+            const jsDate = new Date(newDate.year, newDate.month - 1, newDate.day)
 
-        const timestampDate = jsDate.getTime();
-
-        // Mettre à jour l'état dlc avec la date standard JavaScript
-        setDlc({ "$date": { $numberLong: timestampDate.toString() } });
+            // Vérifie si la date est valide
+            if (!isNaN(jsDate.getTime())) {
+                const timestampDate = jsDate.getTime();
+                setDlc({ "$date": { $numberLong: timestampDate.toString() } }); // Mettre à jour l'état dlc avec la date standard JavaScript
+                setIsDlcValid(true);
+            }
+            else { setIsDlcValid(false) }
+        }
+        else { setIsDlcValid(false) }
     };
 
     const handleNbPortionsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNbPortions(Number(event.target.value));
+        if (Number(event.target.value) > 0) { setIsNbPortionsValid(true) }
+        else { setIsNbPortionsValid(false) }
     };
 
     const handleDuplicationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDuplication(Number(event.target.value));
+        if (Number(event.target.value) > 0) { setIsDuplicationValid(true) }
+        else { setIsDuplicationValid(false) }
     };
 
     const handleSubmit = () => {
-        setIsSubmitClicked(true);
-        const newAchat: Achat = {
-            idAchat: -1,
-            categorie: categorie,
-            dateFermeture: null,
-            dateOuverture: null,
-            dlc: dlc,
-            etat: 0, // L'article est initialement fermé
-            idProduit: idProduit,
-            nbPortions: nbPortions,
-            nomArticle: nomArticle,
-            numLot: numLot,
-            qtePerimee: 0
+        if (categorie >= 0 && categorie <= 3 && idProduit && dlc && nbPortions && numLot) {
+            const newAchat: Achat = {
+                idAchat: -1,
+                categorie: categorie,
+                dateFermeture: null,
+                dateOuverture: null,
+                dlc: dlc,
+                etat: 0, // L'article est initialement fermé
+                idProduit: idProduit,
+                nbPortions: nbPortions,
+                nomArticle: nomArticle,
+                numLot: numLot,
+                qtePerimee: 0
+            };
+            onSubmit(newAchat, duplication);
         }
-        onSubmit(newAchat, duplication);
         onClose();
     };
 
 
     return (
-        <Modal isOpen={isOpen} placement="top-center">
+        <Modal isOpen={isOpen} hideCloseButton={true} placement="top-center">
             <ModalContent>
                 <ModalHeader className="flex flex-col gap-1">
                     Ajouter un achat
@@ -175,15 +201,16 @@ export default function AddAchatModal({
                 <ModalBody>
 
                     <FormControl required fullWidth>
-                        <InputLabel id="demo-simple-select-required-label">Catégorie</InputLabel>
+                        <InputLabel id="demo-simple-select-required-labelinput1">Catégorie</InputLabel>
                         <Select
-                            labelId="demo-simple-select-required-label"
-                            id="demo-simple-select-required"
+                            labelId="demo-simple-select-required-labelinput1"
+                            id="input1"
+                            value={categorie.toString()}
                             label="Catégorie"
                             onChange={handleTypeChange}
                         >
-                            {typesAchat.map((type) => (
-                                <MenuItem key={type.key} value={type.key}>
+                            {typesAchat.map((type, index) => (
+                                <MenuItem key={index} value={type.key}>
                                     {type.label}
                                 </MenuItem>
                             ))}
@@ -191,19 +218,20 @@ export default function AddAchatModal({
                     </FormControl>
 
                     {categorie !== -1 ? (
-                        <FormControl>
-                            <InputLabel id="demo-simple-select-required-label">Selection du produit</InputLabel>
+                        <FormControl required fullWidth>
+                            <InputLabel id="demo-simple-select-required-labelinput2">Selection du produit</InputLabel>
                             <Select
-                                labelId="demo-simple-select-required-label"
-                                id="demo-simple-select-required"
+                                labelId="demo-simple-select-required-labelinput2"
+                                id="input2"
+                                value={idProduit.toString()}
                                 label="Selection du produit"
                                 onChange={handleProduitChange}
                             >
                                 {(categorie === 0 ? ingredients
                                     : categorie === 1 ? viandes
                                         : categorie === 2 ? boissons
-                                            : snacks).map((produit) => (
-                                                <MenuItem key={produit.id} value={produit.id}>
+                                            : snacks).map((produit, index) => (
+                                                <MenuItem key={index} value={produit.id}>
                                                     {produit.nom}
                                                 </MenuItem>
                                             ))}
@@ -215,7 +243,6 @@ export default function AddAchatModal({
                         isRequired
                         label="Numéro de lot"
                         type="string"
-                        value={numLot}
                         onChange={handleNumLotChange}
                         variant="bordered"
                     />
@@ -241,7 +268,7 @@ export default function AddAchatModal({
                         label="Dupliquer l'achat"
                         type="number"
                         variant="bordered"
-                        value={String(duplication)}
+                        value={duplication.toString()}
                         onChange={handleDuplicationChange}
                     />
 
@@ -252,12 +279,13 @@ export default function AddAchatModal({
                         Annuler
                     </Button>
 
-                    <Button color="primary" onPress={handleSubmit}>
+                    <Button color="primary" onPress={handleSubmit} isDisabled={!isTypeValid || !isNumLotValid || !isDlcValid || !isNbPortionsValid || !isDuplicationValid}>
                         Valider
                     </Button>
                 </ModalFooter>
 
             </ModalContent>
+
         </Modal>
     );
 }

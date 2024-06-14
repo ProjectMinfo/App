@@ -3,9 +3,9 @@ import { Card, Button, useDisclosure, Modal, ModalBody, ModalContent, ModalFoote
 import { Menus, Boissons, Plats, Snacks, Ingredients, Viandes } from '@/types/index';
 import { EditIcon } from '@/public/EditIcon';
 import { TrashIcon } from '@/public/TrashIcon';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import EditCarteModal from './EditCarteModal';
-import { deleteBoissons, deleteIngredients, deleteMenus, deletePlats, deleteSnacks, deleteViandes, postBoissons, postIngredients, postMenus, postPlats, postSnacks, postViandes } from '@/config/api';
+import { getIngredientById, getIngredients, getViandes, deleteBoissons, deleteIngredients, deleteMenus, deletePlats, deleteSnacks, deleteViandes, postBoissons, postIngredients, postMenus, postPlats, postSnacks, postViandes } from '@/config/api';
 
 type MenuItem = Menus | Boissons | Plats | Snacks | Ingredients | Viandes;
 interface ModifyCardProps {
@@ -19,6 +19,8 @@ export default function ModifyCard({ item, type }: ModifyCardProps) {
 
   const [isOpenDelete, setOpenDelete] = useState(false);
   const [rdyToDelete, setRdyToDelete] = useState(false);
+  const [ingredientNames, setIngredientNames] = useState<{ [key: number]: string }>({});
+
 
   const handleSave = (updatedItem: MenuItem) => {
     setCurrentItem(updatedItem);
@@ -92,21 +94,7 @@ export default function ModifyCard({ item, type }: ModifyCardProps) {
                 </>
               )}
 
-              {'quantite' in currentItem && !('ingredients' in currentItem) && (
-                <p className="text-gray-500"><strong>Quantité:</strong> {currentItem.quantite}</p>
-              )}
 
-              {'ingredients' in currentItem && (
-                <>
-                  <p className="text-gray-500"><strong>Quantité:</strong> {currentItem.quantite}</p>
-                  <p className="text-gray-500"><strong>Ingrédients:</strong></p>
-                  <ul className="text-gray-500 ml-4">
-                    {currentItem.ingredients.map((ingredient) => (
-                      <li key={ingredient.ingredient.id}>ID: {ingredient.ingredient.id}, Qmin: {ingredient.qmin}, Qmax: {ingredient.qmax}</li>
-                    ))}
-                  </ul>
-                </>
-              )}
             </div>
           </div>
           <div className="flex flex-col gap-2 w-1/6 flex-shrink-0 items-center justify-center mr-2 mb-4">

@@ -1,0 +1,44 @@
+/* styles.css */
+
+/* Ajout des styles pour rendre la page responsive */
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+/* Ajout des styles pour rendre la table responsive */
+.table-container .table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-container .table-header .table-column {
+  white-space: nowrap;
+}
+
+.table-container .table-body .table-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.table-container .table-body .table-row > .table-cell {
+  flex: 1 0 50%; /* Deux colonnes par ligne sur les écrans de petite taille */
+}
+
+.table-container .table-body .table-row > .table-cell:first-child {
+  order: -1; /* Mettre la première cellule en premier pour le bon ordre sur les petits écrans */
+}
+
+/* Style pour rendre les boutons de taille plus petite sur les petits écrans */
+.table-container .button {
+  font-size: 12px;
+}
+
+.center-text {
+  text-align: center;
+}

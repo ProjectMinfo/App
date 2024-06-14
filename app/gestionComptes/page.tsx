@@ -5,6 +5,7 @@ import { getComptes, postEditCompte } from "@/config/api";
 import { EditIcon } from "@/public/EditIcon.jsx";
 import EditAccountModal from "@/components/EditAccountModal";
 import { Comptes } from "@/types/index.js";
+import './styles.css';
 
 
 
@@ -172,7 +173,7 @@ export default function GestionComptePage() {
 
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn key={column.uid}>
+            <TableColumn key={column.uid} className="center-text">
               {column.name}
             </TableColumn>)}
         </TableHeader>

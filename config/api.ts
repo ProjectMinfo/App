@@ -178,6 +178,21 @@ export const postEditAchat = async (achat: any) => {
     }
 };
 
+export const insertManyAchats = async (achats: any) => {
+
+  try {
+    const response = await api.post('/achats/many', JSON.stringify(achats), {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error posting viandes:', error);
+    throw error;
+  }
+};
+
 export const postEditCompte = async (user: any) => {
 
     try {
@@ -243,6 +258,16 @@ export const getIngredients = async () => {
         console.error('Error fetching ingredients:', error);
         throw error;
     }
+}
+
+export const getIngredientById=async(id: number)=>{
+  try{
+    const response=await api.get(`/ingredients/${id}`);
+    return(response.data);
+  } catch(error){
+    console.error('Error fetching ingeredients :', error);
+    throw error;
+  }
 }
 
 

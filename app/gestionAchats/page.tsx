@@ -1,7 +1,7 @@
 'use client';
 import React, { Key, useState, useEffect } from "react";
-import { Button, Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
-import { getAchats, postEditAchat, deleteAchats } from "@/config/api";
+import { Button, Card, Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
+import { getAchats, postEditAchat, deleteAchats, insertManyAchats } from "@/config/api";
 import { FaShoppingCart } from "react-icons/fa";
 import { SlSocialDropbox } from "react-icons/sl";
 import { BsBoxSeam } from "react-icons/bs";
@@ -12,6 +12,7 @@ import { BiRevision } from "react-icons/bi";
 import AddAchatModal from "@/components/AddAchatModal";
 import EditAchatModal from "@/components/EditAchatModal";
 import DeleteAchatModal from "@/components/DeleteAchatModal";
+import './styles.css';
 
 // Define types for achats
 type Achat = {
@@ -125,8 +126,9 @@ export default function GestionAchatsPage() {
   const [currentAchat, setCurrentAchat] = useState<Achat | null>(null);
   const [achats, setAchats] = useState<Achat[]>([]);
   const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
-  const [isAfficherLesAchatsConsommes, setIsAfficherLesAchatsConsommes] = useState<boolean>(false)
   const [currentAchatIndex, setCurrentAchatIndex] = useState<number>();
+  const [isAfficherLesAchatsConsommes, setIsAfficherLesAchatsConsommes] = useState<boolean>(false)
+  const [visibleConsommeCount, setVisibleConsommeCount] = useState(20);
 
   useEffect(() => {
     async function fetchAchats() {
@@ -205,20 +207,18 @@ export default function GestionAchatsPage() {
 
   const onAddSubmit = async (newAchat: Achat, duplication: number) => {
     if (newAchat && achats) {
+      let tabNewAchat = []; // On crée un tableau pour stocker les duplications
       for (let i = 0; i < duplication; i++) { // On duplique l'achat autant de fois que demandé
-        const updatedAchats = [...achats, newAchat]; // On ajoute l'achat à la liste
-        updatedAchats.sort((a: Achat, b: Achat) => b.idAchat - a.idAchat); // On retrie la liste
-        setAchats(updatedAchats); // On met à jour la liste des achats
-        newAchat.idAchat = -1; // Pour créer un nouvel achat
+        tabNewAchat.push(newAchat);
+      }
 
-        try {
-          await postEditAchat(newAchat); // Appel à l'API pour enregistrer les modifications
-          console.log("Achat added successfully in the API");
-          setAchats((await getAchats()).sort((a: Achat, b: Achat) => b.idAchat - a.idAchat));
-        }
-        catch (error) {
-          console.error("Error adding achat:", error);
-        }
+      try {
+        await insertManyAchats(tabNewAchat); // Appel à l'API pour enregistrer les modifications
+        console.log("Achats added successfully in the API");
+        setAchats((await getAchats()).sort((a: Achat, b: Achat) => b.idAchat - a.idAchat));
+      }
+      catch (error) {
+        console.error("Error adding achats:", error);
       }
     }
     onAddClose();
@@ -330,6 +330,15 @@ export default function GestionAchatsPage() {
     }
 
     onDeleteClose();
+  };
+
+
+  const loadMore = () => {
+    setVisibleConsommeCount(prevCount => prevCount + 20);
+  };
+
+  const loadLess = () => {
+    setVisibleConsommeCount(prevCount => prevCount - 20);
   };
 
 
@@ -509,20 +518,22 @@ export default function GestionAchatsPage() {
 
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn key={column.uid}>
+            <TableColumn key={column.uid} className="center-text">
               {column.name}
             </TableColumn>)}
         </TableHeader>
 
         <TableBody items={filteredAchats}>
-          {filteredAchats.map((item, index) =>
-            <TableRow key={item.idAchat}>
-              {(columnKey) =>
-                <TableCell>
-                  {renderCell(item, columnKey as ColumnKeys, index)}
-                </TableCell>}
-            </TableRow>
-          )}
+          {(isAfficherLesAchatsConsommes
+            ? filteredAchats.slice(0, visibleConsommeCount) // N'affiche qu'une partie des articles consommés
+            : filteredAchats).map((item, index) =>
+              <TableRow key={item.idAchat}>
+                {(columnKey) =>
+                  <TableCell>
+                    {renderCell(item, columnKey as ColumnKeys, index)}
+                  </TableCell>}
+              </TableRow>
+            )}
         </TableBody>
 
       </Table>
@@ -553,6 +564,15 @@ export default function GestionAchatsPage() {
           currentEtat={currentAchat.etat}
         />
       )}
+
+      <div className="flex justify-between mt-4">
+        {isAfficherLesAchatsConsommes && visibleConsommeCount < achats.length && (
+          <button className="bg-blue-500  py-2 px-4 rounded" onClick={loadMore}>Afficher plus</button>
+        )}
+        {isAfficherLesAchatsConsommes && visibleConsommeCount > 20 && (
+          <button className="bg-blue-500  py-2 px-4 rounded" onClick={loadLess}>Afficher moins</button>
+        )}
+      </div>
     </div>
   );
 }

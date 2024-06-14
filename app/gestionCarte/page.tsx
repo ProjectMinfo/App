@@ -28,7 +28,7 @@ export default function App() {
     { nom: "Viandes", page: <GestionViandes /> }
   ];
 
-  function handleSave(updatedItem: MenuItem, type : string){
+  function handleSave(updatedItem: MenuItem, type: string) {
     if (type === 'menu') {
       postMenus(updatedItem);
     } else if (type === 'plat') {
@@ -42,9 +42,9 @@ export default function App() {
     } else if (type === 'viande') {
       postViandes(updatedItem);
     }
-  }; 
+  };
 
-  function newItems(page: React.ReactElement) {   
+  function newItems(page: React.ReactElement) {
     if (page && page.type.name && page.type.name === "GestionMenus") {
       const newMenu: Menus = {
         event: false,
@@ -113,22 +113,24 @@ export default function App() {
 
   return (
     <div>
-      <div className="flex flex-col justify-center items-center">
-        <h1 className={title()}>Modifier la carte</h1>
-        {selectedPage && (
-          <div className="flex justify-center items-center gap-8">
-            <Card className="flex flex-col mt-2 w-[100%] max-w-[100px]" isPressable onPress={() => newItems(selectedPage)}>
-              <CardHeader className="justify-center">
-                <p className="text-lg">Ajouter</p>
-              </CardHeader>
-            </Card>
-            <Card className="flex flex-col mt-2 w-[100%] max-w-[100px]" isPressable onPress={() => setSelectedPage(null)}>
-              <CardHeader className="justify-center">
-                <p className="text-lg">Retour</p>
-              </CardHeader>
-            </Card>
-          </div>
-        )}
+      <div>
+        <div className="flex flex-col justify-center items-center">
+          <h1 className={title()}>Modifier la carte</h1>
+          {selectedPage && (
+            <div className="flex justify-center items-center gap-8">
+              <Card className="flex flex-col mt-2 w-[100%] max-w-[100px]" isPressable onPress={() => newItems(selectedPage)}>
+                <CardHeader className="justify-center">
+                  <p className="text-lg">Ajouter</p>
+                </CardHeader>
+              </Card>
+              <Card className="flex flex-col mt-2 w-[100%] max-w-[100px]" isPressable onPress={() => setSelectedPage(null)}>
+                <CardHeader className="justify-center">
+                  <p className="text-lg">Retour</p>
+                </CardHeader>
+              </Card>
+            </div>
+          )}
+        </div>
       </div>
       <div className="mt-2">
         {selectedPage ? (
@@ -136,7 +138,7 @@ export default function App() {
             {selectedPage}
           </>
         ) : (
-          <div className="grid grid-cols-2 gap-4 mt-12">
+          <div className="grid grid-cols-1 gap-4 mt-12 md:grid-cols-2">
             {actions.map((action) => (
               <Card
                 key={action.nom}
