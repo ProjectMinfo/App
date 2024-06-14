@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import FileUpload from '@/components/FileUpload';
-import { getEventMode, postEventMode, postLimitOrderTaking, postOrderStatus, getSettingById } from "@/config/api"; // Importer les fonctions API
+import { getEventMode, postEventMode, postLimitOrderTaking, postOrderStatus, getSettingById, getOrderHours, postOrderHours } from "@/config/api"; // Importer les fonctions API
 
 const Settings = () => {
   const [eventMode, setEventMode] = useState(false);
@@ -10,25 +10,22 @@ const Settings = () => {
   const [closingTime, setClosingTime] = useState('20:00');
 
   useEffect(() => {
-    const fetchEventMode = async () => {
+    const fetchSettings = async () => {
       try {
-        const data = await getEventMode();
-        setEventMode(data);
-      } catch (error) {
-        console.error('Error fetching event mode:', error);
-      }
-    };
+        const eventModeData = await getEventMode();
+        setEventMode(eventModeData);
+        
+        const orderTakingData = await getSettingById(1);
+        setOrderTaking(orderTakingData.value === 1);
 
-    const fetchCommandeMode = async () => {
-      try {
-        const data = await getSettingById(1);
-        setOrderTaking(data);
+        const orderHoursData = await getOrderHours();
+        setOpeningTime(orderHoursData.heureDebutCommandes);
+        setClosingTime(orderHoursData.heureFinCommandes);
       } catch (error) {
-        console.error('Error fetching event mode:', error);
+        console.error('Error fetching settings:', error);
       }
     };
-    fetchEventMode();
-    fetchCommandeMode();
+    fetchSettings();
   }, []);
 
   const handleEventModeChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,24 +50,26 @@ const Settings = () => {
   };
 
   const handleOpeningTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOpeningTime(event.target.value);
-    updateOrderStatus(orderTaking);
+    const newTime = event.target.value;
+    setOpeningTime(newTime);
+    updateOrderStatus(orderTaking, newTime, closingTime);
   };
 
   const handleClosingTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setClosingTime(event.target.value);
-    updateOrderStatus(orderTaking);
+    const newTime = event.target.value;
+    setClosingTime(newTime);
+    updateOrderStatus(orderTaking, openingTime, newTime);
   };
 
-  const updateOrderStatus = async (orderTaking: boolean) => {
+  const updateOrderStatus = async (orderTaking: boolean, opening: string = openingTime, closing: string = closingTime) => {
     const currentTime = new Date();
     const openingDate = new Date();
     const closingDate = new Date();
 
-    const [openingHour, openingMinute] = openingTime.split(':').map(Number);
+    const [openingHour, openingMinute] = opening.split(':').map(Number);
     openingDate.setHours(openingHour, openingMinute);
 
-    const [closingHour, closingMinute] = closingTime.split(':').map(Number);
+    const [closingHour, closingMinute] = closing.split(':').map(Number);
     closingDate.setHours(closingHour, closingMinute);
 
     const isOrderTimeValid = orderTaking && currentTime >= openingDate && currentTime <= closingDate;
@@ -83,6 +82,11 @@ const Settings = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    try {
+      await postOrderHours(openingTime, closingTime);
+    } catch (error) {
+      console.error('Error updating order hours:', error);
+    }
     console.log('Event Mode:', eventMode);
     console.log('Order Taking:', orderTaking);
     console.log('Opening Time:', openingTime);
@@ -149,7 +153,7 @@ const Settings = () => {
         <FileUpload />
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-500  font-semibold rounded-lg hover:bg-blue-600"
+          className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
         >
           Enregistrer les paramètres
         </button>

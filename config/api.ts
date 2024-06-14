@@ -708,6 +708,8 @@ export const renameCarte = async (oldId: number, newId: number) => {
         id: 3,
         param: 'event',
         value: value ? 1 : 0,
+        type: "Setting",
+
       });
       return response.data;
     } catch (error) {
@@ -722,6 +724,7 @@ export const renameCarte = async (oldId: number, newId: number) => {
         id: 4,
         param: 'LimiterHeuresCommandes',
         value: value ? 1 : 0,
+        type: "Setting",
       });
       return response.data;
     } catch (error) {
@@ -729,6 +732,7 @@ export const renameCarte = async (oldId: number, newId: number) => {
       throw error;
     }
   };
+
   
   export const postOrderStatus = async (value: boolean) => {
     try {
@@ -736,6 +740,7 @@ export const renameCarte = async (oldId: number, newId: number) => {
         id: 1,
         param: 'Commande',
         value: value ? 1 : 0,
+        type: "Setting",
       });
       return response.data;
     } catch (error) {
@@ -743,3 +748,29 @@ export const renameCarte = async (oldId: number, newId: number) => {
       throw error;
     }
   };
+
+  export const getOrderHours = async () => {
+    try {
+      const response = await api.get('/settings/5');
+      return response.data; // Assurez-vous que response.data a une structure { heureDebutCommandes: "08:00", heureFinCommandes: "20:00" }
+    } catch (error) {
+      console.error('Error fetching order hours:', error);
+      throw error;
+    }
+  };
+  
+  export const postOrderHours = async (heureDebutCommandes: string, heureFinCommandes: string) => {
+    try {
+      const response = await api.post('/settings', {
+        id: 5,
+        heureDebutCommandes,
+        heureFinCommandes,
+        type: "HeuresSetting",
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating order hours:', error);
+      throw error;
+    }
+  };
+  
