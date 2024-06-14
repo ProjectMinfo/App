@@ -150,8 +150,8 @@ const Compte = () => {
               </>
             )}
           </div>
-          <button className="bg-red-500 text-white py-2 px-4 rounded">
-            <Link className="text-white" href="/connexion" onClick={() => {
+          <button className="bg-red-500  py-2 px-4 rounded">
+            <Link className="" href="/connexion" onClick={() => {
               if (typeof window !== 'undefined') {
                 window.localStorage.clear();
                 redirect("/connexion")
@@ -209,7 +209,7 @@ const Compte = () => {
             {commandesAffichees < commandes.length && (
               <button
                 onClick={handleShowMore}
-                className="bg-blue-500 text-white py-2 px-4 rounded"
+                className="bg-blue-500  py-2 px-4 rounded"
               >
                 Afficher plus
               </button>
@@ -217,7 +217,7 @@ const Compte = () => {
             {commandesAffichees > 5 && (
               <button
                 onClick={handleShowLess}
-                className="bg-blue-500 text-white py-2 px-4 rounded"
+                className="bg-blue-500  py-2 px-4 rounded"
               >
                 Afficher moins
               </button>

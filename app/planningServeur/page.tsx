@@ -406,7 +406,7 @@ const PlanningServeur = () => {
         </div>
 
         <button
-          className="px-2 py-1 rounded border text-black bg-blue-500 text-white mt-4"
+          className="px-2 py-1 rounded border text-black bg-blue-500  mt-4"
           onClick={() => { setShowStatsModal(true); handleCalculateStats(); }}
         >
           Voir les statistiques
@@ -416,7 +416,7 @@ const PlanningServeur = () => {
       <Modal isOpen={showStatsModal} onOpenChange={() => setShowStatsModal(false)} isDismissable={true} className="inset-0 flex justify-center items-center">
         <ModalContent className="p-8 rounded-lg max-w-4xl w-full overflow-auto" style={{ maxHeight: "90vh" }}>
           <ModalHeader className="text-xl font-bold mb-4">Statistiques des serveurs</ModalHeader>
-          <ModalBody className="mb-4 flex-row text-white space-x-2">
+          <ModalBody className="mb-4 flex-row  space-x-2">
             <button
               className={`px-2 py-1 rounded  ${period === "week" ? "bg-blue-500" : "text-black bg-white"}`}
               onClick={() => { setPeriod("week"); handleCalculateStats(); }}
@@ -486,13 +486,13 @@ const PlanningServeur = () => {
 
           <ModalFooter className="flex justify-center items-center">
             <Button
-              className="px-2 py-1 rounded border text-black bg-blue-500 text-white"
+              className="px-2 py-1 rounded border text-black bg-blue-500 "
               onClick={handleDownloadPDF}
             >
               Télécharger le PDF
             </Button>
             <Button
-              className="px-2 py-1 rounded border text-black bg-red-500 text-white "
+              className="px-2 py-1 rounded border text-black bg-red-500  "
               onClick={() => setShowStatsModal(false)}
             >
               Fermer

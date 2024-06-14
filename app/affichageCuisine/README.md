@@ -102,10 +102,10 @@ const CommandesCuisine = () => {
 
   return (
     <div className={`flex flex-col h-screen overflow-hidden max-w-full ${isFullscreen ? "fixed top-0 left-0 w-full h-full bg-white z-50" : ""}`}>
-      <header className="w-full bg-gray-800 text-white p-2 text-center fixed top-0">
+      <header className="w-full bg-gray-800  p-2 text-center fixed top-0">
         <div className="flex justify-between items-center">
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-blue-500  rounded hover:bg-blue-600"
             onClick={() => {
               setIsFullscreen(!isFullscreen);
               toggleFullscreen();
@@ -300,10 +300,10 @@ const CommandesCuisine = () => {
 
   return (
     <div className={`flex flex-col h-screen overflow-hidden max-w-full ${isFullscreen ? "fixed top-0 left-0 w-full h-full bg-white z-50" : ""}`}>
-      <header className="w-full bg-gray-800 text-white p-2 text-center fixed top-0">
+      <header className="w-full bg-gray-800  p-2 text-center fixed top-0">
         <div className="flex justify-between items-center">
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-blue-500  rounded hover:bg-blue-600"
             onClick={() => {
               setIsFullscreen(!isFullscreen);
               toggleFullscreen();
@@ -470,10 +470,10 @@ Cette condition affiche un message de chargement jusqu'à ce que les données so
 ### Header
 
 ```typescript
-<header className="w-full bg-gray-800 text-white p-2 text-center fixed top-0">
+<header className="w-full bg-gray-800  p-2 text-center fixed top-0">
   <div className="flex justify-between items-center">
     <button
-      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      className="px-4 py-2 bg-blue-500  rounded hover:bg-blue-600"
       onClick={() => {
         setIsFullscreen(!isFullscreen);
         toggleFullscreen();

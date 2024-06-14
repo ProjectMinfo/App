@@ -210,7 +210,7 @@ const InscriptionPage = () => {
           <div>
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md shadow hover:bg-blue-600"
+              className="w-full py-2 px-4 bg-blue-500  font-semibold rounded-md shadow hover:bg-blue-600"
             >
               S'inscrire
             </button>

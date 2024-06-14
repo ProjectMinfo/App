@@ -680,3 +680,66 @@ export const renameCarte = async (oldId: number, newId: number) => {
       throw error;
     }
   };
+
+
+  export const getEventMode = async () => {
+    try {
+      const response = await api.get('/settings');
+      return response.data; // Assurez-vous que response.data a une structure { value: 1 } ou { value: 0 }
+    } catch (error) {
+      console.error('Error fetching event mode:', error);
+      throw error;
+    }
+  };
+
+  export const getSettingById = async (id: number) => {
+    try {
+      const response = await api.get(`/settings/${id}`);
+      return response.data; // Assurez-vous que response.data a une structure { value: 1 } ou { value: 0 }
+    } catch (error) {
+      console.error('Error fetching event mode:', error);
+      throw error;
+    }
+  };
+  
+  export const postEventMode = async (value: boolean) => {
+    try {
+      const response = await api.post('/settings', {
+        id: 3,
+        param: 'event',
+        value: value ? 1 : 0,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating event mode:', error);
+      throw error;
+    }
+  };
+
+  export const postLimitOrderTaking = async (value: boolean) => {
+    try {
+      const response = await api.post('/settings', {
+        id: 4,
+        param: 'LimiterHeuresCommandes',
+        value: value ? 1 : 0,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating limit order taking:', error);
+      throw error;
+    }
+  };
+  
+  export const postOrderStatus = async (value: boolean) => {
+    try {
+      const response = await api.post('/settings', {
+        id: 1,
+        param: 'Commande',
+        value: value ? 1 : 0,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      throw error;
+    }
+  };
