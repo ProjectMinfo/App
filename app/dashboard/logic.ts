@@ -19,6 +19,13 @@ export function getDate(NewCommandes: NewCommandes): Date {
     return new Date(parseInt(NewCommandes.date.$date.$numberLong));
 }
 
+export function convertToDate(dateString) {
+    //  Convert a "dd/MM/yyyy" string into a Date object
+    let d = dateString.split("/");
+    let date = new Date(d[2] + '/' + d[1] + '/' + d[0]);
+    return date;
+}
+
 export function getWeekDay(date: Date): string {
     // Array of weekday names
     const weekDays = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
@@ -73,7 +80,13 @@ export function getChiffreAffaire(commandes: NewCommandes[]): Map<string, number
             // console.log(key, ":", result.get(key));
         }
     });
-    return result;
+
+    // Sort the map by key
+    let mapArray = Array.from(result.entries());
+    mapArray.sort((a, b) => {
+        return convertToDate(a[0]).getTime() - convertToDate(b[0]).getTime();
+    });
+    return new Map<string, number>(mapArray);
 }
 
 export function aggregateByTimeFrame(commandes: NewCommandes[], timeFrame: TimeFrame): Map<string, number> {
@@ -118,23 +131,12 @@ export function aggregateByTimeFrame(commandes: NewCommandes[], timeFrame: TimeF
     // Sort the map by key
     let mapArray = Array.from(result.entries());
     mapArray.sort((a, b) => {
-/*        switch (timeFrame) {
-            case TimeFrame.Jour:
-                const dateA = new Date(a[0]);
-                const dateB = new Date(b[0]);
-                return dateA.getTime() - dateB.getTime();
-            case TimeFrame.Semaine:
-                return parseInt(a[0]) - parseInt(b[0]);
-            case TimeFrame.Mois:
-                return getMonthNumber(a[0]) - getMonthNumber(b[0]);
-            case TimeFrame.Annee:
-                return parseInt(a[0]) - parseInt(b[0]);
-            case TimeFrame.Toujours:
-                const dateC = new Date(a[0]);
-                const dateD = new Date(b[0]);
-                return dateC.getTime() - dateD.getTime();
-        }*/
-        return parseInt(a[0]) - parseInt(b[0]);
+        if (timeFrame === TimeFrame.Jour) {
+            return parseInt(a[0]) - parseInt(b[0]);
+        }
+        else {
+            return convertToDate(a[0]).getTime() - convertToDate(b[0]).getTime();
+        }
     });
     return new Map<string, number>(mapArray);
 }
