@@ -126,8 +126,9 @@ export default function GestionAchatsPage() {
   const [currentAchat, setCurrentAchat] = useState<Achat | null>(null);
   const [achats, setAchats] = useState<Achat[]>([]);
   const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
-  const [isAfficherLesAchatsConsommes, setIsAfficherLesAchatsConsommes] = useState<boolean>(false)
   const [currentAchatIndex, setCurrentAchatIndex] = useState<number>();
+  const [isAfficherLesAchatsConsommes, setIsAfficherLesAchatsConsommes] = useState<boolean>(false)
+  const [visibleConsommeCount, setVisibleConsommeCount] = useState(20);
 
   useEffect(() => {
     async function fetchAchats() {
@@ -210,7 +211,7 @@ export default function GestionAchatsPage() {
       for (let i = 0; i < duplication; i++) { // On duplique l'achat autant de fois que demandé
         tabNewAchat.push(newAchat);
       }
-      
+
       try {
         await insertManyAchats(tabNewAchat); // Appel à l'API pour enregistrer les modifications
         console.log("Achats added successfully in the API");
@@ -329,6 +330,15 @@ export default function GestionAchatsPage() {
     }
 
     onDeleteClose();
+  };
+
+
+  const loadMore = () => {
+    setVisibleConsommeCount(prevCount => prevCount + 20);
+  };
+
+  const loadLess = () => {
+    setVisibleConsommeCount(prevCount => prevCount - 20);
   };
 
 
@@ -510,18 +520,20 @@ export default function GestionAchatsPage() {
           {(column) => (
             <TableColumn key={column.uid} className="center-text">
               {column.name}
-            </TableColumn>)}  
+            </TableColumn>)}
         </TableHeader>
 
         <TableBody items={filteredAchats}>
-          {filteredAchats.map((item, index) =>
-            <TableRow key={item.idAchat}>
-              {(columnKey) =>
-                <TableCell>
-                  {renderCell(item, columnKey as ColumnKeys, index)}
-                </TableCell>}
-            </TableRow>
-          )}
+          {(isAfficherLesAchatsConsommes
+            ? filteredAchats.slice(0, visibleConsommeCount) // N'affiche qu'une partie des articles consommés
+            : filteredAchats).map((item, index) =>
+              <TableRow key={item.idAchat}>
+                {(columnKey) =>
+                  <TableCell>
+                    {renderCell(item, columnKey as ColumnKeys, index)}
+                  </TableCell>}
+              </TableRow>
+            )}
         </TableBody>
 
       </Table>
@@ -552,6 +564,15 @@ export default function GestionAchatsPage() {
           currentEtat={currentAchat.etat}
         />
       )}
+
+      <div className="flex justify-between mt-4">
+        {isAfficherLesAchatsConsommes && visibleConsommeCount < achats.length && (
+          <button className="bg-blue-500  py-2 px-4 rounded" onClick={loadMore}>Afficher plus</button>
+        )}
+        {isAfficherLesAchatsConsommes && visibleConsommeCount > 20 && (
+          <button className="bg-blue-500  py-2 px-4 rounded" onClick={loadLess}>Afficher moins</button>
+        )}
+      </div>
     </div>
   );
 }
