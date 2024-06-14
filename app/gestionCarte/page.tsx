@@ -47,6 +47,7 @@ export default function App() {
   function newItems(page: React.ReactElement) {   
     if (page && page.type.name && page.type.name === "GestionMenus") {
       const newMenu: Menus = {
+        event: false,
         dispo: true,
         id: -1,
         nom: "",
@@ -59,6 +60,7 @@ export default function App() {
       setModalData({ item: newMenu, type: "menu" });
     } else if (page && page.type.name && page.type.name === "GestionPlats") {
       const newPlats: Plats = {
+        event: false,
         dispo: true,
         id: -1,
         nom: "",

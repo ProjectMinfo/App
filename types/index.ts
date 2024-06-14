@@ -113,6 +113,7 @@ export interface Ingredients {
 
 
 export interface Menus {
+  event?: boolean;
   dispo: boolean;
   id: number;
   nom: string;
@@ -172,6 +173,7 @@ export interface PlanningCourses {
 
 
 export interface Plats {
+  event?: boolean;
   dispo: boolean;
   id: number;
   nom: string;
