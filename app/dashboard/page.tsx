@@ -21,7 +21,7 @@ import {
     getMonthNumber,
     getDate,
     getTemperaturesByTimeFrame, Temp,
-    TimeFrame
+    TimeFrame, getChiffreAffaire
 } from "@/app/dashboard/logic";
 
 // Register Chart.js components
@@ -62,11 +62,25 @@ const Dashboard = () => {
 
     // Aggregate commandes by time frame and sort labels
     const commandesByTimeFrame = aggregateByTimeFrame(commandes, timeFrame);
-    let mapArray = Array.from(commandesByTimeFrame.entries());
+    console.log(commandesByTimeFrame);
+/*    let mapArray = Array.from(commandesByTimeFrame.entries());
     mapArray.sort((a, b) => {
         return new Date(a[0]).getTime() - new Date(b[0]).getTime();
     });
-    const sortedCommandes = new Map<string, number>(mapArray);
+    const sortedCommandes = new Map<string, number>(mapArray);*/
+    const commandesData = {
+        labels: Array.from(commandesByTimeFrame.keys()),
+        datasets: [
+            {
+                label: `Commandes par ${TimeFrame[timeFrame].toLowerCase()}`,
+                data: Array.from(commandesByTimeFrame.values()),
+                fill: false,
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgba(255, 99, 132, 0.2)',
+                tension: 0.3,
+            },
+        ],
+    };
 
     // Aggregate temperatures by time frame
     const temperaturesByTimeFrame = getTemperaturesByTimeFrame(temperatures, tempTimeFrame);
@@ -91,15 +105,16 @@ const Dashboard = () => {
     });
     const sortedTemps = new Map<string, Temp>(mapArrayTemp);
 
-    const commandesData = {
-        labels: Array.from(sortedCommandes.keys()),
+    const chiffreAffaire = getChiffreAffaire(commandes)
+    const chiffreAffaireData = {
+        labels: Array.from(chiffreAffaire.keys()),
         datasets: [
             {
-                label: `Commandes par ${TimeFrame[timeFrame].toLowerCase()}`,
-                data: Array.from(sortedCommandes.values()),
-                fill: false,
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgba(255, 99, 132, 0.2)',
+                label: "Chiffre d'affaire du jour",
+                data: Array.from(chiffreAffaire.values()),
+                fill: true,
+                backgroundColor: 'rgb(132, 255, 255)',
+                borderColor: 'rgba(132, 255, 255, 0.2)',
                 tension: 0.3,
             },
         ],
@@ -182,21 +197,15 @@ const Dashboard = () => {
                     </CardBody>
                 </Card>
 
-                <Card className="col-span-2 row-span-1 p-2 max-md:max-h-[300px]">
-                    <CardHeader className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Dernières
-                        Commandes</CardHeader>
+                <Card className="col-span-3 row-span-1 p-2 max-md:max-h-[300px]">
+                    <CardHeader className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Chiffre
+                        d'affaire</CardHeader>
                     <CardBody>
-                        <ul>
-                            {
-                                commandes.slice(commandes.length - 15, commandes.length).reverse().map((commande, index) => (
-                                    <li key={index}>{getDate(commande).toLocaleString()}</li>
-                                ))
-                            }
-                        </ul>
+                        <Line data={chiffreAffaireData}></Line>
                     </CardBody>
                 </Card>
 
-                <Card className="col-span-4 p-2">
+                <Card className="col-span-3 p-2">
                     <CardHeader
                         className="text-2xl font-semibold mb-4 border-b-2 border-red-500 pb-2">Stocks
                     </CardHeader>
