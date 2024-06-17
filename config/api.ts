@@ -717,6 +717,16 @@ export const renameCarte = async (oldId: number, newId: number) => {
     }
   };
 
+  export const getEventModeBool = async () => {
+    try {
+      const response = await api.get('/settings/event');
+      return response.data; // Assurez-vous que response.data a une structure { value: 1 } ou { value: 0 }
+    } catch (error) {
+      console.error('Error fetching event mode:', error);
+      throw error;
+    }
+  }
+
   export const getSettingById = async (id: number) => {
     try {
       const response = await api.get(`/settings/${id}`);

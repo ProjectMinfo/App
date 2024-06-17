@@ -96,10 +96,10 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
     };
 
     // Filtrer les ingrédients disponibles qui ne sont pas déjà dans la liste d'ingrédients du plat
-    const availableIngredients = listIngredients.filter((ingredient) => {
-        const isInList = (tempItem as Plats).ingredients.some((item) => item.ingredient.id === ingredient.id);
-        return !isInList && ingredient.dispo;
-    });
+    // const availableIngredients = listIngredients.filter((ingredient) => {
+    //     const isInList = (tempItem as Plats).ingredients.some((item) => item.ingredient.id === ingredient.id);
+    //     return !isInList && ingredient.dispo;
+    // });
 
     return (
         <>
@@ -114,12 +114,23 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
                             value={tempItem.nom}
                             onChange={(e) => handleChange('nom', e.target.value)}
                         />
-                        <Switch
-                            defaultChecked={tempItem.dispo}
-                            onChange={(e) => handleChange('dispo', e.target.checked)}
-                        >
-                            Disponible
-                        </Switch>
+                        <div className="flex justify-between">
+                            <Switch
+                                isSelected={updatedItem.dispo}
+                                onChange={(e) => handleChange('dispo', e.target.checked)}
+                            >
+                                Disponible
+                            </Switch>
+
+                            {'event' in updatedItem && (
+                                <Switch
+                                    isSelected={updatedItem.event}
+                                    onChange={(e) => handleChange('event', e.target.checked)}
+                                >
+                                    Evenement
+                                </Switch>
+                            )}
+                        </div>
 
                         {('prix' && 'prixServeur') in tempItem && (
                             <div className="flex gap-4">

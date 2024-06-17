@@ -42,7 +42,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
 
 
                 const resultCommandes: NamedCommande[] = fetchedCommandes
-                    .filter((commande: NamedCommande) => commande.contenu)
+                    // .filter((commande: NamedCommande) => commande.contenu)
                     .map((commande: NamedCommande) => ({
                         ...commande,
                         nom: fetchedCompte.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.nom || "Inconnu",
@@ -100,7 +100,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
 
     return (
         <>
-            <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl">
+            <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl">
                 <ModalContent>
                     <ModalHeader>Liste des commandes</ModalHeader>
                     <ModalBody>
@@ -114,7 +114,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                         <Table aria-label="Liste des commandes">
                             <TableHeader>
                                 <TableColumn>Nom</TableColumn>
-                                <TableColumn>Numéro du compte</TableColumn>
+                                <TableColumn>Num du compte</TableColumn>
                                 <TableColumn>Contenu</TableColumn>
                                 <TableColumn>Commentaires</TableColumn>
                                 <TableColumn>Prix</TableColumn>
@@ -132,7 +132,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                                             <Button color="success" variant="flat" isDisabled={commande.payee} onClick={() => handleCommandePayee(commande)}>
                                                 Payée
                                             </Button>
-                                            <Button color="primary" variant="flat" onClick={() => handleCommandeDistribuee(commande)}>
+                                            <Button color="primary" variant="flat" onClick={() => handleCommandeDistribuee(commande)} isDisabled={!commande.payee}>
                                                 Distribuée
                                             </Button>
                                         </TableCell>
@@ -140,12 +140,12 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                                 ))}
                                 {filteredCommandes.length > 10 && (
                                     <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
+                                        <TableCell> </TableCell>
+                                        <TableCell> </TableCell>
                                         <TableCell className="text-center">...</TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
+                                        <TableCell> </TableCell>
+                                        <TableCell> </TableCell>
+                                        <TableCell> </TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>

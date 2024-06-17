@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
-import { getBoissons, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
+import { getBoissons, getEventModeBool, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
 import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
-import Paiement from './paiement/page';
+import Paiement from '@/components/paiement';
 import { Card, CardHeader, CardBody } from '@nextui-org/react';
 import { prepareCommande } from '@/config/logic';
 import ListeComptesModal from '@/components/listeCompteModal';
@@ -69,6 +69,8 @@ export default function ChatPage() {
   const [allBaguetteId, setAllBaguetteId] = useState<Ingredients>();
   const [newBaguetteId, setNewBaguetteId] = useState<Ingredients>();
 
+  const [eventMode, setEventMode] = useState<boolean>(false);
+
 
   const [repas, setRepas] = useState<NewRepas>({
     menu: [],
@@ -101,13 +103,14 @@ export default function ChatPage() {
   // Fetch data
   useEffect(() => {
     async function fetchData() {
-      const [fetchedMenus, fetchedPlats, fetchedIngredients, fetchedViandes, fetchedSnacks, fetchedBoissons] = await Promise.all([
+      const [fetchedMenus, fetchedPlats, fetchedIngredients, fetchedViandes, fetchedSnacks, fetchedBoissons, fetchedEventMode] = await Promise.all([
         getMenus(),
         getPlats(),
         getIngredients(),
         getViandes(),
         getSnacks(),
         getBoissons(),
+        getEventModeBool(),
       ]);
       setListMenus(fetchedMenus);
       setListPlats(fetchedPlats);
@@ -115,6 +118,7 @@ export default function ChatPage() {
       setViandes(fetchedViandes);
       setListSnacks(fetchedSnacks);
       setListBoissons(fetchedBoissons);
+      setEventMode(fetchedEventMode);
     }
     fetchData();
   }, []);
@@ -369,13 +373,9 @@ export default function ChatPage() {
 
   function ChatEnd({ repas, allViandes }: { repas: NewRepas, allViandes: Viandes[] }) {
 
-    prepareCommande(repas, allViandes);
-
     return (
       <div>
-        <h2>Lancelot</h2>
-        <p>Parfait ! Comment veux-tu régler ta commande ? </p>
-        <Paiement />
+        <Paiement repas={repas} allViandes={allViandes} />
       </div>
     );
   }
@@ -402,8 +402,12 @@ export default function ChatPage() {
                   "plat" in button ? button.plat && button.plat.dispo :
                     "snack" in button ? button.snack && button.snack.dispo :
                       "boisson" in button ? button.boisson && button.boisson.dispo : false
-              )
-              .map((button, index) => (
+              ).filter(button =>
+              "menu" in button ? button.menu.event == eventMode :
+                "plat" in button ? button.plat.event == eventMode : 
+                  "snack" in button ? button.snack :
+                    "boisson" in button ? button.boisson : (null))
+            .map((button, index) => (
                 <Button
                   key={index}
                   color={"default"}

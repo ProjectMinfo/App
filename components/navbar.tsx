@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronDown } from "./iconNavbar.jsx";
 import Link from 'next/link';
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
-import { ThemeSwitch } from "@/components/theme-switch.tsx";
+import { ThemeSwitch } from "@/components/theme-switch";
 
 const Navbarr = () => {
   const activePath = usePathname();
@@ -123,7 +123,7 @@ const Navbarr = () => {
 
             <div className={isActive('/dashboard')}>
               <Link href="/dashboard" onClick={handleLinkClick}>
-                Trésorerie
+                Dashboard
               </Link>
             </div>
 

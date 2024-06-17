@@ -1,6 +1,5 @@
 import { postCommande, getPlats } from "@/config/api";
 import { Boissons, Menus, NewCommandes, Plats, Snacks, Viandes } from "@/types";
-import { useState } from "react";
 
 type NewMenus = {
     id: number;
@@ -130,64 +129,32 @@ function getAllNom(repas: NewRepas, allViandes: Viandes[]) {
     return listAllNom.join(", ");
 }
 
-function getPrice(repas: NewRepas) {
-    let price = 0;
-
-    repas.menu.forEach((menu) => {
-        price += menu.menu.prix;
-    });
-
-    repas.plat.forEach((plat) => {
-        price += plat.plat.prix;
-    });
-
-    repas.boisson.forEach((boisson) => {
-        price += boisson.boisson.prix;
-    });
-
-    repas.snack.forEach((snack) => {
-        price += snack.snack.prix;
-    });
-
-    return parseFloat(price.toFixed(3));;
-}
 
 
+export async function prepareCommande(repas: NewRepas, allViandes: Viandes[], payer: boolean, prix: number) {
 
-export function prepareCommande(repas: NewRepas, allViandes: Viandes[]) {
-    const [commandeEnvoyee, setCommandeEnvoyee] = useState(false);
-    const [allPlats, setAllPlats] = useState<Plats[]>([]);
+    const dataPrepared = aggregateQuantities(repas, allViandes, await getPlats().then((data) => data));
+    const dataContenu = getAllNom(repas, allViandes);
 
-    if (!commandeEnvoyee) {
-        getPlats().then((data) => {
-            setAllPlats(data);
-        });
-        const dataPrepared = aggregateQuantities(repas, allViandes, allPlats);
-        const dataContenu = getAllNom(repas, allViandes);
-        const dataPrix = getPrice(repas);
+    var inputDate = new Date().toISOString();
+    const numCompte = parseInt(window.localStorage.getItem("numCompte") || "0");
 
-        var inputDate = new Date().toISOString();
-        const numCompte = parseInt(window.localStorage.getItem("numCompte") || "0");
+    const commande: NewCommandes = {
+        "id": -1,
+        "contenu": dataContenu,
+        "numCompte": numCompte,
+        "date": { "$date": inputDate },
+        "distribuee": false,
+        "prix": prix,
+        "typePaiement": 1,
+        "commentaire": "",
+        "ingredients": dataPrepared.ingredients,
+        "viandes": dataPrepared.viandes,
+        "boissons": dataPrepared.boissons,
+        "snacks": dataPrepared.snacks,
+        "payee": payer
+    };
 
-        const commande: NewCommandes = {
-            "id": -1,
-            "contenu": dataContenu,
-            "numCompte": numCompte,
-            "date": { "$date": inputDate },
-            "distribuee": false,
-            "prix": dataPrix,
-            "typePaiement": 1,
-            "commentaire": "",
-            "ingredients": dataPrepared.ingredients,
-            "viandes": dataPrepared.viandes,
-            "boissons": dataPrepared.boissons,
-            "snacks": dataPrepared.snacks,
-            "payee": false
-        };
-
-        // console.log("Commande envoyée", encryptCommande.length);
-        postCommande(commande);
-        setCommandeEnvoyee(true);
-    }
-    return;
+    // console.log("Commande envoyée", encryptCommande.length);
+    postCommande(commande);
 }

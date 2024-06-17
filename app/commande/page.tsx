@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
-import { getBoissons, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
+import { getBoissons, getEventModeBool, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
 import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
-import Paiement from './paiement/page';
+import Paiement from '@/components/paiement';
 import { prepareCommande } from '@/config/logic';
 import { RecapComponent } from '@/components/CommandeCompos';
 
@@ -83,16 +83,19 @@ export default function ChatPage() {
 
   const [commandeSend, setCommandeSend] = useState<boolean>(false);
 
+  const [eventMode, setEventMode] = useState<boolean>(false);
+
   // Fetch data
   useEffect(() => {
     async function fetchData() {
-      const [fetchedMenus, fetchedPlats, fetchedIngredients, fetchedViandes, fetchedSnacks, fetchedBoissons] = await Promise.all([
+      const [fetchedMenus, fetchedPlats, fetchedIngredients, fetchedViandes, fetchedSnacks, fetchedBoissons, fetchedEventMode] = await Promise.all([
         getMenus(),
         getPlats(),
         getIngredients(),
         getViandes(),
         getSnacks(),
         getBoissons(),
+        getEventModeBool(),
       ]);
       setListMenus(fetchedMenus);
       setListPlats(fetchedPlats);
@@ -100,6 +103,7 @@ export default function ChatPage() {
       setViandes(fetchedViandes);
       setListSnacks(fetchedSnacks);
       setListBoissons(fetchedBoissons);
+      setEventMode(fetchedEventMode);
     }
     fetchData();
   }, []);
@@ -195,7 +199,7 @@ export default function ChatPage() {
 
     setRepas(newRepas);
     setCurrentStep(getNextStep(item, newRepas));
-  };
+  };  
 
   const getNextStep = (item: AllType, repas: NewRepas): string => {
     if (repas.remainingPlats > 0) {
@@ -269,7 +273,7 @@ export default function ChatPage() {
 
   function ChatOption({ setRepas, type, items }: { setRepas: (item: AllType) => void, type: keyof NewRepas, items: AllType[] }) {
     const id = Math.floor(Math.random() * 1000) + 1;
-    const options = items.map((item) => ({ id: id, type: type, [type]: item }));
+    const options = items.map((item) => ({ id: id, type: type, [type]: item }));    
 
     return (
       <ChatLayout
@@ -340,29 +344,15 @@ export default function ChatPage() {
 
 
 
-  const ChatEnd = React.memo(({ repas, allViandes }: { repas: NewRepas, allViandes: Viandes[] }) => {
 
-    const handleSave = (repas: NewRepas) => {
-      if (!commandeSend) {
-
-        prepareCommande(repas, allViandes);
-        setCommandeSend(true);
-      }
-      else {
-        console.log("Commande déjà envoyée");
-      }
-    }
-
-    handleSave(repas);
+  function ChatEnd({ repas, allViandes }: { repas: NewRepas, allViandes: Viandes[] }) {
 
     return (
       <div>
-        <h2>Lancelot</h2>
-        <span>Parfait ! Comment veux-tu régler ta commande ? </span>
-        <Paiement />
+        <Paiement repas={repas} allViandes={allViandes} />
       </div>
     );
-  });
+  }
 
 
   function ChatLayout({ who, mainSentence, buttons, setRepas }: { who: string, mainSentence: string, buttons: AllType[] | OtherOption[], setRepas: (choice: AllType | OtherOption) => void }) {
@@ -387,7 +377,11 @@ export default function ChatPage() {
                   "plat" in button ? button.plat && button.plat.dispo :
                     "snack" in button ? button.snack && button.snack.dispo :
                       "boisson" in button ? button.boisson && button.boisson.dispo : false
-              )
+              ).filter(button =>
+                "menu" in button ? button.menu.event == eventMode :
+                  "plat" in button ? button.plat.event == eventMode : 
+                    "snack" in button ? button.snack :
+                      "boisson" in button ? button.boisson : (null))
               .map((button, index) => (
                 <Button
                   key={index}
