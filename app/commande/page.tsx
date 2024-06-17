@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
-import { getBoissons, getEventModeBool, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
+import { getBoissons, getEventMode, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
 import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from '@/components/paiement';
@@ -95,7 +95,7 @@ export default function ChatPage() {
         getViandes(),
         getSnacks(),
         getBoissons(),
-        getEventModeBool(),
+        getEventMode()
       ]);
       setListMenus(fetchedMenus);
       setListPlats(fetchedPlats);
