@@ -491,3 +491,13 @@ export async function getIngredientTendance(
   }
   return result;
 }
+
+// Fonction pour générer une couleur aléatoire en format RGBA
+export const getRandomColor = () => {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  let background = `rgb(${r}, ${g}, ${b})`;
+  let border = `rgba(${r}, ${g}, ${b}, 0.2)`;
+  return { background, border };
+};
