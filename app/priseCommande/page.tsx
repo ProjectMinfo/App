@@ -233,10 +233,6 @@ export default function ChatPage() {
   const getNextStep = (item: AllType, repas: NewRepas): string => {
     if (repas.remainingPlats > 0) {
       return "plat";
-    } else if (repas.remainingBoissons > 0) {
-      return "boisson";
-    } else if (repas.remainingSnacks > 0) {
-      return "snack";
     } else {
       return "other";
     }
@@ -351,7 +347,7 @@ export default function ChatPage() {
     };
 
     return (
-      <div className="flex flex-col gap-4 mt-32">
+      <div className="flex flex-col gap-4 ">
         <div className="grid grid-cols-2 gap-4">
           {options.map((option, index) => (
             <Button
@@ -390,10 +386,6 @@ export default function ChatPage() {
 
     return (
       <div className="flex flex-col gap-4">
-        <div>
-          <h2 className="text-lg font-bold">{who}</h2>
-        </div>
-        <p className="text-default-900">{mainSentence}</p>
         {buttons && buttons.length > 0 && (
           <div className="grid grid-cols-2 gap-4">
             {buttons
@@ -485,9 +477,10 @@ export default function ChatPage() {
                   </Button>
 
                   <Button
-                    color="default"
+                    // color="default"
                     variant="solid"
                     onClick={() => isServeur(!serveur)}
+                    className={serveur ? "bg-red-500" : ""}
                   >
                     Serveur ?  {serveur ? "(Oui)" : "(Non)"}
                   </Button>
