@@ -22,7 +22,7 @@ const CommandesCuisine = () => {
           .filter((commande: ColoredCommande) => commande.payee && commande.contenu)
           .map((commande: ColoredCommande) => ({
             ...commande,
-            color: generateRandomColor(),
+            color: generateRandomColor(commande.id),
             nom: comptes.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.nom || "Inconnu",
           }));
 
@@ -35,7 +35,7 @@ const CommandesCuisine = () => {
       }
     };
 
-    fetchCommandes();
+    setInterval(fetchCommandes, 2000);
 
     // Mettre à jour l'heure chaque seconde
     const interval = setInterval(() => {
@@ -48,16 +48,13 @@ const CommandesCuisine = () => {
   const colors = [
     '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF8333',
     '#33FFF5', '#F5FF33', '#8D33FF', '#33FF8D', '#FF3385',
-    '#FF5733CC', '#33FF57CC', '#3357FFCC', '#FF33A1CC', '#FF8333CC',
-    '#33FFF5CC', '#F5FF33CC', '#8D33FFCC', '#33FF8DCC', '#FF3385CC'
+    // '#FF5733CC', '#33FF57CC', '#3357FFCC', '#FF33A1CC', '#FF8333CC',
+    // '#33FFF5CC', '#F5FF33CC', '#8D33FFCC', '#33FF8DCC', '#FF3385CC'
   ];
 
-  let colorIndex = 0;
-
-  const generateRandomColor = () => {
-    const color = colors[colorIndex];
-    colorIndex = (colorIndex + 1) % colors.length;
-    return color + '80'; // Ajouter une transparence de 50%
+  const generateRandomColor = (id: number) => {
+    const color = colors[(colors.length + id) % colors.length];
+    return color; // Ajouter une transparence de 50%
   };
 
   const toggleFullscreen = () => {
@@ -74,7 +71,7 @@ const CommandesCuisine = () => {
 
   if (loading) {
     return <div>Chargement...</div>;
-  }
+  }  
 
   return (
     <div className={`flex flex-col h-screen overflow-hidden max-w-full ${isFullscreen ? "fixed top-0 left-0 w-full h-full bg-white z-50" : ""}`}>

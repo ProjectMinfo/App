@@ -152,7 +152,8 @@ export async function prepareCommande(repas: NewRepas, allViandes: Viandes[], pa
         "viandes": dataPrepared.viandes,
         "boissons": dataPrepared.boissons,
         "snacks": dataPrepared.snacks,
-        "payee": payer
+        "payee": payer,
+        "periphDonne": false
     };
 
     // console.log("Commande envoyée", encryptCommande.length);
