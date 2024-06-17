@@ -1,7 +1,7 @@
 'use client';
-import { getCommande, getComptes, postCommande } from "@/config/api";
+import { getBoissons, getCommande, getComptes, getSnacks, postCommande } from "@/config/api";
 import { NewCommandes } from "@/types";
-import { Modal, ModalBody, ModalHeader, Table, TableHeader, TableRow, TableCell, TableBody, TableColumn, ModalContent, Input, Button } from "@nextui-org/react";
+import { Modal, ModalBody, ModalHeader, Table, TableHeader, TableRow, TableCell, TableBody, TableColumn, ModalContent, Input, Button, Card, CardHeader, CardBody, Divider, ModalFooter } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 
 interface ListeCommandeModalProps {
@@ -15,6 +15,11 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredCommandes, setFilteredCommandes] = useState<NamedCommande[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [isModalPeriphOpen, setIsModalPeriphOpen] = useState(false);
+
+    const [commandeBoisson, setCommandeBoisson] = useState<any>();
+    const [commandeSnack, setCommandeSnack] = useState<any>();
 
 
     const onEditClose = () => {
@@ -37,9 +42,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
             try {
                 const fetchedCommandes = await getCommande();
                 const fetchedCompte = await getComptes();
-
                 // console.log(fetchedCommandes[fetchedCommandes.length - 1]);
-
 
                 const resultCommandes: NamedCommande[] = fetchedCommandes
                     // .filter((commande: NamedCommande) => commande.contenu)
@@ -49,21 +52,17 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                     }));
 
                 // console.log(resultCommandes[resultCommandes.length - 1]);
-
                 setCommandes(resultCommandes);
             } catch (error) {
                 console.error("Erreur lors de la récupération des commandes ou des commandes :", error);
             }
         };
-
         fetchCommandes();
     }, []);
 
 
-
     useEffect(() => {
         if (commandes.length > 0) {
-
             const query = searchQuery.toLowerCase();
             setFilteredCommandes(
                 commandes.filter(
@@ -79,22 +78,57 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
     }, [searchQuery, commandes]);
 
 
-    function handleCommandePayee(commande: NamedCommande) {        
+    function handlePeripheriques(commande: NamedCommande) {
+        const fetchPeripheriques = async () => {
+            try {
+                const fetchedBoissons = await getBoissons();
+                const fetchedSnacks = await getSnacks();
+
+                const resultBoissons = commande.boissons.map((boisson) => ({
+                    nom: fetchedBoissons.find((b) => b.id === boisson[0])?.nom || "Inconnu",
+                    quantite: boisson[1],
+                }));
+                // console.log(resultBoissons);
+                setCommandeBoisson(resultBoissons);
+
+                const resultSnacks = commande.snacks.map((snack) => ({
+                    nom: fetchedSnacks.find((s) => s.id === snack[0])?.nom || "Inconnu",
+                    quantite: snack[1],
+                }));
+                // console.log(resultSnacks);
+                setCommandeSnack(resultSnacks);
+
+            } catch (error) {
+                console.error("Erreur lors de la récupération des boissons ou des snacks :", error);
+            }
+        }
+
+        fetchPeripheriques();
+    }
+
+
+
+    function handleCommandePayee(commande: NamedCommande) {
         const newCommande = { ...commande, payee: true };
         const sendCommande = { ...newCommande };
         delete sendCommande.nom;
-        postCommande(sendCommande);        
+        postCommande(sendCommande);
 
         setCommandes(commandes.map((c) => c.id === commande.id ? newCommande : c));
     }
 
     function handleCommandeDistribuee(commande: NamedCommande) {
         const newCommande = { ...commande, distribuee: true };
-        const sendCommande = { ...newCommande};
-        delete sendCommande.nom;    
+        const sendCommande = { ...newCommande };
+        delete sendCommande.nom;
         postCommande(sendCommande);
 
         setCommandes(commandes.map((c) => c.id === commande.id ? newCommande : c));
+    }
+
+    function modalPeriph(commande) {
+        handlePeripheriques(commande);
+        setIsModalPeriphOpen(true);
     }
 
 
@@ -102,7 +136,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
         <>
             <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl">
                 <ModalContent>
-                    <ModalHeader>Liste des commandes</ModalHeader>
+                    <ModalHeader>Commande en cours</ModalHeader>
                     <ModalBody>
                         <Input
                             placeholder="Rechercher une commande (Nom, Prénom ou Numéro de commande)"
@@ -114,21 +148,24 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                         <Table aria-label="Liste des commandes">
                             <TableHeader>
                                 <TableColumn>Nom</TableColumn>
-                                <TableColumn>Num du compte</TableColumn>
+                                <TableColumn>Num compte</TableColumn>
                                 <TableColumn>Contenu</TableColumn>
                                 <TableColumn>Commentaires</TableColumn>
                                 <TableColumn>Prix</TableColumn>
                                 <TableColumn className="text-center">Actions</TableColumn>
                             </TableHeader>
                             <TableBody>
-                                {filteredCommandes.slice(0, 100).map(commande => (
+                                {filteredCommandes.slice(0, 10).map(commande => (
                                     <TableRow key={commande.id}>
                                         <TableCell>{commande.nom}</TableCell>
                                         <TableCell>{commande.numCompte}</TableCell>
                                         <TableCell>{commande.contenu}</TableCell>
                                         <TableCell>{commande.commentaire}</TableCell>
-                                        <TableCell>{commande.prix}</TableCell>
+                                        <TableCell>{commande.prix}€</TableCell>
                                         <TableCell className="flex gap-2">
+                                            <Button color="warning" variant="flat" onClick={() => modalPeriph(commande)}>
+                                                Périph
+                                            </Button>
                                             <Button color="success" variant="flat" isDisabled={commande.payee} onClick={() => handleCommandePayee(commande)}>
                                                 Payée
                                             </Button>
@@ -153,6 +190,44 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                     </ModalBody>
                 </ModalContent>
             </Modal>
+
+            {isModalPeriphOpen && (
+                <Modal isOpen={isModalPeriphOpen} onClose={() => setIsModalPeriphOpen(false)} className="max-w-2xl">
+                    <ModalContent>
+                        <ModalHeader>Périphériques</ModalHeader>
+                        <ModalBody>
+                            <Card>
+                                <CardHeader className="text-lg font-semibold">Boissons</CardHeader>
+                                <Divider />
+                                <CardBody>
+                                    {commandeBoisson?.map((boisson, index) => (
+                                        <span key={index}>
+                                            {boisson.nom} ({boisson.quantite})
+                                            {index < commandeBoisson.length - 1 && ", "}
+                                        </span>
+                                    ))}
+                                </CardBody>
+                            </Card>
+                            <Card>
+                                <CardHeader className="text-lg font-semibold">Snacks</CardHeader>
+                                <Divider />
+                                <CardBody>
+                                    {commandeSnack?.map((snack, index) => (
+                                        <span key={index}>
+                                            {snack.nom} ({snack.quantite})
+                                            {index < commandeSnack.length - 1 && ", "}
+                                        </span>
+                                    ))}
+                                </CardBody>
+                            </Card>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="warning" variant="flat" onClick={() => setIsModalPeriphOpen(false)}>Périphs donnés</Button>
+                            <Button onClick={() => setIsModalPeriphOpen(false)}>Fermer</Button>
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
+            )}
         </>
     );
 }
