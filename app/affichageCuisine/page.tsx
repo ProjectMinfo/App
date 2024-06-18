@@ -35,7 +35,7 @@ const CommandesCuisine = () => {
       }
     };
 
-    fetchCommandes();
+    setInterval(fetchCommandes, 5000);
 
     // Mettre à jour l'heure chaque seconde
     const interval = setInterval(() => {

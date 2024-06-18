@@ -17,6 +17,12 @@ export default function Home() {
     postLogin({ email: window.localStorage.getItem('email'), mdp: window.localStorage.getItem('mdp') });
   }
 
+  return(
+    <h1>NEXT EVENT</h1>
+  );
+
+}
+
   // if (typeof window !== 'undefined') {
   //   // if (window.localStorage.getItem('email') && window.localStorage.getItem('mdp')) {
   //     window.location.href = "/commande";
@@ -26,7 +32,7 @@ export default function Home() {
   //   // }
   // }
 
-  permanentRedirect("/commande")
+  //permanentRedirect("/commande")
   
 
   // return (
@@ -74,4 +80,4 @@ export default function Home() {
   //     </div>
   //   </section>
   // );
-}
+
