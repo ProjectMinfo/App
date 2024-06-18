@@ -1,4 +1,4 @@
-import { getIngredientById } from "@/config/api";
+import {getBoissonById, getIngredientById, getSnackById, getViandeById} from "@/config/api";
 import {
   Boissons,
   Ingredients,
@@ -118,13 +118,13 @@ export function aggregateByTimeFrame(
     switch (timeFrame) {
       case TimeFrame.Jour:
         if (date.toLocaleDateString() != currDate.toLocaleDateString()) break;
-        key = `${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()}`;
+        key = `${date.getHours() < 10 ? "0" + date.getHours() : date.getHours()}:00`;
         break;
       case TimeFrame.Semaine:
         // Skip of the commande date is more than a week old
-        if (date.getTime() < currDate.getTime() - 7 * 24 * 60 * 60 * 1000)
-          break;
-        key = date.toLocaleDateString();
+        // if (date.getTime() < currDate.getTime() - 7 * 24 * 60 * 60 * 1000) break;
+/*        if (date.getDay() != currDate.getDay()) break;
+        key = date.toLocaleDateString();*/
         break;
       case TimeFrame.Mois:
         if (
@@ -373,19 +373,37 @@ export function getTemperaturesByTimeFrame(
   return meanTemp;
 }
 
-export const getIngredientNameById = async (
-  id: number
+export const getNameById = async (
+  id: number, collectionType: CollectionType
 ): Promise<string | null> => {
   try {
-    const ingredient: Ingredients = await getIngredientById(id);
-    return ingredient.nom;
+    let name = "";
+    switch (collectionType) {
+      case CollectionType.Ingredients:
+        const ingredient = await getIngredientById(id);
+        name = ingredient.nom;
+        break;
+      case CollectionType.Snacks:
+        const snack = await getSnackById(id);
+        name = snack.nom;
+        break;
+      case CollectionType.Boissons:
+        const boisson = await getBoissonById(id);
+        name = boisson.nom;
+        break;
+      case CollectionType.Viandes:
+        const viande = await getViandeById(id);
+        name = viande.nom;
+        break;
+    }
+    return name;
   } catch (error) {
     console.error("Error fetching ingredient name:", error);
     return null;
   }
 };
 
-export async function getIngredientTendance(
+export async function getCollectionTendance(
   commandes: NewCommandes[],
   collectionType: CollectionType
 ): Promise<Map<string, Map<string, number>>> {
@@ -403,7 +421,7 @@ export async function getIngredientTendance(
           for (const ingredient of commande.ingredients) {
             const ingredientId = ingredient[0];
             const ingredientQuantity = ingredient[1];
-            const ingredientName = await getIngredientNameById(ingredientId);
+            const ingredientName = await getNameById(ingredientId, CollectionType.Ingredients);
 
             if (!ingredientName) {
               continue;
@@ -426,8 +444,9 @@ export async function getIngredientTendance(
           break;
         case CollectionType.Snacks:
           for (const snack of commande.snacks) {
-            const snackName = snack[0];
+            const snackId = snack[0];
             const snackQuantity = snack[1];
+            const snackName = await getNameById(snackId, CollectionType.Snacks);
 
             if (!result.has(date.toLocaleDateString())) {
               result.set(date.toLocaleDateString(), new Map<string, number>());
@@ -447,8 +466,9 @@ export async function getIngredientTendance(
 
         case CollectionType.Boissons:
           for (const boisson of commande.boissons) {
-            const boissonName = boisson[0];
+            const boissonId = boisson[0];
             const boissonQuantity = boisson[1];
+            const boissonName = await getNameById(boissonId, CollectionType.Boissons);
 
             if (!result.has(date.toLocaleDateString())) {
               result.set(date.toLocaleDateString(), new Map<string, number>());
@@ -468,8 +488,9 @@ export async function getIngredientTendance(
 
         case CollectionType.Viandes:
           for (const viande of commande.viandes) {
-            const viandeName = viande[0];
+            const viandeId = viande[0];
             const viandeQuantity = viande[1];
+            const viandeName = await getNameById(viandeId, CollectionType.Viandes);
 
             if (!result.has(date.toLocaleDateString())) {
               result.set(date.toLocaleDateString(), new Map<string, number>());
@@ -489,7 +510,13 @@ export async function getIngredientTendance(
       }
     }
   }
-  return result;
+  // return result;
+  // Sort par date
+    let mapArray = Array.from(result.entries());
+    mapArray.sort((a, b) => {
+      return convertToDate(a[0]).getTime() - convertToDate(b[0]).getTime();
+    });
+    return new Map<string, Map<string, number>>(mapArray);
 }
 
 // Fonction pour générer une couleur aléatoire en format RGBA

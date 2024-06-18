@@ -161,7 +161,7 @@ export const postEditAchat = async (achat: any) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error posting viandes:", error);
+    console.error("Error posting achat:", error);
     throw error;
   }
 };
@@ -175,7 +175,7 @@ export const insertManyAchats = async (achats: any) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error posting viandes:", error);
+    console.error("Error posting achats:", error);
     throw error;
   }
 };
@@ -193,7 +193,7 @@ export const postEditCompte = async (user: any) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error posting viandes:", error);
+    console.error("Error posting achats:", error);
     throw error;
   }
 };
@@ -218,6 +218,16 @@ export const getViandes = async () => {
     return response.data;
   } catch (error) {
     console.error("Error fetching viandes:", error);
+    throw error;
+  }
+};
+
+export const getViandeById = async (id: number) => {
+  try {
+    const response = await api.get(`/viandes/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching viande :", error);
     throw error;
   }
 };
@@ -301,6 +311,16 @@ export const deleteSnacks = async (id: number) => {
     return response.data;
   } catch (error) {
     console.error("Error deleting snacks:", error);
+    throw error;
+  }
+};
+
+export const getSnackById = async (id: number) => {
+  try {
+    const response = await api.get(`/snacks/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ingeredients :", error);
     throw error;
   }
 };

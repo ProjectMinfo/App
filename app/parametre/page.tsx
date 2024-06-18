@@ -42,7 +42,7 @@ const Settings = () => {
     const newValue = event.target.checked;
     setOrderTaking(newValue);
     try {
-      await postLimitOrderTaking(newValue);
+      await postLimitOrdeconvertToDaterTaking(newValue);
       updateOrderStatus(newValue);
     } catch (error) {
       console.error('Error updating limit order taking:', error);
