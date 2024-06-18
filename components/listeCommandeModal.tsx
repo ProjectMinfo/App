@@ -44,7 +44,8 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                     // .filter((commande: NamedCommande) => commande.contenu)
                     .map((commande: NamedCommande) => ({
                         ...commande,
-                        nom: fetchedCompte.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.nom || "Inconnu",
+                        nom: fetchedCompte.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.nom || commande.commentaire.split("::")[0] || "Inconnu",
+                        commentaire: commande.commentaire.split("::")[1] || commande.commentaire,
                     }));
 
                 // console.log(resultCommandes[resultCommandes.length - 1]);

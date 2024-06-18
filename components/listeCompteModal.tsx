@@ -7,10 +7,11 @@ import EditAccountModal from "@/components/EditAccountModal";
 
 interface ListeComptesModalProps {
     isOpen: boolean;
-    onClose: () => void;
+    onClose: (compte? : Comptes) => void;
+    serveurView?: boolean;
 }
 
-export default function ListeComptesModal({ isOpen, onClose }: ListeComptesModalProps) {
+export default function ListeComptesModal({ isOpen, onClose, serveurView }: ListeComptesModalProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [allComptes, setAllComptes] = useState<Comptes[]>([]);
     const [filteredComptes, setFilteredComptes] = useState<Comptes[]>([]);
@@ -59,6 +60,7 @@ export default function ListeComptesModal({ isOpen, onClose }: ListeComptesModal
         }
         onEditClose();
     };
+
     useEffect(() => {
         const fetchData = async () => {
             const fetchedComptes = await getComptes();
@@ -83,7 +85,12 @@ export default function ListeComptesModal({ isOpen, onClose }: ListeComptesModal
         );
     }, [searchQuery, allComptes]);
 
-
+    // Renommage de la fonction pour éviter la récursion
+    function handleSelectCompte(compte: Comptes) {
+        if (serveurView) {
+            onClose(compte);
+        }
+    }
 
     function colorSolde(solde: number) {
         return solde < 0 ? "text-danger" // Affiche le solde en rouge si dans le négatif,
@@ -114,7 +121,7 @@ export default function ListeComptesModal({ isOpen, onClose }: ListeComptesModal
                                 <TableColumn>Actions</TableColumn>
                             </TableHeader>
                             <TableBody>
-                                {filteredComptes.slice(0,10).map(compte => (
+                                {filteredComptes.slice(0, 10).map(compte => (
                                     <TableRow key={compte.numCompte}>
                                         <TableCell>{compte.nom}</TableCell>
                                         <TableCell>{compte.prenom}</TableCell>
@@ -123,9 +130,15 @@ export default function ListeComptesModal({ isOpen, onClose }: ListeComptesModal
                                             className={colorSolde(compte.montant) + " text-center"}
                                         >{compte.montant.toFixed(2) + " €"}</TableCell>
                                         <TableCell>
-                                            <Button color="danger" variant="flat" onClick={() => onEditOpen(compte)}>
-                                                Modifier
-                                            </Button>
+                                            {serveurView ? (
+                                                <Button color="success" variant="flat" onClick={() => handleSelectCompte(compte)}>
+                                                    Utiliser
+                                                </Button>
+                                            ) : (
+                                                <Button color="danger" variant="flat" onClick={() => onEditOpen(compte)}>
+                                                    Modifier
+                                                </Button>
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -138,7 +151,7 @@ export default function ListeComptesModal({ isOpen, onClose }: ListeComptesModal
                                         <TableCell></TableCell>
                                     </TableRow>
                                 )}
-                            {filteredComptes.length === 0 && (
+                                {filteredComptes.length === 0 && (
                                     <TableRow>
                                         <TableCell> </TableCell>
                                         <TableCell> </TableCell>

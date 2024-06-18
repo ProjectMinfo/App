@@ -1,5 +1,5 @@
 import { postCommande, getPlats } from "@/config/api";
-import { Boissons, Menus, NewCommandes, Plats, Snacks, Viandes } from "@/types";
+import { Boissons, Comptes, Menus, NewCommandes, Plats, Snacks, Viandes } from "@/types";
 
 type NewMenus = {
     id: number;
@@ -131,13 +131,16 @@ function getAllNom(repas: NewRepas, allViandes: Viandes[]) {
 
 
 
-export async function prepareCommande(repas: NewRepas, allViandes: Viandes[], payer: boolean, prix: number) {
+export async function prepareCommande(repas: NewRepas, allViandes: Viandes[], payer: boolean, prix: number, comment : string, userCompte : Comptes) {
 
     const dataPrepared = aggregateQuantities(repas, allViandes, await getPlats().then((data) => data));
     const dataContenu = getAllNom(repas, allViandes);
 
     var inputDate = new Date().toISOString();
-    const numCompte = parseInt(window.localStorage.getItem("numCompte") || "0");
+    // const numCompte = parseInt(window.localStorage.getItem("numCompte") || "0");
+
+    const numCompte = userCompte.numCompte;
+    const commentaire = (numCompte == -1 ? userCompte.nom + ":: " + comment : comment) ;
 
     const commande: NewCommandes = {
         "id": -1,
@@ -147,7 +150,7 @@ export async function prepareCommande(repas: NewRepas, allViandes: Viandes[], pa
         "distribuee": false,
         "prix": prix,
         "typePaiement": 1,
-        "commentaire": "",
+        "commentaire": commentaire,
         "ingredients": dataPrepared.ingredients,
         "viandes": dataPrepared.viandes,
         "boissons": dataPrepared.boissons,

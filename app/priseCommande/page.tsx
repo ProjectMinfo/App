@@ -49,8 +49,7 @@ type NewRepas = {
   boisson: NewBoissons[];
   complete: boolean;
   remainingPlats: number;
-  remainingBoissons: number;
-  remainingSnacks: number;
+  remainingPerifs: number;
   currentMenu?: NewMenus;
 };
 
@@ -172,8 +171,7 @@ export default function ChatPage() {
         newRepas.menu.push(item);
         newRepas.currentMenu = item
         newRepas.remainingPlats = item.menu.quantitePlat;
-        newRepas.remainingBoissons = item.menu.quantiteBoisson;
-        newRepas.remainingSnacks = item.menu.quantiteSnack;
+        newRepas.remainingPerifs = item.menu.quantiteBoisson + item.menu.quantiteSnack;
         setCurrentMenuId(item.menuId);
         setIsMenuDone(false);
         break;
@@ -194,7 +192,7 @@ export default function ChatPage() {
         break;
       case "snack":
         if (!isMenuDone) {
-          newRepas.remainingSnacks -= 1;
+          newRepas.remainingPerifs -= 1;
           const snackInMenu = item
           snackInMenu.snack.prix = 0;
           snackInMenu.snack.prixServeur = 0;
@@ -208,7 +206,7 @@ export default function ChatPage() {
         break;
       case "boisson":
         if (!isMenuDone) {
-          newRepas.remainingBoissons -= 1;
+          newRepas.remainingPerifs -= 1;
           const boissonInMenu = item
           boissonInMenu.boisson.prix = 0;
           boissonInMenu.boisson.prixServeur = 0;
@@ -222,7 +220,7 @@ export default function ChatPage() {
         break;
     }
 
-    if (newRepas.menu.length > 0 && newRepas.remainingPlats === 0 && newRepas.remainingBoissons === 0 && newRepas.remainingSnacks === 0) {
+    if (newRepas.menu.length > 0 && newRepas.remainingPlats === 0 && newRepas.remainingPerifs === 0) {
       setIsMenuDone(true);
     }
 
@@ -371,7 +369,7 @@ export default function ChatPage() {
 
     return (
       <div>
-        <Paiement repas={repas} allViandes={allViandes} />
+        <Paiement repas={repas} allViandes={allViandes} serveurView={true} />
       </div>
     );
   }
@@ -395,11 +393,11 @@ export default function ChatPage() {
                     "snack" in button ? button.snack && button.snack.dispo :
                       "boisson" in button ? button.boisson && button.boisson.dispo : false
               ).filter(button =>
-              "menu" in button ? button.menu.event == eventMode :
-                "plat" in button ? button.plat.event == eventMode : 
-                  "snack" in button ? button.snack :
-                    "boisson" in button ? button.boisson : (null))
-            .map((button, index) => (
+                "menu" in button ? button.menu.event == eventMode :
+                  "plat" in button ? button.plat.event == eventMode :
+                    "snack" in button ? button.snack :
+                      "boisson" in button ? button.boisson : (null))
+              .map((button, index) => (
                 <Button
                   key={index}
                   color={"default"}
@@ -436,10 +434,10 @@ export default function ChatPage() {
   return (
     <>
       <h1 className={title()}>Prise de commande </h1>
-      <div className="flex justify-center min-h-screen mt-20 max-md:mt-0">
+      <div className="flex justify-center min-h-screen mt-10 max-md:mt-0">
         <div className="flex flex-row max-md:flex-col w-5/6 h-3/4 ">
           <div className="flex-1 m-4 grid">
-            <div className="flex flex-col gap-32 max-md:gap-6">
+            <div className="flex flex-col gap-16 max-md:gap-6">
               <ChatNext
                 repas={repas}
                 setRepasItem={handleSetRepasItem}
@@ -451,22 +449,6 @@ export default function ChatPage() {
                   <h2 className="text-lg font-semibold">Options serveur</h2>
                 </CardHeader>
                 <CardBody className='flex flex-col gap-4'>
-                  <Button
-                    color="default"
-                    variant="solid"
-                    onClick={() => setIsModalBaguetteOpen(!isModalBaguetteOpen)}
-                  // isDisabled
-                  >
-                    Baguettes fraiches : {newBaguetteId ? newBaguetteId.quantite : 0}  / totales : {allBaguetteId ? allBaguetteId.quantite : 0}
-                  </Button>
-
-                  <Button
-                    color="default"
-                    variant="solid"
-                    onClick={() => setIsModalCompteOpen(!isModalCompteOpen)}
-                  >
-                    Listes des comptes
-                  </Button>
 
                   <Button
                     color="default"
@@ -477,8 +459,25 @@ export default function ChatPage() {
                   </Button>
 
                   <Button
+                    color="default"
+                    variant="faded"
+                    onClick={() => setIsModalBaguetteOpen(!isModalBaguetteOpen)}
+                  // isDisabled
+                  >
+                    Baguettes fraiches : {newBaguetteId ? newBaguetteId.quantite : 0}  / totales : {allBaguetteId ? allBaguetteId.quantite : 0}
+                  </Button>
+
+                  <Button
+                    color="default"
+                    variant="faded"
+                    onClick={() => setIsModalCompteOpen(!isModalCompteOpen)}
+                  >
+                    Listes des comptes
+                  </Button>
+
+                  <Button
                     // color="default"
-                    variant="solid"
+                    variant="faded"
                     onClick={() => isServeur(!serveur)}
                     className={serveur ? "bg-red-500" : ""}
                   >

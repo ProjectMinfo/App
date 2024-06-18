@@ -6,7 +6,6 @@ import { getBoissons, getEventMode, getIngredients, getMenus, getPlats, getSnack
 import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from '@/components/paiement';
-import { prepareCommande } from '@/config/logic';
 import { RecapComponent } from '@/components/CommandeCompos';
 
 
@@ -79,9 +78,6 @@ export default function ChatPage() {
   const [currentPlat, setCurrentPlat] = useState<NewPlats>();
   const [allViandes, setAllViandes] = useState<Viandes[]>([]);
   const [currentMenuId, setCurrentMenuId] = useState<number>(0);
-
-
-  const [commandeSend, setCommandeSend] = useState<boolean>(false);
 
   const [eventMode, setEventMode] = useState<boolean>(false);
 
@@ -349,7 +345,7 @@ export default function ChatPage() {
 
     return (
       <div>
-        <Paiement repas={repas} allViandes={allViandes} />
+        <Paiement repas={repas} allViandes={allViandes} serveurView={false}/>
       </div>
     );
   }

@@ -4,8 +4,9 @@ import { prepareCommande } from "@/config/logic";
 import { Menus, Plats, Snacks, Boissons, Viandes, Comptes } from "@/types";
 import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/button";
-import { Card, CardBody, CardFooter, CardHeader, Divider } from "@nextui-org/react";
+import { Card, CardBody, CardFooter, CardHeader, Divider, Input, Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/react";
 import { getUser, postEditCompte } from "@/config/api";
+import ListeComptesModal from "./listeCompteModal";
 
 type NewMenus = {
   id: number;
@@ -50,9 +51,10 @@ type NewRepas = {
 type PaiementProps = {
   repas: NewRepas;
   allViandes: Viandes[];
+  serveurView: boolean;
 };
 
-export default function Paiement({ repas, allViandes }: PaiementProps) {
+export default function Paiement({ repas, allViandes, serveurView }: PaiementProps) {
   const [currentAccount, setCurrentAccount] = useState<Comptes>();
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -60,6 +62,15 @@ export default function Paiement({ repas, allViandes }: PaiementProps) {
 
   // 1 = compteMi / 2 = comptoir
   const [typePaiement, setTypePaiement] = useState(0);
+
+  const [currentComment, setCurrentComment] = useState("");
+
+  const [isModalCompteOpen, setIsModalCompteOpen] = useState<boolean>(false);
+
+  const [isModalNoAcc, setIsModalNoAcc] = useState<boolean>(false);
+
+  const [userName, setUserName] = useState<string>("");
+
 
 
   function calculPrix() {
@@ -84,7 +95,9 @@ export default function Paiement({ repas, allViandes }: PaiementProps) {
     async function fetchData() {
       if (typeof window !== "undefined") {
         const fetchedUser = await getUser(parseInt(window.localStorage.getItem("numCompte")) || -1);
-        setCurrentAccount(fetchedUser);
+        if (serveurView === undefined || !serveurView) {
+          setCurrentAccount(fetchedUser);
+        }
       }
       setIsLoading(false);
     }
@@ -113,6 +126,9 @@ export default function Paiement({ repas, allViandes }: PaiementProps) {
                   </span>
                 )}
               </Card>
+
+              <Input label="Commentaire ? (ou pas)" onChange={(e) => setCurrentComment(e.target.value)} />
+
               <Button
                 isDisabled={Boolean(prixCommande > currentAccount.montant)}
                 className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
@@ -149,19 +165,124 @@ export default function Paiement({ repas, allViandes }: PaiementProps) {
     );
   }
 
+  function setName() {
+    setIsModalNoAcc(false);
+
+    const nom = userName;
+    const newCompte : Comptes = {
+      nom: nom,
+      prenom: "",
+      montant: 0,
+      numCompte: -1,
+      acces: 0,
+      email: "",
+      mdp: "",
+      promo: 0,
+      resetToken: "",
+      tokenExpiration: ""
+    }
+    setCurrentAccount(newCompte);
+  }
+
+  const choixServeur = () => {
+
+    return (
+      <>
+        <Card className="w-full p-4">
+          <CardHeader className="flex items-center justify-center">
+            <h2>Réglement</h2>
+          </CardHeader>
+          <Divider />
+          {isLoading ? (
+            <p>Chargement...</p>
+          ) : (
+            <>
+              <CardBody className="flex gap-3">
+
+                <Input label="Commentaire ? (ou pas)" onChange={(e) => setCurrentComment(e.target.value)} />
+
+                <Button className={buttonStyles({ variant: "bordered", radius: "full", size: "md" })} onClick={() => setIsModalCompteOpen(true)}>
+                  Choisir un compte
+                </Button>
+
+                <Button className={buttonStyles({ variant: "bordered", radius: "full", size: "md" })} onClick={() => setIsModalNoAcc(true)}>
+                  Pas de compte
+                </Button>
+
+                {isModalCompteOpen && (
+                  <ListeComptesModal
+                    isOpen={isModalCompteOpen}
+                    onClose={(compte) => { setIsModalCompteOpen(false); setCurrentAccount(compte) }}
+                    serveurView={true}
+                  />
+                )}
+                {currentAccount && currentAccount !== undefined && (
+                  <>
+                    <Divider className="mt-5" />
+                    <Card className="px-7 py-2 rounded">
+                      <span className="text-base base:text-xl font-bold">Solde de {currentAccount.prenom}:</span>
+                      {currentAccount && (
+                        <span className={`text-lg lg:text-xl font-bold ` + (prixCommande > currentAccount.montant ? "text-danger" : "text-success")}>
+                          {currentAccount.montant.toFixed(2)} €
+                        </span>
+                      )}
+                    </Card>
+
+                    <Button className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
+                      isDisabled={Boolean(prixCommande > currentAccount.montant)}
+                      onClick={() => {
+                        setTypePaiement(1);
+                        setCurrentStep(1);
+                      }}
+                    >
+                      Payer avec le compte de {currentAccount.prenom}
+                    </Button>
+                    <Button
+                      className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
+                      onClick={() => {
+                        setTypePaiement(2);
+                        setCurrentStep(1);
+                      }}
+                    >
+                      Payer au comptoir
+                    </Button>
+                  </>
+                )}
+              </CardBody>
+            </>
+          )}
+        </Card>
+        {isModalNoAcc && (
+          <Modal isOpen={isModalNoAcc} onClose={() => setIsModalNoAcc(false)}>
+            <ModalContent>
+              <ModalHeader>
+                <h2>Choisir un nom</h2>
+              </ModalHeader>
+              <ModalBody>
+                <Input label="Nom" onChange={(e) => setUserName(e.target.value)} />
+                <Button onClick={() => setName()}>
+                  Valider
+                </Button>
+              </ModalBody>
+            </ModalContent>
+          </Modal >
+        )}
+      </>
+    );
+  }
+
 
   useEffect(() => {
     if (currentStep === 1 && typePaiement === 1) {
       if (currentAccount) {
         currentAccount.montant -= prixCommande;
         postEditCompte(currentAccount);
-
       }
-      prepareCommande(repas, allViandes, true, prixCommande);
+      prepareCommande(repas, allViandes, true, prixCommande, currentComment, currentAccount);
       console.log("Commande Compte MI prête à être payée");
     }
     if (currentStep === 1 && typePaiement === 2) {
-      prepareCommande(repas, allViandes, false, prixCommande);
+      prepareCommande(repas, allViandes, false, prixCommande, currentComment, currentAccount);
       console.log("Commande Comptoir prête à être payée");
     }
   }, [currentStep, typePaiement]);
@@ -176,21 +297,35 @@ export default function Paiement({ repas, allViandes }: PaiementProps) {
         </p>
       </div>
 
-      {currentStep === 0 && (
+      {currentStep === 0 && !serveurView && (
         choixPaiement()
+      )}
+
+      {currentStep === 0 && serveurView && (
+        choixServeur()
       )}
 
       {currentStep === 1 && typePaiement === 1 && (
         <Card className="w-full p-4">
-          <CardBody className="flex flex-col items-center justify-center gap-4">
-            <p>
-              Parfait ! Ta commande a bien été prise en compte.
-            </p>
-            <Divider />
-            <p className="text-sm font-bold">
-              Merci de te rendre à la MI <span className="text-danger">très prochainement </span>pour récupérer ta commande.
-            </p>
-          </CardBody>
+          {(serveurView === undefined || !serveurView) ? (
+            <CardBody className="flex flex-col items-center justify-center gap-4">
+              <p>
+                Parfait ! Ta commande a bien été prise en compte.
+              </p>
+              <Divider />
+              <p className="text-sm font-bold">
+                Merci de te rendre à la MI <span className="text-danger">très prochainement </span>pour récupérer ta commande.
+              </p>
+            </CardBody>
+          ) : (
+            <CardBody className="flex flex-col items-center justify-center gap-4">
+              <p>
+                Parfait ! La commande de {currentAccount?.prenom} a bien été prise en compte.
+              </p>
+              <Divider />
+            </CardBody>
+          )}
+
           <CardFooter>
             <span className="text-base font-bold">Nouveau solde :</span>
             {currentAccount && (
