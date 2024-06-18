@@ -140,7 +140,7 @@ const Dashboard = () => {
         data: Array.from(commandesByTimeFrame.values()),
         fill: false,
         backgroundColor: "rgb(255, 99, 132)",
-        borderColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
         tension: 0.3,
       },
     ],
@@ -181,7 +181,7 @@ const Dashboard = () => {
         data: Array.from(chiffreAffaire.values()),
         fill: true,
         backgroundColor: "rgb(132, 255, 255)",
-        borderColor: "rgba(132, 255, 255, 0.2)",
+        borderColor: "rgba(132, 255, 255, 1)",
         tension: 0.3,
       },
     ],
@@ -196,7 +196,7 @@ const Dashboard = () => {
         data: Array.from(sortedTemps.values()).map((temp) => temp.tmp1),
         fill: false,
         backgroundColor: "rgb(255, 99, 132)",
-        borderColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
         tension: 0.3,
       },
       {
@@ -204,7 +204,7 @@ const Dashboard = () => {
         data: Array.from(sortedTemps.values()).map((temp) => temp.tmp2),
         fill: false,
         backgroundColor: "rgb(55, 255, 132)",
-        borderColor: "rgba(55, 255, 132, 0.2)",
+        borderColor: "rgba(55, 255, 132, 1)",
         tension: 0.3,
       },
       {
@@ -212,12 +212,28 @@ const Dashboard = () => {
         data: Array.from(sortedTemps.values()).map((temp) => temp.tmp3),
         fill: false,
         backgroundColor: "rgb(132, 255, 255)",
-        borderColor: "rgba(132, 255, 255, 0.2)",
+        borderColor: "rgba(132, 255, 255, 1)",
         tension: 0.3,
       },
     ],
   };
 
+  // https://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript
+  const stringToColour = (str: string) => {
+
+    if (str === null || str === undefined) return '#FFFFFF'
+
+    let hash = 0;
+    str.split('').forEach(char => {
+      hash = char.charCodeAt(0) + ((hash << 5) - hash)
+    })
+    let colour = '#'
+    for (let i = 0; i < 3; i++) {
+      const value = (hash >> (i * 8)) & 0xff
+      colour += value.toString(16).padStart(2, '0')
+    }
+    return colour
+  }
 
   function formatTendanceData(tendance: Map<string, Map<string, number>>) {
     const tendanceData = {
@@ -232,13 +248,13 @@ const Dashboard = () => {
               .find((dataset) => dataset.label === key)
               .data.push(value);
         } else {
-          const colors = getRandomColor();
+          // const colors = getRandomColor();
           tendanceData.datasets.push({
             label: key,
             data: [value],
             fill: false,
-            backgroundColor: colors.background,
-            borderColor: colors.border,
+            backgroundColor: stringToColour(key),
+            borderColor: stringToColour(key),
             tension: 0.3,
           });
         }
