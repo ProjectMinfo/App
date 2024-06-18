@@ -138,6 +138,15 @@ export default function ListeComptesModal({ isOpen, onClose }: ListeComptesModal
                                         <TableCell></TableCell>
                                     </TableRow>
                                 )}
+                            {filteredComptes.length === 0 && (
+                                    <TableRow>
+                                        <TableCell> </TableCell>
+                                        <TableCell> </TableCell>
+                                        <TableCell className="text-center">2 caractères minimum dans la recherche</TableCell>
+                                        <TableCell> </TableCell>
+                                        <TableCell> </TableCell>
+                                    </TableRow>
+                                )}
                             </TableBody>
                         </Table>
                     </ModalBody>

@@ -21,12 +21,8 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
     const [commandeBoisson, setCommandeBoisson] = useState<any>();
     const [commandeSnack, setCommandeSnack] = useState<any>();
 
-
-    const onEditClose = () => {
-        setIsModalOpen(false);
-    };
-
     const [commandes, setCommandes] = useState<NamedCommande[]>([]);
+    const [currentCommande, setCurrentCommande] = useState<NamedCommande | null>(null);
 
     const toDate = (dateNumber: number) => {
         const date = new Date(Number(dateNumber));
@@ -126,9 +122,25 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
         setCommandes(commandes.map((c) => c.id === commande.id ? newCommande : c));
     }
 
-    function modalPeriph(commande) {
+    function handlePeriphDonne() {
+        const commande = currentCommande;
+        const newCommande = { ...commande, periphDonne: true };
+        const sendCommande = { ...newCommande };
+        delete sendCommande.nom;
+        postCommande(sendCommande);
+
+        setCommandes(commandes.map((c) => c.id === commande.id ? newCommande : c));
+    }
+
+    function modalPeriph(commande: NamedCommande) {
         handlePeripheriques(commande);
+        setCurrentCommande(commande);
         setIsModalPeriphOpen(true);
+    }
+
+    function validatePeriph() {
+        handlePeriphDonne();
+        setIsModalPeriphOpen(false);
     }
 
 
@@ -185,6 +197,16 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                                         <TableCell> </TableCell>
                                     </TableRow>
                                 )}
+                                {filteredCommandes.length === 0 && (
+                                    <TableRow>
+                                        <TableCell> </TableCell>
+                                        <TableCell> </TableCell>
+                                        <TableCell className="text-center">Aucune commande actuellement !</TableCell>
+                                        <TableCell> </TableCell>
+                                        <TableCell> </TableCell>
+                                        <TableCell> </TableCell>
+                                    </TableRow>
+                                )}
                             </TableBody>
                         </Table>
                     </ModalBody>
@@ -194,7 +216,9 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
             {isModalPeriphOpen && (
                 <Modal isOpen={isModalPeriphOpen} onClose={() => setIsModalPeriphOpen(false)} className="max-w-2xl">
                     <ModalContent>
-                        <ModalHeader>Périphériques</ModalHeader>
+                        <ModalHeader>
+                            Périphériques {currentCommande.periphDonne ? (<span className="text-danger">(Déjà donnés !)</span>) : ""}
+                        </ModalHeader>
                         <ModalBody>
                             <Card>
                                 <CardHeader className="text-lg font-semibold">Boissons</CardHeader>
@@ -222,7 +246,9 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                             </Card>
                         </ModalBody>
                         <ModalFooter>
-                            <Button color="warning" variant="flat" onClick={() => setIsModalPeriphOpen(false)}>Périphs donnés</Button>
+                            {currentCommande?.periphDonne ? (null) : (
+                                <Button color="warning" variant="flat" onClick={() => validatePeriph()}>Périphs donnés</Button>
+                            )}
                             <Button onClick={() => setIsModalPeriphOpen(false)}>Fermer</Button>
                         </ModalFooter>
                     </ModalContent>

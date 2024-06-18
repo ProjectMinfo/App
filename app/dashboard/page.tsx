@@ -51,6 +51,7 @@ import {
   getDate,
   getIngredientTendance,
   getMonthNumber,
+  getRandomColor,
   getTemperaturesByTimeFrame,
   Temp,
   TimeFrame,
@@ -229,12 +230,13 @@ const Dashboard = () => {
           .find((dataset) => dataset.label === key)
           .data.push(value);
       } else {
+        const colors = getRandomColor();
         tendanceData.datasets.push({
           label: key,
           data: [value],
           fill: false,
-          backgroundColor: "rgb(132, 255, 255)",
-          borderColor: "rgba(132, 255, 255, 0.2)",
+          backgroundColor: colors.background,
+          borderColor: colors.border,
           tension: 0.3,
         });
       }
@@ -359,7 +361,7 @@ const Dashboard = () => {
                       </SelectItem>
                     ))}
                 </Select>
-                <Bar data={tendanceData}></Bar>
+                <Line data={tendanceData}></Line>
               </CardBody>
             </Tab>
           </Tabs>

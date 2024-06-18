@@ -170,13 +170,8 @@ export default function Paiement({ repas, allViandes }: PaiementProps) {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 max-md:py-0">
 
-      <div className="text-lg font-bold">
-        <h2>Lancelot</h2>
-        <p>Parfait ! Comment veux-tu régler ta commande ? </p>
-      </div>
-
       <div className="inline-block max-w-lg text-center justify-center">
-        <p className="text-sm">
+        <p className="text-md">
           Tu as plusieurs moyens de paiement à ta disposition. <br />Si tu n'as plus d'argent sur ton compte MI, tu peux aller au comptoir pour créditer ton compte.
         </p>
       </div>

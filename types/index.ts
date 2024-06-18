@@ -149,6 +149,7 @@ export interface NewCommandes {
   boissons : [number, number];
   snacks : [number, number];
   payee: boolean;
+  periphDonne?: boolean;
 }
 
 
