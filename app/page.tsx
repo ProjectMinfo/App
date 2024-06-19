@@ -81,7 +81,7 @@ export default function Home() {
             onPress={() => handleCardClick(event)}
           >
             <CardHeader className="justify-center">
-              <p className="text-lg">{event.titre}</p>
+              <p className="text-lg">{event.titre.toUpperCase()}</p>
             </CardHeader>
             <CardBody>
               {imageEvents[event.id] ? (
@@ -99,7 +99,7 @@ export default function Home() {
           {(onClose) => (
             <>
               <ModalHeader>
-                {selectedEvent.titre}
+                {selectedEvent.titre.toUpperCase()}
               </ModalHeader>
               <ModalBody>
                 {imageEvents[selectedEvent.id] && (
