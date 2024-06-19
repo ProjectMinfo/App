@@ -5,6 +5,8 @@ import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/modal";
 import { Button, Card, CardHeader, Divider } from "@nextui-org/react";
+import ListeComptesModal from "@/components/listeCompteModal";
+import { Comptes } from "@/types";
 
 type Day = "Lundi" | "Mardi" | "Mercredi" | "Jeudi" | "Vendredi";
 
@@ -21,19 +23,6 @@ interface PlanningCourses {
   numCompte: number | null;
   numSemaine: number | null;
   prenom: string;
-}
-
-export interface Comptes {
-  acces: number;
-  email: string;
-  mdp: string;
-  montant: number;
-  nom: string;
-  numCompte: number;
-  prenom: string;
-  promo: number;
-  resetToken: string;
-  tokenExpiration: string;
 }
 
 const emptySlot: Slot = {
@@ -78,6 +67,31 @@ const PlanningServeur = () => {
   const [showStatsModal, setShowStatsModal] = useState<boolean>(false);
   const [stats, setStats] = useState<any | null>(null);
   const [period, setPeriod] = useState<string>("week");
+  const [showUserModal, setShowUserModal] = useState<boolean>(false);
+  const [selectedDay, setSelectedDay] = useState<Day | null>(null);
+  const [selectedPosition, setSelectedPosition] = useState<"devant" | "derriere" | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [userAccess, setUserAccess] = useState<number | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    let user: any = null;
+    let userAccess: any = null;
+
+    if (typeof window !== 'undefined') {
+      user = window.localStorage.getItem("user");
+      userAccess = window.localStorage.getItem("userAccess");
+    }
+
+    if (user !== null) {
+      user = JSON.parse(user);
+      setUserName(`${user.prenom} ${user.nom}`);
+    }
+
+    if (userAccess !== null) {
+      setUserAccess(parseInt(userAccess, 10));
+    }
+  }, []);
 
   const fetchSlots = async () => {
     try {
@@ -98,7 +112,7 @@ const PlanningServeur = () => {
       });
       setSlots(newSlots);
     } catch (error) {
-      console.error("Erreur lors de la récupération du planning : planning vide ou bug", error);
+      console.error("Erreur lors de la récupération du planning :", error);
       setSlots(initialSlots);
     }
   };
@@ -132,13 +146,17 @@ const PlanningServeur = () => {
   }, [selectedWeek]);
 
   const handleInscription = (day: Day, position: "devant" | "derriere", index: number) => {
-    const name = prompt("Entrez le nom du serveur:");
-    if (name) {
+    if (userAccess === 2) {
+      setSelectedDay(day);
+      setSelectedPosition(position);
+      setSelectedIndex(index);
+      setShowUserModal(true);
+    } else {
       const newSlots = deepCopy(slots);
       const newTab = index + (position === "derriere" ? 3 : 0);
       newSlots[day][position][index] = {
         idPlanning: -1,
-        prenom: name,
+        prenom: userName,
         numPoste: position === "devant" ? 1 : 2,
         tab: newTab
       };
@@ -164,15 +182,19 @@ const PlanningServeur = () => {
   };
 
   const handleInscriptionCourse = (day: Day) => {
-    const name = prompt("Entrez le nom de la personne pour le planning des courses:");
-    if (name) {
+    if (userAccess === 2) {
+      setSelectedDay(day);
+      setSelectedPosition(null);
+      setSelectedIndex(0);
+      setShowUserModal(true);
+    } else {
       const newCourseSlots = deepCopy(courseSlots);
       newCourseSlots[day] = {
         id: -1,
         date: getDateFromDay(day, selectedWeek),
         numCompte: Math.floor(Math.random() * 1000),
         numSemaine: selectedWeek,
-        prenom: name
+        prenom: userName
       };
       setCourseSlots(newCourseSlots);
       saveSlotCourse(newCourseSlots[day]);
@@ -330,6 +352,34 @@ const PlanningServeur = () => {
     doc.save("server-stats.pdf");
   };
 
+  const handleSelectUser = (user: Comptes) => {
+    if (selectedDay && selectedPosition !== null && selectedIndex !== null) {
+      const newSlots = deepCopy(slots);
+      const newTab = selectedIndex + (selectedPosition === "derriere" ? 3 : 0);
+      newSlots[selectedDay][selectedPosition][selectedIndex] = {
+        idPlanning: -1,
+        prenom: `${user.prenom} ${user.nom}`,
+        numPoste: selectedPosition === "devant" ? 1 : 2,
+        tab: newTab
+      };
+      setSlots(newSlots);
+      saveSlot(selectedDay, selectedPosition, newSlots[selectedDay][selectedPosition][selectedIndex], selectedIndex);
+      setShowUserModal(false);
+    } else if (selectedDay) {
+      const newCourseSlots = deepCopy(courseSlots);
+      newCourseSlots[selectedDay] = {
+        id: -1,
+        date: getDateFromDay(selectedDay, selectedWeek),
+        numCompte: user.numCompte,
+        numSemaine: selectedWeek,
+        prenom: `${user.prenom} ${user.nom}`
+      };
+      setCourseSlots(newCourseSlots);
+      saveSlotCourse(newCourseSlots[selectedDay]);
+      setShowUserModal(false);
+    }
+  };
+
   return (
     <>
       <div className="p-4">
@@ -406,7 +456,7 @@ const PlanningServeur = () => {
         </div>
 
         <button
-          className="px-2 py-1 rounded border text-black bg-blue-500  mt-4"
+          className={`px-2 py-1 rounded border mt-4 ${userAccess === 2 ? "text-black bg-blue-500" : "hidden"}`}
           onClick={() => { setShowStatsModal(true); handleCalculateStats(); }}
         >
           Voir les statistiques
@@ -423,18 +473,6 @@ const PlanningServeur = () => {
             >
               Semaine
             </button>
-            {/* <button
-              className={`px-2 py-1 rounded border ${period === "month" ? "bg-blue-500" : "bg-white"}`}
-              onClick={() => {setPeriod("month"); handleCalculateStats();}}
-            >
-              Mois
-            </button>
-            <button
-              className={`px-2 py-1 rounded border ${period === "year" ? "bg-blue-500" : "bg-white"}`}
-              onClick={() => {setPeriod("year"); handleCalculateStats();}}
-            >
-              Année
-            </button> */}
             <button
               className={`px-2 py-1 rounded ${period === "all" ? "bg-blue-500" : " text-black bg-white"}`}
               onClick={() => { setPeriod("all"); handleCalculateStats(); }}
@@ -447,7 +485,7 @@ const PlanningServeur = () => {
             {stats && (
               <>
                 <Card className="p-2">
-                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 3 des moins inscrits</CardHeader>
+                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 10 des moins inscrits</CardHeader>
                   {stats.top10LeastInscrit.map((item: any, index: number) => (
                     <div key={index} className="mb-1">
                       {index + 1}. {item[0]} - {item[1].inscrit} inscriptions
@@ -455,7 +493,7 @@ const PlanningServeur = () => {
                   ))}
                 </Card>
                 <Card className="p-2">
-                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 3 des plus inscrits</CardHeader>
+                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 10 des plus inscrits</CardHeader>
                   {stats.top10MostInscrit.map((item: any, index: number) => (
                     <div key={index} className="mb-1">
                       {index + 1}. {item[0]} - {item[1].inscrit} inscriptions
@@ -463,7 +501,7 @@ const PlanningServeur = () => {
                   ))}
                 </Card>
                 <Card className="p-2">
-                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 3 des moins de courses</CardHeader>
+                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 10 des moins de courses</CardHeader>
                   {stats.top10LeastCourses.map((item: any, index: number) => (
                     <div key={index} className="mb-1">
                       {index + 1}. {item[0]} - {item[1].courses}
@@ -471,7 +509,7 @@ const PlanningServeur = () => {
                   ))}
                 </Card>
                 <Card className="p-2 ">
-                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 3 des plus de courses</CardHeader>
+                  <CardHeader className="text-lg font-bold mb-2 p-2 ">Top 10 des plus de courses</CardHeader>
                   {stats.top10MostCourses.map((item: any, index: number) => (
                     <div key={index} className="mb-1">
                       {index + 1}. {item[0]} - {item[1].courses}
@@ -500,6 +538,14 @@ const PlanningServeur = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      {userAccess === 2 && (
+        <ListeComptesModal
+          isOpen={showUserModal}
+          onClose={() => setShowUserModal(false)}
+          serveurView={true}
+        />
+      )}
     </>
   );
 };
