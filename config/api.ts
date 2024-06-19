@@ -707,6 +707,31 @@ export const getCarte = async (id: number) => {
   }
 };
 
+export const getEventImage = async (id:number) => {
+  try {
+    const response = await api.get(`/settings/event-image/${id}`, {
+      responseType: "blob",
+      maxBodyLength: Infinity,
+    });
+    const blob = new Blob([response.data], { type: "image/png" });
+    const url = URL.createObjectURL(blob);
+    return url;
+  } catch (error) {
+    console.error("Error fetching carte:", error);
+    throw error;
+  }
+};
+
+export const getAllEvent=async(type:string)=>{
+  try{
+    const response = await api.get(`/settings/type/${type}`);
+    return response.data;
+  } catch(error){
+    console.error("Error fetching all event :", error);
+    throw error;
+  }
+}
+
 export const getEventMode = async () => {
   try {
     const response = await api.get("/settings/event");

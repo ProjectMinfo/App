@@ -1,17 +1,14 @@
 'use client';
-// import { Link } from "@nextui-org/link";
-// import { Snippet } from "@nextui-org/snippet";
-// import { Code } from "@nextui-org/code";
-// import { button as buttonStyles } from "@nextui-org/theme";
-
-// import { siteConfig } from "@/config/site";
-// import { title, subtitle } from "@/components/primitives";
-// import { GithubIcon } from "@/components/icons";
-import { postLogin } from "@/config/api";
-
-import { permanentRedirect } from 'next/navigation'
+import React, { useState, useEffect } from 'react';
+import { getAllEvent, getEventImage } from '@/config/api';
+import { Card, CardHeader, CardBody, Modal, ModalHeader, ModalBody, ModalFooter, ModalContent, Button } from "@nextui-org/react";
 
 export default function Home() {
+  const [eventAll, setEventAll] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [imageEvents, setImageEvents] = useState({});
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   let user = null;
   let userAccess = null;
@@ -25,69 +22,101 @@ export default function Home() {
     }
   }
   
+  useEffect(() => {
+    async function fetchEvent() {
+      try {
+        const fetchedEvent = await getAllEvent('Event');
+        setEventAll(fetchedEvent);
+        setIsLoading(false);
 
-  
-  return(
-    <h1>NEXT EVENT</h1>
+        // Fetch images for all events
+        for (const event of fetchedEvent) {
+          fetchImage(event.id);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setIsLoading(false);
+      }
+    }
+
+    fetchEvent();
+  }, []);
+
+  async function fetchImage(id) {
+    try {
+      const fetchedImage = await getEventImage(id);
+      setImageEvents((prevImages) => ({
+        ...prevImages,
+        [id]: fetchedImage,
+      }));
+    } catch (error) {
+      console.error('Error fetching image:', error);
+    }
+  }
+
+  function handleCardClick(event) {
+    console.log("OK")
+    setSelectedEvent(event);
+    console.log(selectedEvent)
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+  }
+
+  if (isLoading) {
+    return <div>Chargement...</div>;
+  }
+
+  return (
+    <div>
+      <h1 className="text-3xl font-semibold text-center mb-8 w-full">Prochains Evénements</h1>
+      <div className="grid grid-cols-1 gap-4 mt-12 md:grid-cols-2">
+        {eventAll.map((event) => (
+          <Card
+            key={event.id}
+            isPressable
+            onPress={() => handleCardClick(event)}
+          >
+            <CardHeader className="justify-center">
+              <p className="text-lg">{event.titre}</p>
+            </CardHeader>
+            <CardBody>
+              {imageEvents[event.id] ? (
+                <img src={imageEvents[event.id]} alt={event.titre} className="w-full h-auto" />
+              ) : (
+                <div>Chargement de l'image...</div>
+              )}
+            </CardBody>
+          </Card>
+        ))}
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>
+                {selectedEvent.titre}
+              </ModalHeader>
+              <ModalBody>
+                {imageEvents[selectedEvent.id] && (
+                  <img src={imageEvents[selectedEvent.id]} alt={selectedEvent.titre} className="w-full h-auto" />
+                )}
+                {selectedEvent.description}
+              </ModalBody>
+              <ModalFooter>
+                <Button className="bg-danger  py-2 px-4 rounded" onPress={closeModal}>
+                  Fermer
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+
+        </ModalContent>
+      </Modal>
+    </div>
   );
-
 }
-
-  // if (typeof window !== 'undefined') {
-  //   // if (window.localStorage.getItem('email') && window.localStorage.getItem('mdp')) {
-  //     window.location.href = "/commande";
-  //   // }
-  //   // else {
-  //   //   window.location.href = "/connexion";
-  //   // }
-  // }
-
-  //permanentRedirect("/commande")
-  
-
-  // return (
-  //   <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-  //     <div className="inline-block max-w-lg text-center justify-center">
-  //       <h1 className={title()}>Make&nbsp;</h1>
-  //       <h1 className={title({ color: "violet" })}>beautiful&nbsp;</h1>
-  //       <br />
-  //       <h1 className={title()}>
-  //         websites regardless of your design experience.
-  //       </h1>
-  //       <h2 className={subtitle({ class: "mt-4" })}>
-  //         Beautiful, fast and modern React UI library.
-  //       </h2>
-  //     </div>
-
-  //     <div className="flex gap-3">
-  //       <Link
-  //         isExternal
-  //         className={buttonStyles({
-  //           color: "primary",
-  //           radius: "full",
-  //           variant: "shadow",
-  //         })}
-  //         href={siteConfig.links.docs}
-  //       >
-  //         Documentation
-  //       </Link>
-  //       <Link
-  //         isExternal
-  //         className={buttonStyles({ variant: "bordered", radius: "full" })}
-  //         href={siteConfig.links.github}
-  //       >
-  //         <GithubIcon size={20} />
-  //         GitHub
-  //       </Link>
-  //     </div>
-
-  //     <div className="mt-8">
-  //       <Snippet hideCopyButton hideSymbol variant="flat">
-  //         <span>
-  //           Get started by editing <Code color="primary">app/page.tsx</Code>
-  //         </span>
-  //       </Snippet>
-  //     </div>
-  //   </section>
-  // );
-
