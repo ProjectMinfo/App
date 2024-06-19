@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import FileUpload from '@/components/FileUpload';
-import { getEventMode, postEventMode, postLimitOrderTaking, postOrderStatus, getSettingById, getOrderHours, postOrderHours, getEventModeBool } from "@/config/api"; // Importer les fonctions API
+import { getEventMode, postEventMode, postLimitOrderTaking, postOrderStatus, getSettingById, getOrderHours, postOrderHours } from "@/config/api"; // Importer les fonctions API
 
 const Settings = () => {
   const [eventMode, setEventMode] = useState(false);
@@ -12,7 +12,7 @@ const Settings = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const eventModeData = await getEventModeBool();
+        const eventModeData = await getEventMode();
         setEventMode(eventModeData);
         
         const orderTakingData = await getSettingById(1);
@@ -87,10 +87,10 @@ const Settings = () => {
     } catch (error) {
       console.error('Error updating order hours:', error);
     }
-    console.log('Event Mode:', eventMode);
-    console.log('Order Taking:', orderTaking);
-    console.log('Opening Time:', openingTime);
-    console.log('Closing Time:', closingTime);
+    // console.log('Event Mode:', eventMode);
+    // console.log('Order Taking:', orderTaking);
+    // console.log('Opening Time:', openingTime);
+    // console.log('Closing Time:', closingTime);
   };
 
   return (

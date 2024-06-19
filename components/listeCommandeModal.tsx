@@ -171,7 +171,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                                 {filteredCommandes.slice(0, 10).map(commande => (
                                     <TableRow key={commande.id}>
                                         <TableCell>{commande.nom}</TableCell>
-                                        <TableCell>{commande.numCompte}</TableCell>
+                                        <TableCell>{commande.numCompte == -1 ? "/" : commande.numCompte}</TableCell>
                                         <TableCell>{commande.contenu}</TableCell>
                                         <TableCell>{commande.commentaire}</TableCell>
                                         <TableCell>{commande.prix}€</TableCell>

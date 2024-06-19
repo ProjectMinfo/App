@@ -13,10 +13,20 @@ import { permanentRedirect } from 'next/navigation'
 
 export default function Home() {
 
+  let user = null;
+  let userAccess = null;
   if (typeof window !== 'undefined') {
-    postLogin({ email: window.localStorage.getItem('email'), mdp: window.localStorage.getItem('mdp') });
-  }
+    user = window.localStorage.getItem("user");
+    if (user !== null) {
+      user = JSON.parse(user);
+      userAccess = user.acces;
 
+      window.localStorage.setItem("userAccess", userAccess);
+    }
+  }
+  
+
+  
   return(
     <h1>NEXT EVENT</h1>
   );

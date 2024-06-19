@@ -12,6 +12,8 @@ const Navbarr = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
+  const [userAccess, setUserAccess] = useState(0);
+
   const icons = {
     chevron: <ChevronDown fill="currentColor" size={16} height={undefined} width={undefined} />,
     menu: <MenuIcon className="h-6 w-6 " />,
@@ -42,6 +44,17 @@ const Navbarr = () => {
     };
   }, []);
 
+
+  useEffect(() => {
+    let user = null;
+    if (typeof window !== 'undefined') {
+      user = window.localStorage.getItem("userAccess");
+      if (user !== null) {
+        setUserAccess(parseInt(user));
+      }
+    }
+  }, []);
+
   return (
     <div className="flex z-50 max-md:w-0 w-1/6">
       {/* Navbar */}
@@ -53,20 +66,23 @@ const Navbarr = () => {
               <h2 className=" text-4xl font-semibold">CHTI'MI</h2>
             </Link>
           </div>
-
           <div className="flex flex-col space-y-6 text-center text-lg">
-            <div className={isActive('/commande')}>
-              <Link href="/commande" onClick={handleLinkClick}>
-                Commande
-              </Link>
-            </div>
 
+            {userAccess < 1 && (
+              <div className={isActive('/commande')}>
+                <Link href="/commande" onClick={handleLinkClick}>
+                  Commande
+                </Link>
+              </div>
+            )}
 
-            <div className={isActive('/priseCommande')}>
-              <Link href="/priseCommande" onClick={handleLinkClick}>
-                Prise commande
-              </Link>
-            </div>
+            {userAccess >= 1 && (
+              <div className={isActive('/priseCommande')}>
+                <Link href="/priseCommande" onClick={handleLinkClick}>
+                  Prise commande
+                </Link>
+              </div>
+            )}
 
             <div className={isActive('/carte')}>
               <Link href="/carte" onClick={handleLinkClick}>
@@ -74,58 +90,77 @@ const Navbarr = () => {
               </Link>
             </div>
 
-            <div className={isActive('/affichageCuisine')}>
-              <Link href="/affichageCuisine" onClick={handleLinkClick}>
-                Affichage cuisine
-              </Link>
-            </div>
-
-            <div className={isActive('/planningServeur')}>
-              <Link href="/planningServeur" onClick={handleLinkClick}>
-                Planning serveur
-              </Link>
-            </div>
-
-            <div ref={dropdownRef} className="relative cursor-pointer">
-              <div
-                className={`flex items-center justify-center p-2 transition-colors duration-200 ${isActive('/gestionStock') || isActive('/gestionAchats') || isActive('/gestionComptes') || isActive('/gestionTemp') ? 'border-y-3 font-semibold' : ''}`}
-                onClick={toggleDropdown}
-              >
-                Gestions
-                <span className="ml-2">{icons.chevron}</span>
+            {userAccess >= 1 && (
+              <div className={isActive('/affichageCuisine')}>
+                <Link href="/affichageCuisine" onClick={handleLinkClick}>
+                  Affichage cuisine
+                </Link>
               </div>
-              {isDropdownOpen && (
-                <div className="absolute top-12 left-0 bg-red-500 border-3 border-red-800 shadow-lg rounded-lg mt-2 z-10  text-left w-full text-base p-2">
-                  <div className="py-2 space-y-2">
-                    <div className={isActive('/gestionStock')}>
-                      <Link href="/gestionStock" onClick={handleLinkClick}>Gestion des stocks</Link>
-                    </div>
-                    <div className={isActive('/gestionAchats')}>
-                      <Link href="/gestionAchats" onClick={handleLinkClick}>Gestion des achats</Link>
-                    </div>
-                    <div className={isActive('/gestionComptes')}>
-                      <Link href="/gestionComptes" onClick={handleLinkClick}>Gestion des comptes</Link>
-                    </div>
-                    <div className={isActive('/gestionTemps')}>
-                      <Link href="/gestionTemps" onClick={handleLinkClick}>Gestion des températures</Link>
-                    </div>
-                    <div className={isActive('/gestionCarte')}>
-                      <Link href="/gestionCarte" onClick={handleLinkClick}>
-                        Modifications cartes
-                      </Link>
+
+            )}
+
+            {userAccess >= 1 && (
+
+              <div className={isActive('/planningServeur')}>
+                <Link href="/planningServeur" onClick={handleLinkClick}>
+                  Planning serveur
+                </Link>
+              </div>
+            )}
+
+            {userAccess >= 1 && (
+              <div ref={dropdownRef} className="relative cursor-pointer">
+                <div
+                  className={`flex items-center justify-center p-2 transition-colors duration-200 ${isActive('/gestionStock') || isActive('/gestionAchats') || isActive('/gestionComptes') || isActive('/gestionTemp') ? 'border-y-3 font-semibold' : ''}`}
+                  onClick={toggleDropdown}
+                >
+                  Gestions
+                  <span className="ml-2">{icons.chevron}</span>
+                </div>
+                {isDropdownOpen && (
+                  <div className="absolute top-12 left-0 bg-red-500 border-3 border-red-800 shadow-lg rounded-lg mt-2 z-10  text-left w-full text-base p-2">
+                    <div className="py-2 space-y-2">
+                      {userAccess >= 2 && (
+                        <div className={isActive('/gestionStock')}>
+                          <Link href="/gestionStock" onClick={handleLinkClick}>Gestion des stocks</Link>
+                        </div>
+                      )}
+                      {userAccess >= 1 && (
+                        <div className={isActive('/gestionAchats')}>
+                          <Link href="/gestionAchats" onClick={handleLinkClick}>Gestion des achats</Link>
+                        </div>
+                      )}
+                      {userAccess >= 2 && (
+                        <div className={isActive('/gestionComptes')}>
+                          <Link href="/gestionComptes" onClick={handleLinkClick}>Gestion des comptes</Link>
+                        </div>
+                      )}
+                      {userAccess >= 1 && (
+                        <div className={isActive('/gestionTemps')}>
+                          <Link href="/gestionTemps" onClick={handleLinkClick}>Gestion des températures</Link>
+                        </div>
+                      )}
+                      {userAccess >= 2 && (
+                        <div className={isActive('/gestionCarte')}>
+                          <Link href="/gestionCarte" onClick={handleLinkClick}>
+                            Modifications cartes
+                          </Link>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
 
-
-            <div className={isActive('/dashboard')}>
-              <Link href="/dashboard" onClick={handleLinkClick}>
-                Dashboard
-              </Link>
-            </div>
+            {userAccess >= 2 && (
+              <div className={isActive('/dashboard')}>
+                <Link href="/dashboard" onClick={handleLinkClick}>
+                  Dashboard
+                </Link>
+              </div>
+            )}
 
             <div className={isActive('/compte')}>
               <Link href="/compte" onClick={handleLinkClick}>
@@ -133,11 +168,13 @@ const Navbarr = () => {
               </Link>
             </div>
 
-            <div className={isActive('/parametre')}>
-              <Link href="/parametre" onClick={handleLinkClick}>
-                Paramètres
-              </Link>
-            </div>
+            {userAccess >= 2 && (
+              <div className={isActive('/parametre')}>
+                <Link href="/parametre" onClick={handleLinkClick}>
+                  Paramètres
+                </Link>
+              </div>
+            )}
 
             <div className="flex items-center justify-center">
               <ThemeSwitch />
