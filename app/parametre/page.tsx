@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import FileUpload from '@/components/FileUpload';
 import { getEventMode, postEventMode, postLimitOrderTaking, postOrderStatus, getSettingById, getOrderHours, postOrderHours, getColor, postColor } from "@/config/api"; // Importer les fonctions API
 import { Button, Card, CardBody, CardHeader, Divider, Input, Switch, TimeInput } from '@nextui-org/react';
+import FileUploadLogo from '@/components/FileUploadLogo';
 
 const Settings = () => {
   const [eventMode, setEventMode] = useState(false);
@@ -175,7 +176,7 @@ const Settings = () => {
             />
 
             <h4 className="text-lg font-medium my-2">Logo</h4>
-            {/* <FileUpload /> */}
+            <FileUploadLogo />
           </CardBody>
         </Card>
         <Card className="mb-6">
@@ -183,7 +184,7 @@ const Settings = () => {
             <h3 className="text-lg font-medium">Images pour la carte</h3>
           </CardHeader>
           <CardBody>
-            {/* <FileUpload /> */}
+            <FileUpload />
 
           </CardBody>
         </Card>

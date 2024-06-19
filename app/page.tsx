@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { getAllEvent, getColor, getEventImage } from '@/config/api';
+import { getAllEvent, getEventImage } from '@/config/api';
 import { Card, CardHeader, CardBody, Modal, ModalHeader, ModalBody, ModalFooter, ModalContent, Button } from "@nextui-org/react";
 
 export default function Home() {
@@ -40,9 +40,9 @@ export default function Home() {
     }
     async function fetchColor() {
       try {
-        const color = await getColor();
+        const color = await fetch("https://minfoapi.fly.dev/settings/str/Color").then((res) => res.text());
         if (typeof window !== 'undefined') {
-          window.localStorage.setItem("color", color[color.length -1].couleur.toLowerCase());
+          window.localStorage.setItem("color", color.toLowerCase());
         }
       } catch (error) {
         console.error('Error fetching color:', error);

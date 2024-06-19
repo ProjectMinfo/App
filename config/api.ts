@@ -122,6 +122,20 @@ export const postUpload = async (formData: FormData) => {
   }
 };
 
+export const postUploadLogo = async (formData: FormData) => {
+  try {
+    const response = await api.post("/settings/logo", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
+};
+
 export const getFileCount = async () => {
   try {
     const response = await api.get("/fichiers/num");
