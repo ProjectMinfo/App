@@ -824,3 +824,29 @@ export const postOrderHours = async (
     throw error;
   }
 };
+
+
+
+export const getColor = async () => {
+  try {
+    const response = await api.get("/settings/type/Couleur");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching color:", error);
+    throw error;
+  }
+}
+
+export const postColor = async (couleur: string) => {
+  try {
+    const response = await api.post("/settings/couleur", {
+      id: 0,
+      couleur: couleur,
+      type: "Couleur",
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating color:", error);
+    throw error;
+  }
+}

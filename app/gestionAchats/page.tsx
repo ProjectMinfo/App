@@ -445,7 +445,7 @@ export default function GestionAchatsPage() {
         return (
           <div className="relative flex items-center gap-2">
             <span
-              className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              className="text-lg cursor-pointer active:opacity-50"
               onClick={() => onChangementEtat(achat)}
             >
               {
@@ -457,7 +457,7 @@ export default function GestionAchatsPage() {
             </span>
 
             <span
-              className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              className="text-lg cursor-pointer active:opacity-50"
               onClick={() => onEditOpen(achat, index)}
             >
               <EditIcon />

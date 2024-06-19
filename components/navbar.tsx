@@ -13,6 +13,7 @@ const Navbarr = () => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const [userAccess, setUserAccess] = useState(0);
+  const [color, setColor] = useState('#ef4444');
 
   const icons = {
     chevron: <ChevronDown fill="currentColor" size={16} height={undefined} width={undefined} />,
@@ -47,18 +48,22 @@ const Navbarr = () => {
 
   useEffect(() => {
     let user = null;
+    let color = null;
     if (typeof window !== 'undefined') {
       user = window.localStorage.getItem("userAccess");
+      color = window.localStorage.getItem("color");
       if (user !== null) {
         setUserAccess(parseInt(user));
+        setColor(color);
       }
     }
   }, []);
+  
 
   return (
     <div className="flex z-50 max-md:w-0 w-1/6">
       {/* Navbar */}
-      <div className={`fixed top-0 left-0 h-full bg-red-500 text-white py-4 px-4 w-64 md:w-1/6 z-10 transform ${isNavOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 overflow-y-auto `}>
+      <div className={`fixed top-0 left-0 h-full text-white py-4 px-4 w-64 md:w-1/6 z-10 transform ${isNavOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 overflow-y-auto `} style={{ backgroundColor: color }}>
         <div className="flex flex-col space-y-4">
           <div className="flex items-center justify-center h-32">
             <Link href="/" className="flex flex-col items-center justify-center space-y-2" onClick={handleLinkClick}>

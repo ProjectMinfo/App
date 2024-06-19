@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { getAllEvent, getEventImage } from '@/config/api';
+import { getAllEvent, getColor, getEventImage } from '@/config/api';
 import { Card, CardHeader, CardBody, Modal, ModalHeader, ModalBody, ModalFooter, ModalContent, Button } from "@nextui-org/react";
 
 export default function Home() {
@@ -38,7 +38,17 @@ export default function Home() {
         setIsLoading(false);
       }
     }
-
+    async function fetchColor() {
+      try {
+        const color = await getColor();
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem("color", color[color.length -1].couleur.toLowerCase());
+        }
+      } catch (error) {
+        console.error('Error fetching color:', error);
+      }
+    }
+    fetchColor();
     fetchEvent();
   }, []);
 
