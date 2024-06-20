@@ -752,6 +752,21 @@ export const getSettingById = async (id: number) => {
   }
 };
 
+export const postEvent = async(nomEvent:string, descriptionEvent:string, imageEvent:any)=>{
+  try{
+    const response = await api.post("/settings/event",{
+      id:-1,
+      titre:nomEvent,
+      description:descriptionEvent,
+      image:imageEvent
+    });
+    return response.data;
+  } catch(error){
+    console.error("Error posting event : ",error);
+    throw error;
+  }
+}
+
 export const postEventMode = async (value: boolean) => {
   try {
     const response = await api.post("/settings", {

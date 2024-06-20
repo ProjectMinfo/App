@@ -1,7 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { getAllEvent, getEventImage } from '@/config/api';
-import { Card, CardHeader, CardBody, Modal, ModalHeader, ModalBody, ModalFooter, ModalContent, Button } from "@nextui-org/react";
+import FileUpload from '@/components/FileUpload';
+import { Card, CardHeader, CardBody, Modal, ModalHeader, ModalBody, ModalFooter, ModalContent, Button, useDisclosure, Input } from "@nextui-org/react";
 
 export default function Home() {
   const [eventAll, setEventAll] = useState([]);
@@ -9,6 +10,7 @@ export default function Home() {
   const [imageEvents, setImageEvents] = useState({});
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isOpen: isAddModalOpen, onOpen: openAddModal, onClose: closeAddModal } = useDisclosure();
 
   let user = null;
   let userAccess = null;
@@ -21,7 +23,7 @@ export default function Home() {
       window.localStorage.setItem("userAccess", userAccess);
     }
   }
-  
+
   useEffect(() => {
     async function fetchEvent() {
       try {
@@ -61,6 +63,10 @@ export default function Home() {
     setIsModalOpen(true);
   }
 
+  const handleAddModalOpen = () => {
+    openAddModal();
+  };
+
   function closeModal() {
     setIsModalOpen(false);
     setSelectedEvent(null);
@@ -94,27 +100,63 @@ export default function Home() {
         ))}
       </div>
 
+      <Button className="bg-green-500 py-2 px-4 rounded w-full md:w-auto" onPress={handleAddModalOpen}>
+        Ajouter un event
+      </Button>
+
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader>
-                {selectedEvent.titre.toUpperCase()}
+                {selectedEvent && selectedEvent.titre.toUpperCase()}
               </ModalHeader>
               <ModalBody>
-                {imageEvents[selectedEvent.id] && (
+                {selectedEvent && imageEvents[selectedEvent.id] && (
                   <img src={imageEvents[selectedEvent.id]} alt={selectedEvent.titre} className="w-full h-auto" />
                 )}
-                {selectedEvent.description}
+                {selectedEvent && selectedEvent.description}
               </ModalBody>
               <ModalFooter>
-                <Button className="bg-danger  py-2 px-4 rounded" onPress={closeModal}>
+                <Button className="bg-danger py-2 px-4 rounded" onPress={closeModal}>
                   Fermer
                 </Button>
               </ModalFooter>
             </>
           )}
+        </ModalContent>
+      </Modal>
 
+      <Modal isOpen={isAddModalOpen} onClose={closeAddModal}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Ajouter un event</ModalHeader>
+              <ModalBody>
+                <Input
+                  label="Nom de l'event"
+                  type="text"
+                />
+                <Input
+                  label="Description"
+                  type="text"
+                />
+                <FileUpload
+                  label="Uploader une image"
+                  onFileUpload={(file) => {
+                    // Logique d'upload de fichier
+                    console.log(file);
+                  }}
+                />
+              </ModalBody>
+              <ModalFooter>
+                {/* {errorMessage && (
+                  <div className="text-red-500 mb-4">{errorMessage}</div>
+                )}
+                <Button className="bg-blue-500 py-2 px-4 rounded" onPress={handleSubmit}>Ajouter</Button> */}
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Modal>
     </div>
