@@ -756,6 +756,16 @@ export const getEventMode = async () => {
   }
 };
 
+export const deleteEvent = async (id: number) => {
+  try {
+    const response = await api.delete(`/settings/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting carte:", error);
+    throw error;
+  }
+};
+
 export const getSettingById = async (id: number) => {
   try {
     const response = await api.get(`/settings/${id}`);
@@ -766,20 +776,25 @@ export const getSettingById = async (id: number) => {
   }
 };
 
-export const postEvent = async(nomEvent:string, descriptionEvent:string, imageEvent:any)=>{
-  try{
-    const response = await api.post("/settings/event",{
-      id:-1,
-      titre:nomEvent,
-      description:descriptionEvent,
-      image:imageEvent
+export const postEvent = async (nomEvent, descriptionEvent, imageEvent, idEvent = "-1") => {
+  try {
+    const formData = new FormData();
+    formData.append('id', idEvent);
+    formData.append('titre', nomEvent);
+    formData.append('description', descriptionEvent);
+    formData.append('image', imageEvent);
+
+    const response = await api.post('/settings/event', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Remove this line
+      },
     });
     return response.data;
-  } catch(error){
-    console.error("Error posting event : ",error);
+  } catch (error) {
+    console.error('Error posting event:', error);
     throw error;
   }
-}
+};
 
 export const postEventMode = async (value: boolean) => {
   try {
