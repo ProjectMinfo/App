@@ -8,7 +8,7 @@ const FileUpload = () => {
   const fetchUploadedFiles = async () => {
     try {
       const count = await getFileCount();
-      console.log('File count:', count);
+      // console.log('File count:', count);
       const filePreviews = [];
       for (let i = 1; i <= count; i++) {
         try {
@@ -70,7 +70,7 @@ const FileUpload = () => {
         {Array.from({ length: fileInputCount + 1 }, (_, index) => (
           <div
             key={index}
-            className="relative border-2 border-gray-300 rounded-lg overflow-hidden w-40 h-40 flex items-center justify-center cursor-pointer"
+            className="relative border-2 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer"
             onClick={() => handleUploadClick(index)}
           >
             {previews[index] ? (

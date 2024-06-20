@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { getAllEvent, getEventImage } from '@/config/api';
 import FileUpload from '@/components/FileUpload';
 import { Card, CardHeader, CardBody, Modal, ModalHeader, ModalBody, ModalFooter, ModalContent, Button, useDisclosure, Input } from "@nextui-org/react";
+import { DeleteIcon } from "@/public/DeleteIcon";
+import { EditIcon } from "@/public/EditIcon";
 
 export default function Home() {
   const [eventAll, setEventAll] = useState([]);
@@ -31,7 +33,6 @@ export default function Home() {
         setEventAll(fetchedEvent);
         setIsLoading(false);
 
-        // Fetch images for all events
         for (const event of fetchedEvent) {
           fetchImage(event.id);
         }
@@ -41,6 +42,18 @@ export default function Home() {
       }
     }
 
+    async function fetchColor() {
+      try {
+        const color = await fetch("https://minfoapi.fly.dev/settings/str/Color").then((res) => res.text());
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem("color", color.toLowerCase());
+        }
+      } catch (error) {
+        console.error('Error fetching color:', error);
+      }
+    }
+
+    fetchColor();
     fetchEvent();
   }, []);
 
@@ -57,9 +70,7 @@ export default function Home() {
   }
 
   function handleCardClick(event) {
-    console.log("OK")
     setSelectedEvent(event);
-    console.log(selectedEvent)
     setIsModalOpen(true);
   }
 
@@ -144,16 +155,15 @@ export default function Home() {
                 <FileUpload
                   label="Uploader une image"
                   onFileUpload={(file) => {
-                    // Logique d'upload de fichier
                     console.log(file);
                   }}
                 />
               </ModalBody>
               <ModalFooter>
-                {/* {errorMessage && (
-                  <div className="text-red-500 mb-4">{errorMessage}</div>
-                )}
-                <Button className="bg-blue-500 py-2 px-4 rounded" onPress={handleSubmit}>Ajouter</Button> */}
+                <Button className="bg-blue-500 py-2 px-4 rounded" onPress={() => {
+                  // Logique de soumission d'événement
+                  closeAddModal();
+                }}>Ajouter</Button>
               </ModalFooter>
             </>
           )}

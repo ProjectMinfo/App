@@ -13,6 +13,8 @@ const Navbarr = () => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const [userAccess, setUserAccess] = useState(0);
+  const [color, setColor] = useState('#ef4444');
+  const [nom, setNom] = useState('');
 
   const icons = {
     chevron: <ChevronDown fill="currentColor" size={16} height={undefined} width={undefined} />,
@@ -53,17 +55,29 @@ const Navbarr = () => {
         setUserAccess(parseInt(user));
       }
     }
+
+    fetch("https://minfoapi.fly.dev/settings/str/Nom")
+      .then((res) => res.text())
+      .then((nom) => setNom(nom))
+      .catch((error) => console.error(error));
+
+    fetch("https://minfoapi.fly.dev/settings/str/Couleur")
+      .then((res) => res.text())
+      .then((color) => setColor(color))
+      .catch((error) => console.error(error));
+
   }, []);
+
 
   return (
     <div className="flex z-50 max-md:w-0 w-1/6">
       {/* Navbar */}
-      <div className={`fixed top-0 left-0 h-full bg-red-500 text-white py-4 px-4 w-64 md:w-1/6 z-10 transform ${isNavOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 overflow-y-auto `}>
+      <div className={`fixed top-0 left-0 h-full text-white py-4 px-4 w-64 md:w-1/6 z-10 transform ${isNavOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 overflow-y-auto `} style={{ backgroundColor: color }}>
         <div className="flex flex-col space-y-4">
           <div className="flex items-center justify-center h-32">
             <Link href="/" className="flex flex-col items-center justify-center space-y-2" onClick={handleLinkClick}>
-              <img src="logo.png" alt="Logo" className="h-16 w-auto" />
-              <h2 className=" text-4xl font-semibold">CHTI'MI</h2>
+              <img src="https://minfoapi.fly.dev/settings/logo" alt="Logo" className="h-16 w-auto" />
+              <h2 className=" text-4xl font-semibold">{nom}</h2>
             </Link>
           </div>
           <div className="flex flex-col space-y-6 text-center text-lg">
@@ -118,7 +132,7 @@ const Navbarr = () => {
                   <span className="ml-2">{icons.chevron}</span>
                 </div>
                 {isDropdownOpen && (
-                  <div className="absolute top-12 left-0 bg-red-500 border-3 border-red-800 shadow-lg rounded-lg mt-2 z-10  text-left w-full text-base p-2">
+                  <div className="absolute top-12 left-0 border-3 shadow-lg rounded-lg mt-2 z-10  text-left w-full text-base p-2" style={{ backgroundColor: color }}>
                     <div className="py-2 space-y-2">
                       {userAccess >= 2 && (
                         <div className={isActive('/gestionStock')}>
