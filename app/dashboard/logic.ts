@@ -26,17 +26,6 @@ export function convertToDate(dateStr: string): Date {
     return new Date(d[2] + "/" + d[1] + "/" + d[0]);
 }
 
-/*export function getWeekDay(date: Date): string {
-    // Array of weekday names
-    const weekDays = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-
-    // Get the day of the week as a number (0-6)
-    const dayIndex = date.getDay();
-
-    // Return the corresponding weekday name
-    return weekDays[dayIndex];
-}*/
-
 export function getDatasetFromCollection(
     collection: Ingredients[] | Snacks[] | Boissons[] | Viandes[]
 ): Object {
@@ -453,13 +442,3 @@ export async function getCollectionTendance(
     });
     return new Map<string, Map<string, number>>(mapArray);
 }
-
-// Fonction pour générer une couleur aléatoire en format RGBA
-export const getRandomColor = () => {
-    const r = Math.floor(Math.random() * 256);
-    const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 256);
-    let background = `rgb(${r}, ${g}, ${b})`;
-    let border = `rgba(${r}, ${g}, ${b}, 0.2)`;
-    return {background, border};
-};

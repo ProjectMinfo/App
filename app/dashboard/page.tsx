@@ -111,12 +111,6 @@ const Dashboard = () => {
 
     // Aggregate commandes by time frame and sort labels
     const commandesByTimeFrame = aggregateByTimeFrame(commandes, timeFrame);
-
-    /*    let mapArray = Array.from(commandesByTimeFrame.entries());
-          mapArray.sort((a, b) => {
-              return new Date(a[0]).getTime() - new Date(b[0]).getTime();
-          });
-          const sortedCommandes = new Map<string, number>(mapArray);*/
     const commandesData = {
         labels: Array.from(commandesByTimeFrame.keys()),
         datasets: [
