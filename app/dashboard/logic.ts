@@ -113,9 +113,10 @@ export function aggregateByTimeFrame(
                 key = `${date.getHours() < 10 ? "0" + date.getHours() : date.getHours()}:00`;
                 break;
             case TimeFrame.Semaine:
-                // Skip of the commande date is more than a week old
-                // if (currDate.getTime() - date.getTime() > 7 * 24 * 60 * 60 * 1000) break;
-                // key = date.toLocaleDateString();
+                if (currDate.getTime() - date.getTime() > 7 * 24 * 60 * 60 * 1000)
+                    break;
+
+                key = date.toLocaleDateString();
                 break;
             case TimeFrame.Mois:
                 if (
@@ -146,67 +147,18 @@ export function aggregateByTimeFrame(
         if (timeFrame === TimeFrame.Jour) {
             return parseInt(a[0]) - parseInt(b[0]);
         } else {
+            if (!a[0] || !b[0]) return 0;
             return convertToDate(a[0]).getTime() - convertToDate(b[0]).getTime();
         }
     });
     return new Map<string, number>(mapArray);
 }
 
-/*export function getWeekNumber(dateStr: string) {
-    let date = new Date(dateStr);
-    const currentDate = (typeof date === 'object') ? date : new Date();
-
-    const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
-    const daysToNextMonday = (januaryFirst.getDay() === 1) ? 0 : (7 - januaryFirst.getDay()) % 7;
-    const nextMonday = new Date(currentDate.getFullYear(), 0, januaryFirst.getDate() + daysToNextMonday);
-
-    return (currentDate < nextMonday) ? 52 :
-        (currentDate > nextMonday ? Math.ceil(
-            (currentDate - nextMonday) / (24 * 3600 * 1000) / 7) : 1);
-}*/
-
 export type Temp = {
     tmp1: number;
     tmp2: number;
     tmp3: number | null;
 };
-
-export function getMonthName(dateStr: string): string {
-    const month = parseInt(dateStr.split("/")[1]);
-    const lut = {
-        1: "Janvier",
-        2: "Février",
-        3: "Mars",
-        4: "Avril",
-        5: "Mai",
-        6: "Juin",
-        7: "Juillet",
-        8: "Août",
-        9: "Septembre",
-        10: "Octobre",
-        11: "Novembre",
-        12: "Décembre",
-    };
-    return lut[month];
-}
-
-export function getMonthNumber(monthName: string): number {
-    const lut = {
-        Janvier: 1,
-        Février: 2,
-        Mars: 3,
-        Avril: 4,
-        Mai: 5,
-        Juin: 6,
-        Juillet: 7,
-        Août: 8,
-        Septembre: 9,
-        Octobre: 10,
-        Novembre: 11,
-        Décembre: 12,
-    };
-    return lut[monthName];
-}
 
 export function getTemperaturesByTimeFrame(
     temperatures: Temperatures[],
@@ -329,15 +281,15 @@ export function getTemperaturesByTimeFrame(
     // Trier la map par date
     let mapArray = Array.from(meanTemp.entries());
     mapArray.sort((a, b) => {
-/*        console.log(
-            "Date a:", a[0],
-            "\nDate b:", b[0],
-            "\nDate a as Date:", convertToDate(a[0]),
-            "\nDate b as Date:", convertToDate(b[0]),
-            "\nDate a as Date getTime:", convertToDate(a[0]).getTime() / 1000,
-            "\nDate b as Date getTime:", convertToDate(b[0]).getTime() / 1000,
-            "\nOldest:", convertToDate(a[0]).getTime() < convertToDate(b[0]).getTime() ? a[0] : b[0],
-        )*/
+        /*        console.log(
+                    "Date a:", a[0],
+                    "\nDate b:", b[0],
+                    "\nDate a as Date:", convertToDate(a[0]),
+                    "\nDate b as Date:", convertToDate(b[0]),
+                    "\nDate a as Date getTime:", convertToDate(a[0]).getTime() / 1000,
+                    "\nDate b as Date getTime:", convertToDate(b[0]).getTime() / 1000,
+                    "\nOldest:", convertToDate(a[0]).getTime() < convertToDate(b[0]).getTime() ? a[0] : b[0],
+                )*/
         return convertToDate(a[0]).getTime() < convertToDate(b[0]).getTime() ? -1 : 1;
     });
     return new Map<string, Temp>(mapArray);
