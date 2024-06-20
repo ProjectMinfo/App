@@ -124,7 +124,6 @@ export default function Home() {
         uploadedFiles[0] = file;
       }
 
-      console.log(uploadedFiles[0])
 
       await postEvent(editEvent.titre, editEvent.description, uploadedFiles[0], editEvent.id);
       const updatedEvents = await getAllEvent('Event');
