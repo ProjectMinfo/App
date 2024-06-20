@@ -55,8 +55,8 @@ const Dashboard = () => {
   const [viandes, setViandes] = useState<Viandes[]>([]);
   const [temperatures, setTemperatures] = useState<Temperatures[]>([]);
 
-  const [timeFrame, setTimeFrame] = useState<TimeFrame>(TimeFrame.Jour);
-  const [tempTimeFrame, setTempTimeFrame] = useState<TimeFrame>(TimeFrame.Jour);
+  const [timeFrame, setTimeFrame] = useState<TimeFrame>(TimeFrame.Toujours);
+  const [tempTimeFrame, setTempTimeFrame] = useState<TimeFrame>(TimeFrame.Toujours);
   const [data, setData] = useState<CollectionType>(CollectionType.Ingredients);
 
   const [ingredientsTendances, setIngredientsTendances] = useState<Map<string, Map<string, number>>>();
@@ -151,26 +151,6 @@ const Dashboard = () => {
       temperatures,
       tempTimeFrame
   );
-  let mapArrayTemp = Array.from(temperaturesByTimeFrame.entries());
-  mapArrayTemp.sort((a, b) => {
-    switch (tempTimeFrame) {
-      case TimeFrame.Jour:
-        const dateA = new Date(a[0]);
-        const dateB = new Date(b[0]);
-        return dateA.getDate() - dateB.getDate();
-      case TimeFrame.Semaine:
-        return parseInt(a[0]) - parseInt(b[0]);
-      case TimeFrame.Mois:
-        return getMonthNumber(a[0]) - getMonthNumber(b[0]);
-      case TimeFrame.Annee:
-        return parseInt(a[0]) - parseInt(b[0]);
-      case TimeFrame.Toujours:
-        const dateC = new Date(a[0]);
-        const dateD = new Date(b[0]);
-        return dateC.getDate() - dateD.getDate();
-    }
-  });
-  const sortedTemps = new Map<string, Temp>(mapArrayTemp);
 
   const chiffreAffaire = getChiffreAffaire(commandes);
   const chiffreAffaireData = {
@@ -188,12 +168,12 @@ const Dashboard = () => {
   };
 
   const temperaturesData = {
-    labels: Array.from(sortedTemps.keys()),
+    labels: Array.from(temperaturesByTimeFrame.keys()),
     datasets: [
       {
         label: "Frigo 1",
         // Data is all the temperatures of the frigo 1 (tmp1)
-        data: Array.from(sortedTemps.values()).map((temp) => temp.tmp1),
+        data: Array.from(temperaturesByTimeFrame.values()).map((temp) => temp.tmp1),
         fill: false,
         backgroundColor: "rgb(255, 99, 132)",
         borderColor: "rgba(255, 99, 132, 1)",
@@ -201,7 +181,7 @@ const Dashboard = () => {
       },
       {
         label: "Frigo 2",
-        data: Array.from(sortedTemps.values()).map((temp) => temp.tmp2),
+        data: Array.from(temperaturesByTimeFrame.values()).map((temp) => temp.tmp2),
         fill: false,
         backgroundColor: "rgb(55, 255, 132)",
         borderColor: "rgba(55, 255, 132, 1)",
@@ -209,7 +189,7 @@ const Dashboard = () => {
       },
       {
         label: "Frigo 3",
-        data: Array.from(sortedTemps.values()).map((temp) => temp.tmp3),
+        data: Array.from(temperaturesByTimeFrame.values()).map((temp) => temp.tmp3),
         fill: false,
         backgroundColor: "rgb(132, 255, 255)",
         borderColor: "rgba(132, 255, 255, 1)",
@@ -348,7 +328,7 @@ const Dashboard = () => {
               Stocks
             </CardHeader>
             <Tabs aria-label="Options">
-              <Tab key="quantite" title="Quantité">
+              <Tab aria-label="Quantité" key="quantite" title="Quantité">
                 <CardBody>
                   <Select
                       value={String(data)}
@@ -374,7 +354,7 @@ const Dashboard = () => {
                   />
                 </CardBody>
               </Tab>
-              <Tab key="tendance" title="Tendance">
+              <Tab aria-label="Tendances" key="tendances" title="Tendances">
                 <CardBody>
                   <Select
                       value={String(collectionType)}
