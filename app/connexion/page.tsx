@@ -39,7 +39,7 @@ const LoginPage = () => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-    <Card className="w-96 m-auto my-[50%]">
+    <Card className="w-96 m-auto">
       <CardHeader className="">
         <h1 className='font-bold text-lg'>Connexion</h1>
       </CardHeader>

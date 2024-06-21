@@ -54,6 +54,9 @@ const Navbarr = () => {
       if (user !== null) {
         setUserAccess(parseInt(user));
       }
+      else {
+        setUserAccess(-1);
+      }
     }
 
     fetch("https://minfoapi.fly.dev/settings/str/Nom")
@@ -82,7 +85,7 @@ const Navbarr = () => {
           </div>
           <div className="flex flex-col space-y-6 text-center text-lg">
 
-            {userAccess < 1 && (
+            {userAccess == 0 && (
               <div className={isActive('/commande')}>
                 <Link href="/commande" onClick={handleLinkClick}>
                   Commande
@@ -193,7 +196,11 @@ const Navbarr = () => {
             <div className="flex items-center justify-center">
               <ThemeSwitch />
             </div>
-
+            <div className="absolute bottom-0 text-sm">
+              <Link href="https://maisonisen.fr/pages/general/mentions.php" target="_blank">
+                Mentions légales
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -204,10 +211,6 @@ const Navbarr = () => {
           <button onClick={() => setIsNavOpen(!isNavOpen)}>
             {isNavOpen ? icons.close : icons.menu}
           </button>
-        </div>
-        {/* Placez ici le contenu de votre page */}
-        <div>
-          {/* Votre contenu ici */}
         </div>
       </div>
     </div>
