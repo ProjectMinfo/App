@@ -226,34 +226,6 @@ const Dashboard = () => {
     return colour;
   };
 
-  //   function formatTendanceData(tendance: Map<string, Map<string, number>>) {
-  //     const tendanceData = {
-  //       labels: Array.from(tendance?.keys() || []),
-  //       datasets: [],
-  //     };
-
-  //     tendance?.forEach((value1, key1) => {
-  //       value1.forEach((value, key) => {
-  //         if (tendanceData.datasets.find((dataset) => dataset.label === key)) {
-  //           tendanceData.datasets
-  //             .find((dataset) => dataset.label === key)
-  //             .data.push(value);
-  //         } else {
-  //           // const colors = getRandomColor();
-  //           tendanceData.datasets.push({
-  //             label: key,
-  //             data: [value],
-  //             fill: false,
-  //             backgroundColor: stringToColour(key),
-  //             borderColor: stringToColour(key),
-  //             tension: 0.3,
-  //           });
-  //         }
-  //       });
-  //     });
-  //     return tendanceData;
-  //   }
-
   function formatTendanceData(tendance: Map<string, Map<string, number>>) {
     if (!tendance) {
       return {
