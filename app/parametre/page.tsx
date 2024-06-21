@@ -4,6 +4,7 @@ import FileUpload from '@/components/FileUpload';
 import { getEventMode, postEventMode, postLimitOrderTaking, postOrderStatus, getSettingById, getOrderHours, postOrderHours, getColor, postColor } from "@/config/api"; // Importer les fonctions API
 import { Button, Card, CardBody, CardHeader, Divider, Input, Switch, TimeInput } from '@nextui-org/react';
 import FileUploadLogo from '@/components/FileUploadLogo';
+import FileUploadEvent from '@/components/FileUploadEvent';
 
 const Settings = () => {
   const [eventMode, setEventMode] = useState(false);
@@ -12,6 +13,8 @@ const Settings = () => {
   const [closingTime, setClosingTime] = useState('20:00');
 
   const [colorSelected, setColorSelected] = useState('#cc2a24');
+
+
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -31,7 +34,7 @@ const Settings = () => {
     };
     async function fetchColor() {
       try {
-        const color:[] = await getColor();        
+        const color: [] = await getColor();
         if (typeof window !== 'undefined') {
           setColorSelected(color[0].couleur.toLowerCase());
         }
@@ -113,9 +116,10 @@ const Settings = () => {
     console.log('Opening Time:', openingTime);
     console.log('Closing Time:', closingTime);
     console.log('Color:', colorSelected);
-    
 
-    
+
+
+
   };
 
   return (
@@ -188,6 +192,7 @@ const Settings = () => {
 
           </CardBody>
         </Card>
+
         <Button
           type="submit"
           className="mt-2 px-4 py-2 font-semibold rounded-lg hover:bg-blue-600"
