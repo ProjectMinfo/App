@@ -9,8 +9,14 @@ const api = axios.create({
   baseURL: `${baseURL}`,
 });
 
-let USER_TOKEN = window.localStorage.getItem("token"); // Ajoutez votre token ici
-// const token = "DEV_TOKEN"; // Ajoutez votre token ici
+let USER_TOKEN: string | null = null;
+
+if (typeof window !== "undefined" && window.localStorage) {
+  USER_TOKEN = window.localStorage.getItem("token");
+}
+
+//  let USER_TOKEN = window.localStorage.getItem("token"); // Ajoutez votre token ici
+//const token = "DEV_TOKEN"; // Ajoutez votre token ici
 
 api.interceptors.request.use((config) => {
   config.headers.Authorization = `Bearer ${USER_TOKEN}`;
@@ -677,7 +683,7 @@ export const postLogin = async (data: any) => {
 
       const token = response.data.token;
       USER_TOKEN = token;
-      
+
       const numCompte = response.data.num_compte;
 
       window.localStorage.setItem("token", token);
@@ -723,7 +729,7 @@ export const getCarte = async (id: number) => {
   }
 };
 
-export const getEventImage = async (id:number) => {
+export const getEventImage = async (id: number) => {
   try {
     const response = await api.get(`/settings/event-image/${id}`, {
       responseType: "blob",
@@ -738,15 +744,15 @@ export const getEventImage = async (id:number) => {
   }
 };
 
-export const getAllEvent=async(type:string)=>{
-  try{
+export const getAllEvent = async (type: string) => {
+  try {
     const response = await api.get(`/settings/type/${type}`);
     return response.data;
-  } catch(error){
+  } catch (error) {
     console.error("Error fetching all event :", error);
     throw error;
   }
-}
+};
 
 export const getEventMode = async () => {
   try {
@@ -778,22 +784,27 @@ export const getSettingById = async (id: number) => {
   }
 };
 
-export const postEvent = async (nomEvent, descriptionEvent, imageEvent, idEvent = "-1") => {
+export const postEvent = async (
+  nomEvent,
+  descriptionEvent,
+  imageEvent,
+  idEvent = "-1"
+) => {
   try {
     const formData = new FormData();
-    formData.append('id', idEvent);
-    formData.append('titre', nomEvent);
-    formData.append('description', descriptionEvent);
-    formData.append('image', imageEvent);
+    formData.append("id", idEvent);
+    formData.append("titre", nomEvent);
+    formData.append("description", descriptionEvent);
+    formData.append("image", imageEvent);
 
-    const response = await api.post('/settings/event', formData, {
+    const response = await api.post("/settings/event", formData, {
       headers: {
-        'Content-Type': 'multipart/form-data', // Remove this line
+        "Content-Type": "multipart/form-data", // Remove this line
       },
     });
     return response.data;
   } catch (error) {
-    console.error('Error posting event:', error);
+    console.error("Error posting event:", error);
     throw error;
   }
 };
@@ -871,8 +882,6 @@ export const postOrderHours = async (
   }
 };
 
-
-
 export const getColor = async () => {
   try {
     const response = await api.get("/settings/type/Couleur");
@@ -881,7 +890,7 @@ export const getColor = async () => {
     console.error("Error fetching color:", error);
     throw error;
   }
-}
+};
 
 export const postColor = async (couleur: string) => {
   try {
@@ -895,4 +904,4 @@ export const postColor = async (couleur: string) => {
     console.error("Error updating color:", error);
     throw error;
   }
-}
+};
