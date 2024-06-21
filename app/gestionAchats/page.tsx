@@ -12,6 +12,7 @@ import { BiRevision } from "react-icons/bi";
 import AddAchatModal from "@/components/AddAchatModal";
 import EditAchatModal from "@/components/EditAchatModal";
 import DeleteAchatModal from "@/components/DeleteAchatModal";
+import ClearOldAchatsModal from "@/components/ClearOldAchatsModal";
 import './styles.css';
 
 // Define types for achats
@@ -123,12 +124,13 @@ export default function GestionAchatsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isClearOldAchatsModalOpen, setIsClearOldAchatsModalOpen] = useState(false);
   const [currentAchat, setCurrentAchat] = useState<Achat | null>(null);
   const [achats, setAchats] = useState<Achat[]>([]);
   const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
   const [currentAchatIndex, setCurrentAchatIndex] = useState<number>();
   const [isAfficherLesAchatsConsommes, setIsAfficherLesAchatsConsommes] = useState<boolean>(false)
-  const [visibleConsommeCount, setVisibleConsommeCount] = useState(20);
+  const [visibleConsommeCount, setVisibleConsommeCount] = useState(50);
 
   useEffect(() => {
     async function fetchAchats() {
@@ -333,12 +335,62 @@ export default function GestionAchatsPage() {
   };
 
 
+  // SUPPRIMER DEFINITIVEMENT LES ACHATS FERME DEPUIS PLUS DE 6 MOIS //
+
+  const onClearOldAchatsOpen = () => {
+    setIsClearOldAchatsModalOpen(true);
+  };
+
+  const onClearOldAchatsClose = () => {
+    setIsClearOldAchatsModalOpen(false);
+  };
+
+  const onClearOldAchatsSubmit = async () => {
+
+    let clearedAchats = new Array<Achat>(); // On crée un tableau pour stocker les achats à supprimer
+
+    if (achats) {
+      // On récupère la date d'il y a 6 mois
+      let sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+      // On retire l'achat courant de la liste
+      let updatedAchats = achats.filter((achat: any) => {
+        if (
+          (achat.etat === EtatAchat.Consomme || achat.etat === EtatAchat.Perte) // Si l'achat est jeté ou consommé
+          && (achat.dateFermeture && achat.dateFermeture.$date && achat.dateFermeture.$date.$numberLong) // Et si la date de fermeture est renseignée
+          && new Date(parseInt(achat.dateFermeture.$date.$numberLong)) < sixMonthsAgo // Et si la date de fermeture est antérieure à 6 mois
+        ) {
+          clearedAchats.push(achat); // On stocke l'achat à supprimer
+          return false; // retirer l'achat de la liste
+        }
+        return true; // conserver l'achat dans la liste
+      });
+
+      updatedAchats.sort((a: Achat, b: Achat) => b.idAchat - a.idAchat); // On retrie la liste
+      setAchats(updatedAchats); // On met à jour la liste des achats
+    }
+
+    for (let achat of clearedAchats) {
+      try {
+        await deleteAchats(achat.idAchat); // Appel à l'API pour enregistrer les modifications
+        console.log("Achats deleted successfully in the API");
+      }
+      catch (error) {
+        console.error("Error deleting achats:", error);
+      }
+    }
+
+    onClearOldAchatsClose();
+  };
+  
+
   const loadMore = () => {
-    setVisibleConsommeCount(prevCount => prevCount + 20);
+    setVisibleConsommeCount(prevCount => prevCount + 50);
   };
 
   const loadLess = () => {
-    setVisibleConsommeCount(prevCount => prevCount - 20);
+    setVisibleConsommeCount(prevCount => prevCount - 50);
   };
 
 
@@ -512,6 +564,7 @@ export default function GestionAchatsPage() {
         <Checkbox onValueChange={setIsAfficherLesAchatsConsommes} style={{ whiteSpace: 'nowrap' }}>
           Afficher les achats consommés
         </Checkbox>
+
       </div>
 
       <Table aria-label="Liste des achats">
@@ -569,10 +622,25 @@ export default function GestionAchatsPage() {
         {isAfficherLesAchatsConsommes && visibleConsommeCount < achats.length && (
           <button className="bg-blue-500  py-2 px-4 rounded" onClick={loadMore}>Afficher plus</button>
         )}
-        {isAfficherLesAchatsConsommes && visibleConsommeCount > 20 && (
+        {isAfficherLesAchatsConsommes && visibleConsommeCount > 50 && (
           <button className="bg-blue-500  py-2 px-4 rounded" onClick={loadLess}>Afficher moins</button>
         )}
       </div>
+
+      <div>{(
+        isAfficherLesAchatsConsommes
+          ? <Button onClick={onClearOldAchatsOpen} color={"danger"} style={{ whiteSpace: 'nowrap' }}>
+            Archiver les anciens achats
+          </Button>
+          : null)
+      }</div>
+
+      <ClearOldAchatsModal
+        isOpen={isClearOldAchatsModalOpen}
+        onClose={onClearOldAchatsClose}
+        onSubmit={onClearOldAchatsSubmit}
+      />
+
     </div>
   );
 }

@@ -9,11 +9,11 @@ const api = axios.create({
   baseURL: `${baseURL}`,
 });
 
-// const token = window.localStorage.getItem("token"); // Ajoutez votre token ici
-const token = "DEV_TOKEN"; // Ajoutez votre token ici
+let USER_TOKEN = window.localStorage.getItem("token"); // Ajoutez votre token ici
+// const token = "DEV_TOKEN"; // Ajoutez votre token ici
 
 api.interceptors.request.use((config) => {
-  config.headers.Authorization = `Bearer ${token}`;
+  config.headers.Authorization = `Bearer ${USER_TOKEN}`;
   return config;
 });
 
@@ -676,6 +676,8 @@ export const postLogin = async (data: any) => {
       window.localStorage.setItem("email", data.email);
 
       const token = response.data.token;
+      USER_TOKEN = token;
+      
       const numCompte = response.data.num_compte;
 
       window.localStorage.setItem("token", token);
