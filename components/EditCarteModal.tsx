@@ -155,6 +155,7 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
                                 type="number"
                                 value={tempItem.quantite}
                                 onChange={(e) => handleChange('quantite', parseInt(e.target.value))}
+                                disabled
                             />
                         )}
                         {'quantitePlat' in tempItem && (
