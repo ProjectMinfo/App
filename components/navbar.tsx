@@ -196,9 +196,9 @@ const Navbarr = () => {
             {isNavOpen ? icons.close : icons.menu}
           </button>
         </div>
-        {/* Placez ici le contenu de votre page */}
+        {}
         <div>
-          {/* Votre contenu ici */}
+          {/* Contenu de la page */}
         </div>
       </div>
     </div>

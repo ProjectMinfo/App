@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import EditQuantityModal from "@/components/EditQuantityModal";
 import AddItemModal from "@/components/AddItemModal";
 import { useDisclosure } from "@nextui-org/modal";
-import { getSnacks, postSnacks, deleteSnacks } from "@/config/api"; // Assurez-vous que le chemin est correct
+import { getSnacks, postSnacks, deleteSnacks } from "@/config/api"; 
 
 interface Snack {
   id: number;

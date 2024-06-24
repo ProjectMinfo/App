@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import EditQuantityModal from "@/components/EditQuantityModal";
 import AddItemModal from "@/components/AddItemModal";
 import { useDisclosure } from "@nextui-org/modal";
-import { getViandes, postViandes, deleteViandes } from "@/config/api"; // Assurez-vous que le chemin est correct
+import { getViandes, postViandes, deleteViandes } from "@/config/api"; 
 
 interface Meat {
   id: number;

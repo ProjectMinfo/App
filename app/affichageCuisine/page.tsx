@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from "react";
-import { getCommande, getComptes } from "@/config/api"; // Assurez-vous que le chemin est correct pour vos appels API
-import { NewCommandes, Comptes } from "@/types"; // Assurez-vous que le chemin est correct pour vos types
+import { getCommande, getComptes } from "@/config/api"; 
+import { NewCommandes, Comptes } from "@/types"; 
 
 type ColoredCommande = NewCommandes & { color: string } & { nom: string };
 
