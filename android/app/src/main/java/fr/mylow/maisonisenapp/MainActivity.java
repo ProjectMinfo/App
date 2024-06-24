@@ -1,4 +1,4 @@
-package fr.mylow.maisonisen;
+package fr.mylow.maisonisenapp;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -179,12 +179,6 @@ const Navbarr = () => {
               </div>
             )}
 
-            <div className={isActive('/compte')}>
-              <Link href="/compte" onClick={handleLinkClick}>
-                Compte
-              </Link>
-            </div>
-
             {userAccess >= 2 && (
               <div className={isActive('/parametre')}>
                 <Link href="/parametre" onClick={handleLinkClick}>
@@ -192,6 +186,20 @@ const Navbarr = () => {
                 </Link>
               </div>
             )}
+
+            {userAccess >= 0 && (
+              <div className={isActive('/compte')}>
+                <Link href="/compte" onClick={handleLinkClick}>
+                  Compte
+                </Link>
+              </div>
+            )}
+
+            <div className={isActive('/connexion')}>
+              <Link href="/connexion" onClick={handleLinkClick}>
+                Connexion
+              </Link>
+            </div>
 
             <div className="flex items-center justify-center">
               <ThemeSwitch />
