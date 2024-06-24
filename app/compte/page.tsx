@@ -18,7 +18,9 @@ type Commande = {
   prix: number;
   id: string;
   date: { $date: { $numberLong: string } };
-  // Ajoutez d'autres propriétés si nécessaire
+  contenu?: string;
+  boissons?: [string, number][];
+  snacks?: [string, number][];
 };
 
 
