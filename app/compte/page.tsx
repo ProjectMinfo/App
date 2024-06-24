@@ -11,7 +11,6 @@ interface User {
   email: string;
   promo: string;
   montant: number;
-  // Ajoutez d'autres propriétés si nécessaire
 }
 
 type Commande = {
