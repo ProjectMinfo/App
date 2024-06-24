@@ -1,4 +1,9 @@
-import {getBoissonById, getIngredientById, getSnackById, getViandeById} from "@/config/api";
+import {
+  getBoissonById,
+  getIngredientById,
+  getSnackById,
+  getViandeById,
+} from "@/config/api";
 import {
   Boissons,
   Ingredients,
@@ -7,7 +12,6 @@ import {
   Temperatures,
   Viandes,
 } from "@/types";
-import { get } from "http";
 
 export enum TimeFrame {
   Jour,
@@ -33,17 +37,6 @@ export function convertToDate(dateStr: string): Date {
   let d = dateStr.split("/");
   return new Date(d[2] + "/" + d[1] + "/" + d[0]);
 }
-
-/*export function getWeekDay(date: Date): string {
-    // Array of weekday names
-    const weekDays = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-
-    // Get the day of the week as a number (0-6)
-    const dayIndex = date.getDay();
-
-    // Return the corresponding weekday name
-    return weekDays[dayIndex];
-}*/
 
 export function getDatasetFromCollection(
   collection: Ingredients[] | Snacks[] | Boissons[] | Viandes[]
@@ -113,7 +106,7 @@ export function aggregateByTimeFrame(
   const result = new Map<string, number>();
   const currDate = new Date();
   commandes.forEach((commande) => {
-    const date = getDate(commande);
+    let date = getDate(commande);
     let key: string;
     switch (timeFrame) {
       case TimeFrame.Jour:
@@ -121,10 +114,10 @@ export function aggregateByTimeFrame(
         key = `${date.getHours() < 10 ? "0" + date.getHours() : date.getHours()}:00`;
         break;
       case TimeFrame.Semaine:
-        // Skip of the commande date is more than a week old
-        // if (date.getTime() < currDate.getTime() - 7 * 24 * 60 * 60 * 1000) break;
-/*        if (date.getDay() != currDate.getDay()) break;
-        key = date.toLocaleDateString();*/
+        if (currDate.getTime() - date.getTime() > 7 * 24 * 60 * 60 * 1000)
+          break;
+
+        key = date.toLocaleDateString();
         break;
       case TimeFrame.Mois:
         if (
@@ -155,67 +148,18 @@ export function aggregateByTimeFrame(
     if (timeFrame === TimeFrame.Jour) {
       return parseInt(a[0]) - parseInt(b[0]);
     } else {
+      if (!a[0] || !b[0]) return 0;
       return convertToDate(a[0]).getTime() - convertToDate(b[0]).getTime();
     }
   });
   return new Map<string, number>(mapArray);
 }
 
-/*export function getWeekNumber(dateStr: string) {
-    let date = new Date(dateStr);
-    const currentDate = (typeof date === 'object') ? date : new Date();
-
-    const januaryFirst = new Date(currentDate.getFullYear(), 0, 1);
-    const daysToNextMonday = (januaryFirst.getDay() === 1) ? 0 : (7 - januaryFirst.getDay()) % 7;
-    const nextMonday = new Date(currentDate.getFullYear(), 0, januaryFirst.getDate() + daysToNextMonday);
-
-    return (currentDate < nextMonday) ? 52 :
-        (currentDate > nextMonday ? Math.ceil(
-            (currentDate - nextMonday) / (24 * 3600 * 1000) / 7) : 1);
-}*/
-
 export type Temp = {
   tmp1: number;
   tmp2: number;
   tmp3: number | null;
 };
-
-export function getMonthName(dateStr: string): string {
-  const month = parseInt(dateStr.split("/")[1]);
-  const lut = {
-    1: "Janvier",
-    2: "Février",
-    3: "Mars",
-    4: "Avril",
-    5: "Mai",
-    6: "Juin",
-    7: "Juillet",
-    8: "Août",
-    9: "Septembre",
-    10: "Octobre",
-    11: "Novembre",
-    12: "Décembre",
-  };
-  return lut[month];
-}
-
-export function getMonthNumber(monthName: string): number {
-  const lut = {
-    Janvier: 1,
-    Février: 2,
-    Mars: 3,
-    Avril: 4,
-    Mai: 5,
-    Juin: 6,
-    Juillet: 7,
-    Août: 8,
-    Septembre: 9,
-    Octobre: 10,
-    Novembre: 11,
-    Décembre: 12,
-  };
-  return lut[monthName];
-}
 
 export function getTemperaturesByTimeFrame(
   temperatures: Temperatures[],
@@ -238,14 +182,9 @@ export function getTemperaturesByTimeFrame(
   const currDate = new Date();
   switch (timeFrame) {
     case TimeFrame.Jour:
-      // Calcule la moyenne de chaque jour
       result.forEach((temp, date) => {
-        const _date = new Date(date);
-        if (
-          _date.getDay() == currDate.getDay() &&
-          _date.getMonth() == currDate.getMonth() &&
-          _date.getFullYear() == currDate.getFullYear()
-        ) {
+        const _date = convertToDate(date);
+        if (_date.toLocaleDateString() === currDate.toLocaleDateString()) {
           // Calcule la moyenne des températures
           let tmp: Temp = { tmp1: 0, tmp2: 0, tmp3: 0 || null };
           temp.forEach((temperature) => {
@@ -257,100 +196,68 @@ export function getTemperaturesByTimeFrame(
           tmp.tmp2 /= temp.length;
           tmp.tmp3 /= temp.length;
           let key = _date.toLocaleDateString();
+
           meanTemp.set(key, tmp);
         }
       });
       break;
     case TimeFrame.Semaine:
       // Calcule la moyenne de chaque semaine
-      result.forEach((temp1, date1) => {
-        result.forEach((temp2, date2) => {
-          const _date1 = new Date(date2);
-          const _date2 = new Date(date2);
-          if (
-            _date1.getFullYear() === _date2.getFullYear() &&
-            _date1.getFullYear() === currDate.getFullYear() &&
-            _date1.getMonth() == currDate.getMonth()
-          ) {
-            if (
-              _date1.getTime() - currDate.getTime() <
-              7 * 24 * 60 * 60 * 1000
-            ) {
-              // Calcule la moyenne des températures
-              let tmp: Temp = { tmp1: 0, tmp2: 0, tmp3: 0 || null };
-              temp1.forEach((temperature) => {
-                tmp.tmp1 += temperature.tmp1;
-                tmp.tmp2 += temperature.tmp2;
-                tmp.tmp3 += temperature.tmp3;
-              });
-              temp2.forEach((temperature) => {
-                tmp.tmp1 += temperature.tmp1;
-                tmp.tmp2 += temperature.tmp2;
-                tmp.tmp3 += temperature.tmp3;
-              });
-              tmp.tmp1 /= temp1.length + temp2.length;
-              tmp.tmp2 /= temp1.length + temp2.length;
-              tmp.tmp3 /= temp1.length + temp2.length;
-              meanTemp.set(date1, tmp);
-            }
-          }
-        });
+      result.forEach((temp, date) => {
+        const _date = convertToDate(date); /*new Date(date);*/
+        if (currDate.getTime() - _date.getTime() < 7 * 24 * 60 * 60 * 1000) {
+          // console.log(currDate.getTime() - _date.getTime(), 7 * 24 * 60 * 60 * 1000)
+          // Calcule la moyenne des températures
+          let tmp: Temp = { tmp1: 0, tmp2: 0, tmp3: 0 || null };
+          temp.forEach((temperature) => {
+            tmp.tmp1 += temperature.tmp1;
+            tmp.tmp2 += temperature.tmp2;
+            tmp.tmp3 += temperature.tmp3;
+          });
+          tmp.tmp1 /= temp.length;
+          tmp.tmp2 /= temp.length;
+          tmp.tmp3 /= temp.length;
+          meanTemp.set(date, tmp);
+        }
       });
       break;
     case TimeFrame.Mois:
-      // Calcule la moyenne de chaque mois
-      result.forEach((temp1, date1) => {
-        result.forEach((temp2, date2) => {
-          const _date1 = new Date(date1);
-          const _date2 = new Date(date2);
-          if (
-            _date1.getMonth() === _date2.getMonth() &&
-            _date1.getFullYear() === _date2.getFullYear() &&
-            _date1.getFullYear() === currDate.getFullYear()
-          ) {
-            // Calcule la moyenne des températures
-            let tmp: Temp = { tmp1: 0, tmp2: 0, tmp3: 0 || null };
-            temp1.forEach((temperature) => {
-              tmp.tmp1 += temperature.tmp1;
-              tmp.tmp2 += temperature.tmp2;
-              tmp.tmp3 += temperature.tmp3;
-            });
-            temp2.forEach((temperature) => {
-              tmp.tmp1 += temperature.tmp1;
-              tmp.tmp2 += temperature.tmp2;
-              tmp.tmp3 += temperature.tmp3;
-            });
-            tmp.tmp1 /= temp1.length + temp2.length;
-            tmp.tmp2 /= temp1.length + temp2.length;
-            tmp.tmp3 /= temp1.length + temp2.length;
-            meanTemp.set(getMonthName(date1), tmp);
-          }
-        });
+      result.forEach((temp, date) => {
+        const _date = convertToDate(date); /*new Date(date);*/
+        if (
+          currDate.getMonth() === _date.getMonth() &&
+          currDate.getFullYear() === _date.getFullYear()
+        ) {
+          // Calcule la moyenne des températures
+          let tmp: Temp = { tmp1: 0, tmp2: 0, tmp3: 0 || null };
+          temp.forEach((temperature) => {
+            tmp.tmp1 += temperature.tmp1;
+            tmp.tmp2 += temperature.tmp2;
+            tmp.tmp3 += temperature.tmp3;
+          });
+          tmp.tmp1 /= temp.length;
+          tmp.tmp2 /= temp.length;
+          tmp.tmp3 /= temp.length;
+          meanTemp.set(date, tmp);
+        }
       });
       break;
     case TimeFrame.Annee:
-      // Calcule la moyenne de chaque année
-      result.forEach((temp1, date1) => {
-        result.forEach((temp2, date2) => {
-          if (new Date(date1).getFullYear() === new Date(date2).getFullYear()) {
-            // Calcule la moyenne des températures
-            let tmp: Temp = { tmp1: 0, tmp2: 0, tmp3: 0 || null };
-            temp1.forEach((temperature) => {
-              tmp.tmp1 += temperature.tmp1;
-              tmp.tmp2 += temperature.tmp2;
-              tmp.tmp3 += temperature.tmp3;
-            });
-            temp2.forEach((temperature) => {
-              tmp.tmp1 += temperature.tmp1;
-              tmp.tmp2 += temperature.tmp2;
-              tmp.tmp3 += temperature.tmp3;
-            });
-            tmp.tmp1 /= temp1.length + temp2.length;
-            tmp.tmp2 /= temp1.length + temp2.length;
-            tmp.tmp3 /= temp1.length + temp2.length;
-            meanTemp.set(new Date(date1).getFullYear(), tmp);
-          }
-        });
+      result.forEach((temp, date) => {
+        const _date = convertToDate(date); /*new Date(date);*/
+        if (_date.getFullYear() === currDate.getFullYear()) {
+          // Calcule la moyenne des températures
+          let tmp: Temp = { tmp1: 0, tmp2: 0, tmp3: 0 || null };
+          temp.forEach((temperature) => {
+            tmp.tmp1 += temperature.tmp1;
+            tmp.tmp2 += temperature.tmp2;
+            tmp.tmp3 += temperature.tmp3;
+          });
+          tmp.tmp1 /= temp.length;
+          tmp.tmp2 /= temp.length;
+          tmp.tmp3 /= temp.length;
+          meanTemp.set(date, tmp);
+        }
       });
       break;
     case TimeFrame.Toujours:
@@ -370,11 +277,29 @@ export function getTemperaturesByTimeFrame(
       });
       break;
   }
-  return meanTemp;
+  // Trier la map par date
+  let mapArray = Array.from(meanTemp.entries());
+  mapArray.sort((a, b) => {
+    /*        console.log(
+                    "Date a:", a[0],
+                    "\nDate b:", b[0],
+                    "\nDate a as Date:", convertToDate(a[0]),
+                    "\nDate b as Date:", convertToDate(b[0]),
+                    "\nDate a as Date getTime:", convertToDate(a[0]).getTime() / 1000,
+                    "\nDate b as Date getTime:", convertToDate(b[0]).getTime() / 1000,
+                    "\nOldest:", convertToDate(a[0]).getTime() < convertToDate(b[0]).getTime() ? a[0] : b[0],
+                )*/
+    return convertToDate(a[0]).getTime() < convertToDate(b[0]).getTime()
+      ? -1
+      : 1;
+  });
+  return new Map<string, Temp>(mapArray);
+  // return meanTemp;
 }
 
 export const getNameById = async (
-  id: number, collectionType: CollectionType
+  id: number,
+  collectionType: CollectionType
 ): Promise<string | null> => {
   try {
     let name = "";
@@ -398,7 +323,7 @@ export const getNameById = async (
     }
     return name;
   } catch (error) {
-    console.error("Error fetching ingredient name:", error);
+    //console.error("Error fetching name:", error);
     return null;
   }
 };
@@ -411,120 +336,132 @@ export async function getCollectionTendance(
   const currDate = new Date();
 
   for (const commande of commandes) {
-    const date = getDate(commande);
+    let date = getDate(commande);
     if (
-      date.getMonth() === currDate.getMonth() &&
-      date.getFullYear() === currDate.getFullYear()
-    ) {
-      switch (collectionType) {
-        case CollectionType.Ingredients:
-          for (const ingredient of commande.ingredients) {
-            const ingredientId = ingredient[0];
-            const ingredientQuantity = ingredient[1];
-            const ingredientName = await getNameById(ingredientId, CollectionType.Ingredients);
+      date.getMonth() !== currDate.getMonth() ||
+      date.getFullYear() !== currDate.getFullYear()
+    )
+      continue;
+    switch (collectionType) {
+      case CollectionType.Ingredients:
+        for (const ingredient of commande.ingredients) {
+          const ingredientId = ingredient[0];
+          const ingredientQuantity = ingredient[1];
+          const ingredientName = await getNameById(
+            ingredientId,
+            CollectionType.Ingredients
+          );
 
-            if (!ingredientName) {
-              continue;
-            }
-
-            if (!result.has(date.toLocaleDateString())) {
-              result.set(date.toLocaleDateString(), new Map<string, number>());
-            }
-
-            const dailyIngredients = result.get(date.toLocaleDateString());
-            if (dailyIngredients.has(ingredientName)) {
-              dailyIngredients.set(
-                ingredientName,
-                dailyIngredients.get(ingredientName) + ingredientQuantity
-              );
-            } else {
-              dailyIngredients.set(ingredientName, ingredientQuantity);
-            }
+          if (ingredientName === null) {
+            continue;
           }
-          break;
-        case CollectionType.Snacks:
-          for (const snack of commande.snacks) {
-            const snackId = snack[0];
-            const snackQuantity = snack[1];
-            const snackName = await getNameById(snackId, CollectionType.Snacks);
 
-            if (!result.has(date.toLocaleDateString())) {
-              result.set(date.toLocaleDateString(), new Map<string, number>());
-            }
-
-            const dailySnacks = result.get(date.toLocaleDateString());
-            if (dailySnacks.has(snackName)) {
-              dailySnacks.set(
-                snackName,
-                dailySnacks.get(snackName) + snackQuantity
-              );
-            } else {
-              dailySnacks.set(snackName, snackQuantity);
-            }
+          if (!result.has(date.toLocaleDateString())) {
+            result.set(date.toLocaleDateString(), new Map<string, number>());
           }
-          break;
 
-        case CollectionType.Boissons:
-          for (const boisson of commande.boissons) {
-            const boissonId = boisson[0];
-            const boissonQuantity = boisson[1];
-            const boissonName = await getNameById(boissonId, CollectionType.Boissons);
-
-            if (!result.has(date.toLocaleDateString())) {
-              result.set(date.toLocaleDateString(), new Map<string, number>());
-            }
-
-            const dailyBoissons = result.get(date.toLocaleDateString());
-            if (dailyBoissons.has(boissonName)) {
-              dailyBoissons.set(
-                boissonName,
-                dailyBoissons.get(boissonName) + boissonQuantity
-              );
-            } else {
-              dailyBoissons.set(boissonName, boissonQuantity);
-            }
+          const dailyIngredients = result.get(date.toLocaleDateString());
+          if (dailyIngredients.has(ingredientName)) {
+            dailyIngredients.set(
+              ingredientName,
+              dailyIngredients.get(ingredientName) + ingredientQuantity
+            );
+          } else {
+            dailyIngredients.set(ingredientName, ingredientQuantity);
           }
-          break;
+        }
+        break;
+      case CollectionType.Snacks:
+        for (const snack of commande.snacks) {
+          const snackId = snack[0];
+          const snackQuantity = snack[1];
+          const snackName = await getNameById(snackId, CollectionType.Snacks);
 
-        case CollectionType.Viandes:
-          for (const viande of commande.viandes) {
-            const viandeId = viande[0];
-            const viandeQuantity = viande[1];
-            const viandeName = await getNameById(viandeId, CollectionType.Viandes);
-
-            if (!result.has(date.toLocaleDateString())) {
-              result.set(date.toLocaleDateString(), new Map<string, number>());
-            }
-
-            const dailyViandes = result.get(date.toLocaleDateString());
-            if (dailyViandes.has(viandeName)) {
-              dailyViandes.set(
-                viandeName,
-                dailyViandes.get(viandeName) + viandeQuantity
-              );
-            } else {
-              dailyViandes.set(viandeName, viandeQuantity);
-            }
+          if (snackName === null) {
+            continue;
           }
-          break;
-      }
+
+          if (!result.has(date.toLocaleDateString())) {
+            result.set(date.toLocaleDateString(), new Map<string, number>());
+          }
+
+          const dailySnacks = result.get(date.toLocaleDateString());
+          if (dailySnacks.has(snackName)) {
+            dailySnacks.set(
+              snackName,
+              dailySnacks.get(snackName) + snackQuantity
+            );
+          } else {
+            dailySnacks.set(snackName, snackQuantity);
+          }
+        }
+        break;
+
+      case CollectionType.Boissons:
+        for (const boisson of commande.boissons) {
+          const boissonId = boisson[0];
+          const boissonQuantity = boisson[1];
+          const boissonName = await getNameById(
+            boissonId,
+            CollectionType.Boissons
+          );
+
+          if (boissonName === null) {
+            continue;
+          }
+
+          if (!result.has(date.toLocaleDateString())) {
+            result.set(date.toLocaleDateString(), new Map<string, number>());
+          }
+
+          const dailyBoissons = result.get(date.toLocaleDateString());
+          if (dailyBoissons.has(boissonName)) {
+            dailyBoissons.set(
+              boissonName,
+              dailyBoissons.get(boissonName) + boissonQuantity
+            );
+          } else {
+            dailyBoissons.set(boissonName, boissonQuantity);
+          }
+        }
+        break;
+
+      case CollectionType.Viandes:
+        for (const viande of commande.viandes) {
+          const viandeId = viande[0];
+          const viandeQuantity = viande[1];
+          const viandeName = await getNameById(
+            viandeId,
+            CollectionType.Viandes
+          );
+
+          if (viandeName === null) {
+            continue;
+          }
+
+          if (!result.has(date.toLocaleDateString())) {
+            result.set(date.toLocaleDateString(), new Map<string, number>());
+          }
+
+          const dailyViandes = result.get(date.toLocaleDateString());
+          if (dailyViandes.has(viandeName)) {
+            dailyViandes.set(
+              viandeName,
+              dailyViandes.get(viandeName) + viandeQuantity
+            );
+          } else {
+            dailyViandes.set(viandeName, viandeQuantity);
+          }
+        }
+        break;
     }
   }
   // return result;
   // Sort par date
-    let mapArray = Array.from(result.entries());
-    mapArray.sort((a, b) => {
-      return convertToDate(a[0]).getTime() - convertToDate(b[0]).getTime();
-    });
-    return new Map<string, Map<string, number>>(mapArray);
+  let mapArray = Array.from(result.entries());
+  mapArray.sort((a, b) => {
+    return convertToDate(a[0]).getTime() - convertToDate(b[0]).getTime();
+  });
+  const sorted = new Map<string, Map<string, number>>(mapArray);
+  return sorted;
 }
-
-// Fonction pour générer une couleur aléatoire en format RGBA
-export const getRandomColor = () => {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  let background = `rgb(${r}, ${g}, ${b})`;
-  let border = `rgba(${r}, ${g}, ${b}, 0.2)`;
-  return { background, border };
-};

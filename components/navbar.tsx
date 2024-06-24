@@ -14,6 +14,7 @@ const Navbarr = () => {
 
   const [userAccess, setUserAccess] = useState(0);
   const [color, setColor] = useState('#ef4444');
+  const [nom, setNom] = useState('');
 
   const icons = {
     chevron: <ChevronDown fill="currentColor" size={16} height={undefined} width={undefined} />,
@@ -48,17 +49,28 @@ const Navbarr = () => {
 
   useEffect(() => {
     let user = null;
-    let color = null;
     if (typeof window !== 'undefined') {
       user = window.localStorage.getItem("userAccess");
-      color = window.localStorage.getItem("color");
       if (user !== null) {
         setUserAccess(parseInt(user));
-        setColor(color);
+      }
+      else {
+        setUserAccess(-1);
       }
     }
+
+    fetch("https://minfoapi.fly.dev/settings/str/Nom")
+      .then((res) => res.text())
+      .then((nom) => setNom(nom))
+      .catch((error) => console.error(error));
+
+    fetch("https://minfoapi.fly.dev/settings/str/Couleur")
+      .then((res) => res.text())
+      .then((color) => setColor(color))
+      .catch((error) => console.error(error));
+
   }, []);
-  
+
 
   return (
     <div className="flex z-50 max-md:w-0 w-1/6">
@@ -67,13 +79,13 @@ const Navbarr = () => {
         <div className="flex flex-col space-y-4">
           <div className="flex items-center justify-center h-32">
             <Link href="/" className="flex flex-col items-center justify-center space-y-2" onClick={handleLinkClick}>
-              <img src="logo.png" alt="Logo" className="h-16 w-auto" />
-              <h2 className=" text-4xl font-semibold">CHTI'MI</h2>
+              <img src="https://minfoapi.fly.dev/settings/logo" alt="Logo" className="h-16 w-auto" />
+              <h2 className=" text-4xl font-semibold">{nom}</h2>
             </Link>
           </div>
           <div className="flex flex-col space-y-6 text-center text-lg">
 
-            {userAccess < 1 && (
+            {userAccess == 0 && (
               <div className={isActive('/commande')}>
                 <Link href="/commande" onClick={handleLinkClick}>
                   Commande
@@ -123,7 +135,7 @@ const Navbarr = () => {
                   <span className="ml-2">{icons.chevron}</span>
                 </div>
                 {isDropdownOpen && (
-                  <div className="absolute top-12 left-0 bg-red-500 border-3 border-red-800 shadow-lg rounded-lg mt-2 z-10  text-left w-full text-base p-2">
+                  <div className="absolute top-12 left-0 border-3 shadow-lg rounded-lg mt-2 z-10  text-left w-full text-base p-2" style={{ backgroundColor: color }}>
                     <div className="py-2 space-y-2">
                       {userAccess >= 2 && (
                         <div className={isActive('/gestionStock')}>
@@ -184,7 +196,11 @@ const Navbarr = () => {
             <div className="flex items-center justify-center">
               <ThemeSwitch />
             </div>
-
+            <div className="absolute bottom-0 text-sm">
+              <Link href="https://maisonisen.fr/pages/general/mentions.php" target="_blank">
+                Mentions légales
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -195,10 +211,6 @@ const Navbarr = () => {
           <button onClick={() => setIsNavOpen(!isNavOpen)}>
             {isNavOpen ? icons.close : icons.menu}
           </button>
-        </div>
-        {}
-        <div>
-          {/* Contenu de la page */}
         </div>
       </div>
     </div>

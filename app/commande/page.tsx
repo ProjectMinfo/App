@@ -416,7 +416,7 @@ export default function ChatPage() {
   return (
     <>
       <h1 className={title()}>Commande !</h1>
-      <div className="flex justify-center min-h-screen mt-20 max-md:mt-0">
+      <div className="flex justify-center min-h-screen mt-10 max-md:mt-0">
         <div className="flex flex-row max-md:flex-col w-5/6 h-3/4 ">
           <div className="flex-1 m-4 grid gap-32">
             <ChatNext

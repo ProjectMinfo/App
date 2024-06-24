@@ -214,10 +214,10 @@ export default function InscriptionPage() {
       let lancelotText = "";
       switch (step) {
         case 0:
-          lancelotText = "Quel est votre email Junia ?";
+          lancelotText = "On a besoin d'une adresse mail pour te connecter ! Quel est ton adresse mail Junia ?";
           break;
         case 1:
-          lancelotText = "Ton numéro de promo ?";
+          lancelotText = "Ton numéro de promo (ou pas) ?";
           break;
         case 2:
           lancelotText = "Et ton mot de passe (pas nécessairement le mdp Junia) ?";
@@ -270,7 +270,7 @@ export default function InscriptionPage() {
 
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 px-10 max-md:px-2">
       {messages.map((message, index) => (
         message.sender === "Lancelot" ? (
           <LancelotResponse key={index} lancelotText={message.text} />
