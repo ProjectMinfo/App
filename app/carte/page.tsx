@@ -12,7 +12,7 @@ const Carte = () => {
         if (fetchedRef.current) return;
         fetchedRef.current = true;
         const fetchCartes = async () => {
-            for (let i = 1; i <= 10; i++) {  // Assurez-vous de commencer à 1 si le premier ID est 1
+            for (let i = 1; i <= 10; i++) {  
                 try {
                     const url = await getCarte(i);
                     setCartes(cartes => {

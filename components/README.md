@@ -150,7 +150,7 @@ return (
           {isNavOpen ? icons.close : icons.menu}
         </button>
       </div>
-      {/* Placez ici le contenu de votre page */}
+      {/* Contenu de la page */}
     </div>
   </div>
 );

@@ -24,8 +24,8 @@ La page `AffichageCuisine` permet de visualiser les commandes en cours dans la c
 ```typescript
 'use client';
 import React, { useState, useEffect } from "react";
-import { getCommande, getComptes } from "@/config/api"; // Assurez-vous que le chemin est correct pour vos appels API
-import { NewCommandes, Comptes } from "@/types"; // Assurez-vous que le chemin est correct pour vos types
+import { getCommande, getComptes } from "@/config/api"; 
+import { NewCommandes, Comptes } from "@/types"; 
 
 type ColoredCommande = NewCommandes & { color: string } & { nom: string };
 
@@ -222,8 +222,8 @@ La page `AffichageCuisine` permet de visualiser les commandes en cours dans la c
 ```typescript
 'use client';
 import React, { useState, useEffect } from "react";
-import { getCommande, getComptes } from "@/config/api"; // Assurez-vous que le chemin est correct pour vos appels API
-import { NewCommandes, Comptes } from "@/types"; // Assurez-vous que le chemin est correct pour vos types
+import { getCommande, getComptes } from "@/config/api"; 
+import { NewCommandes, Comptes } from "@/types"; 
 
 type ColoredCommande = NewCommandes & { color: string } & { nom: string };
 

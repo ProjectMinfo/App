@@ -145,7 +145,7 @@ export const postUploadLogo = async (formData: FormData) => {
 export const getFileCount = async () => {
   try {
     const response = await api.get("/fichiers/num");
-    return response.data; // Assurez-vous que l'API renvoie un objet avec une clé 'count'
+    return response.data; 
   } catch (error) {
     console.error("Error fetching file count:", error);
     throw error;
@@ -757,7 +757,7 @@ export const getAllEvent = async (type: string) => {
 export const getEventMode = async () => {
   try {
     const response = await api.get("/settings/event");
-    return response.data; // Assurez-vous que response.data a une structure { value: 1 } ou { value: 0 }
+    return response.data; 
   } catch (error) {
     console.error("Error fetching event mode:", error);
     throw error;
@@ -777,7 +777,7 @@ export const deleteEvent = async (id: number) => {
 export const getSettingById = async (id: number) => {
   try {
     const response = await api.get(`/settings/${id}`);
-    return response.data; // Assurez-vous que response.data a une structure { value: 1 } ou { value: 0 }
+    return response.data; 
   } catch (error) {
     console.error("Error fetching event mode:", error);
     throw error;
@@ -857,7 +857,7 @@ export const postOrderStatus = async (value: boolean) => {
 export const getOrderHours = async () => {
   try {
     const response = await api.get("/settings/5");
-    return response.data; // Assurez-vous que response.data a une structure { heureDebutCommandes: "08:00", heureFinCommandes: "20:00" }
+    return response.data; 
   } catch (error) {
     console.error("Error fetching order hours:", error);
     throw error;
