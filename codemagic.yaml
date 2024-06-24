@@ -70,20 +70,28 @@ workflows:
         bundle_identifier: fr.mylow.maisonisen
       vars:
         BUNDLE_ID: "fr.mylow.maisonisen"
-        APP_STORE_APPLE_ID: 6504090590
+        APP_ID: 6504090590
         XCODE_WORKSPACE: "App.xcworkspace"
         XCODE_SCHEME: "App"
+      xcode: 15.1
+      cocoapods: default
     scripts:
       - name: Install npm dependencies for Ionic Capacitor project
         script: | 
           npm install
-      - name: Build app
-        script: |
-          npm run build   
-          # VERIFIER QUE LE BUILD SORT DES FICHIERS STATICS  (cf : next.config.js)
+
+      - name : build web assets
+        script: | 
+          npm run build
+
+      - name : add assets
+        script: | 
+          npx @capacitor/assets generate --ios
+
       - name: Cocoapods installation
         script: | 
           cd ios/App && pod install
+
       - name: Update dependencies and copy web assets to native project
         script: | 
           # if you don't need to update native dependencies, use this:
@@ -91,13 +99,14 @@ workflows:
           #
           # to update native dependencies, use this command:
           npx cap sync
+
       - name: Set up code signing settings on Xcode project
         script: | 
           xcode-project use-profiles
       - name: Increment build number
         script: | 
           cd $CM_BUILD_DIR/ios/App
-          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID")
+          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_ID")
           agvtool new-version -all $(($LATEST_BUILD_NUMBER + 1))
       - name: Build ipa for distribution
         script: | 
@@ -105,7 +114,6 @@ workflows:
           xcode-project build-ipa \
             --workspace "$XCODE_WORKSPACE" \
             --scheme "$XCODE_SCHEME"
-
     artifacts:
       - ios/App/build/ios/ipa/*.ipa
     publishing:
