@@ -196,7 +196,7 @@ const Compte = () => {
                     const prix = commande.prix.toFixed(2);
                     return (
                       <tr key={commande.id}>
-                        <td className="py-2 px-4 border-b border-gray-600 text-center whitespace-nowrap">{toDate(commande.date.$date.$numberLong)}</td>
+                        <td className="py-2 px-4 border-b border-gray-600 text-center whitespace-nowrap">{toDate(parseInt(commande.date.$date.$numberLong))}</td>
                         <td className="py-2 px-4 border-b border-gray-600 text-left whitespace-normal" dangerouslySetInnerHTML={{ __html: contenu }}></td>
                         <td className="py-2 px-4 border-b border-gray-600 text-center whitespace-nowrap">{prix} €</td>
                       </tr>
