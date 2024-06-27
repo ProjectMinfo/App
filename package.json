@@ -83,6 +83,7 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.5.7",
     "@types/react-table": "^7.7.20",
     "tailwindcss": "^3.4.3"
   }

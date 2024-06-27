@@ -46,28 +46,49 @@ type AllType = NewMenus | NewPlats | NewSnacks | NewBoissons;
 
 interface RecapitulatifProps {
     repas: NewRepas;
+    isServeur: boolean;
     handleDeleteItem: (type: keyof NewRepas, item: AllType) => void;
 }
 
-export function RecapComponent({ repas, handleDeleteItem }: RecapitulatifProps) {
+export function RecapComponent({ repas, handleDeleteItem, isServeur}: RecapitulatifProps) {
     const [prixTotal, setPrixTotal] = useState<number>(0.0);
 
     useEffect(() => {
         let total = 0;
         repas.menu.forEach(menu => {
-            total += menu.menu.prix;
+            if (isServeur) {
+                total += menu.menu.prixServeur;
+            }
+            else {
+                total += menu.menu.prix;
+            }
         });
         repas.plat.forEach(plat => {
-            total += plat.plat.prix;
+            if (isServeur) {
+                total += plat.plat.prixServeur;
+            }
+            else {
+                total += plat.plat.prix;
+            }
         });
         repas.snack.forEach(snack => {
-            total += snack.snack.prix;
+            if (isServeur) {
+                total += snack.snack.prixServeur;
+            }
+            else {
+                total += snack.snack.prix;
+            }
         });
         repas.boisson.forEach(boisson => {
-            total += boisson.boisson.prix;
+            if (isServeur) {
+                total += boisson.boisson.prixServeur;
+            }
+            else {
+                total += boisson.boisson.prix;
+            }
         });
         setPrixTotal(total);
-    }, [repas]);
+    }, [repas, isServeur]);
 
     return (
         <div className="flex flex-col gap-4 max-w-[300px] min-w-[300px] text-justify">
@@ -101,7 +122,8 @@ export function RecapComponent({ repas, handleDeleteItem }: RecapitulatifProps) 
                                             {index < repas.menu.length - 1 ? ", " : ""}
                                         </span>
                                         <span className="ml-auto">
-                                            {menu.menu.prix.toFixed(2)}
+                                            { isServeur? menu.menu.prixServeur.toFixed(2) :
+                                            menu.menu.prix.toFixed(2)}
                                         </span>
                                     </div>
                                 ))
@@ -150,7 +172,8 @@ export function RecapComponent({ repas, handleDeleteItem }: RecapitulatifProps) 
                                             {index < repas.plat.length - 1 ? ", " : ""}
                                         </span>
                                         <span className="ml-auto">
-                                            {plat.plat.prix.toFixed(2)}
+                                            {isServeur? plat.plat.prixServeur.toFixed(2) :
+                                            plat.plat.prix.toFixed(2)}
                                         </span>
                                     </div>
                                 </p>
@@ -203,7 +226,8 @@ export function RecapComponent({ repas, handleDeleteItem }: RecapitulatifProps) 
                                             {/* {index < repas.snack.length - 1 ? ", " : ""} */}
                                         </span>
                                         <span className="ml-auto">
-                                            {snack.snack.prix.toFixed(2)}
+                                            { isServeur? snack.snack.prixServeur.toFixed(2) :
+                                            snack.snack.prix.toFixed(2)}
                                         </span>
                                     </div>
                                 ))
@@ -241,7 +265,8 @@ export function RecapComponent({ repas, handleDeleteItem }: RecapitulatifProps) 
                                             {/* {index < repas.boisson.length - 1 ? ", " : ""} */}
                                         </span>
                                         <span className="ml-auto">
-                                            {boisson.boisson.prix.toFixed(2)}
+                                            {isServeur ? boisson.boisson.prixServeur.toFixed(2) :
+                                            boisson.boisson.prix.toFixed(2)}
                                         </span>
                                     </div>
                                 ))

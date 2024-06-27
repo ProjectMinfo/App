@@ -1,53 +1,46 @@
-# Next.js & NextUI Template
+# Projet MINFO
 
-This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).
+Ceci est un README permettant de lancer le projet. La documentation est disponible dans le `pdf` remis avec le projet.
 
-[Try it on CodeSandbox](https://githubbox.com/nextui-org/next-app-template)
 
-## Technologies Used
+## Lancement du projet déjà compilé
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [NextUI v2](https://nextui.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+Pour lancer le projet déjà compilé, vous pouvez faire un serveur web.
+Nous vous conseillons d'utiliser l'extension `Live Server` de Visual Studio Code.
 
-## How to Use
+Pour cela, il suffit ouvrir le dossier build dans une fenêtre de Visual Studio Code et de cliquer sur `Go Live` en bas à droite de l'écran.
 
-### Use the template with create-next-app
+## Compilation
 
-To create a new project based on this template using `create-next-app`, run the following command:
 
-```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
-```
+### Installation
 
-### Install dependencies
-
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+Pour installer le projet, il suffit d'installer les dépendances avec la commande suivante:
 
 ```bash
 npm install
 ```
 
-### Run the development server
+### Lancement
+
+Pour lancer le projet, il suffit de lancer la commande suivante:
 
 ```bash
 npm run dev
 ```
 
-### Setup pnpm (optional)
+### Compilation
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
+Pour compiler le projet, il suffit de lancer la commande suivante:
 
 ```bash
-public-hoist-pattern[]=*@nextui-org/*
+npm run build
 ```
 
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
 
-## License
+## Auteurs
 
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+- Milo Montuori
+- Rémi Hage
+- Louis Charpentier
+- Matthieu Hoste

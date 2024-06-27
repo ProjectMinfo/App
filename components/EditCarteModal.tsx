@@ -96,10 +96,10 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
     };
 
     // Filtrer les ingrédients disponibles qui ne sont pas déjà dans la liste d'ingrédients du plat
-    // const availableIngredients = listIngredients.filter((ingredient) => {
-    //     const isInList = (tempItem as Plats).ingredients.some((item) => item.ingredient.id === ingredient.id);
-    //     return !isInList && ingredient.dispo;
-    // });
+    const availableIngredients = listIngredients.filter((ingredient) => {
+        const isInList = (tempItem as Plats).ingredients.some((item) => item.ingredient.id === ingredient.id);
+        return !isInList && ingredient.dispo;
+    });
 
     return (
         <>

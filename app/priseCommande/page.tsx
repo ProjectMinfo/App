@@ -515,7 +515,7 @@ export default function ChatPage() {
           <div className="w-1 border-r-2 mx-2"></div>
 
           <div className="flex-1 m-4 justify-end text-right max-md:grid max-md:justify-center">
-            <RecapComponent handleDeleteItem={handleDeleteItem} repas={repas} />
+            <RecapComponent handleDeleteItem={handleDeleteItem} repas={repas} isServeur={serveur} />
             <DetailCommandeModal
               isOpen={isModalOpen}
               onClose={(values: { viandes: Viandes[], ingredients: Ingredients[] }) => {
