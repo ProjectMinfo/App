@@ -1,0 +1,113 @@
+#MainBlock{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#FroidDiv{
+  height: 100%;
+  width: calc(100% - 2px);
+  border-right: solid 2px black;
+}
+#ChaudDiv{
+  height: 100%;
+  width: calc(100% - 2px);
+  border-left: solid 2px black;
+}
+
+.TexteZone{
+  display: flex;
+  justify-content: center;
+  padding: 1%;
+  border: solid 2px black
+}
+#TextFroid{
+  background-color: rgb(0, 200, 255);
+  border-right: 1px;
+}
+#TextChaud{
+  background-color: red;
+  border-left: 1px;
+}
+
+
+.bloc {
+  border: 2px solid var(--main_red);
+  margin-top: 4px;
+  background-color: white;
+}
+
+.LateCommande div{
+  text-decoration: line-through;
+  text-decoration-thickness: 2px
+}
+
+
+
+.ligne {
+  display: flex;
+  width: 100%;
+}
+
+.colonne {
+  border: 1px solid black;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.NameZone{
+  width: 15%;
+  font-size: 0.9em;
+}
+.NourritureZone{
+  width: 60%;
+  font-size: 0.8em;
+}
+.AlliasZone{
+  width: 25%;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+.CommentaireZone{
+  width: 100%;
+  font-size: 0.8em;
+}
+
+.CommandeZone{
+  overflow: hidden;
+  padding: 0 4px;
+}
+
+.bloc:nth-child(even) {
+  background-color: #DCDCDC;
+}
+
+.BleuPastel{
+  background-color: #bde0ff !important;
+}
+.OrangePastel{
+  background-color: #ffddbd !important;
+}
+.VertPastel{
+  background-color: #e4f1cb !important;
+}
+.RosePastel{
+  background-color: #fd97ac !important;
+}
+.VioletPastel{
+  background-color: #dbbdff !important;
+}
+.CyanPastel{
+  background-color: #bdf7ff !important;
+}
+.JaunePastel{
+  background-color: #ffeb94 !important;
+}
+
+.OnlineCommandeCSS{
+  border: solid 5px var(--main_red) !important;
+}

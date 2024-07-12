@@ -1,0 +1,30 @@
+/* contient des éléments communs aux différents formulaires du site */
+.title-form{
+    text-align: center;
+}
+
+input{
+    border: solid 2px var(--main_red);
+    border-radius: 8px;
+    height: 5vh;
+    width: 15vw;
+}
+
+.conn{
+    text-decoration: none;
+    background-color: white;
+    border: solid 2px var(--main_red);
+    padding: 5px;
+    border-radius: 8px;
+    width: 10vw;
+    color: var(--main_red);
+}
+.conn:hover{
+    cursor: pointer;
+    background-color: var(--main_red);
+    color: white;
+}
+
+textarea{
+    resize: none;
+}

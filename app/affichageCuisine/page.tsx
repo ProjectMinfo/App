@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from "react";
-import { getCommande, getComptes } from "@/config/api"; 
-import { NewCommandes, Comptes } from "@/types"; 
+import { getCommande, getComptes } from "@/config/api";
+import { NewCommandes, Comptes } from "@/types";
 
 type ColoredCommande = NewCommandes & { color: string } & { nom: string };
 
@@ -11,6 +11,14 @@ const CommandesCuisine = () => {
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const toDate = (dateNumber: number) => {
+    const date = new Date(Number(dateNumber));
+    const jour = ('0' + date.getDate()).slice(-2); // Obtient le jour avec un zéro initial si nécessaire
+    const mois = ('0' + (date.getMonth() + 1)).slice(-2); // Obtient le mois avec un zéro initial si nécessaire
+    const annee = date.getFullYear(); // Obtient l'année
+    return `${annee}-${mois}-${jour}`;
+  };
 
   useEffect(() => {
     const fetchCommandes = async () => {
@@ -23,8 +31,16 @@ const CommandesCuisine = () => {
           .map((commande: ColoredCommande) => ({
             ...commande,
             color: generateRandomColor(commande.id),
-            nom: comptes.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.nom || "Inconnu",
-          }));
+            nom: comptes.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.nom || commande.commentaire.split("::")[0] || "Inconnu",
+          }))
+          .filter(
+            (commande: ColoredCommande) => {
+              if (
+                toDate(commande.date.$date.$numberLong) == new Date().toISOString().split('T')[0] &&
+                commande.distribuee == false
+              ) { return commande; }
+            }
+          )
 
         setCommandes(resultCommandes);
         setClients(comptes);
@@ -71,7 +87,7 @@ const CommandesCuisine = () => {
 
   if (loading) {
     return <div>Chargement...</div>;
-  }  
+  }
 
   return (
     <div className={`flex flex-col h-screen overflow-hidden max-w-full ${isFullscreen ? "fixed top-0 left-0 w-full h-full bg-white z-50" : ""}`}>
@@ -93,7 +109,7 @@ const CommandesCuisine = () => {
         <div className="w-1/2 p-2 border-r border-gray-300 overflow-hidden">
           <h2 className="text-2xl text-blue-800 font-bold mb-4">Sandwichs et Hot-Dogs</h2>
           <div className="grid grid-cols-1 gap-2">
-            {commandes.filter(commande => !commande.distribuee && (commande.contenu.includes('Sandwich') || commande.contenu.includes('Hot-Dog'))).slice(0, 10).map((commande, index) => {
+            {commandes.filter(commande => (commande.contenu.includes('Sandwich') || commande.contenu.includes('Hot-Dog'))).slice(0, 10).map((commande, index) => {
               const produitsFroids = commande.contenu.split('//').filter(part => part.includes('Sandwich') || part.includes('Hot-Dog'));
               return produitsFroids.map((produit, idx) => (
                 <div key={`${index}-${idx}`} className="p-2 rounded shadow-lg bg-white bg-opacity-80 text-black" style={{ backgroundColor: commande.color, height: '80px', width: '95%' }}>
@@ -108,7 +124,7 @@ const CommandesCuisine = () => {
         <div className="w-1/2 p-2 overflow-hidden">
           <h2 className="text-2xl text-red-800 font-bold mb-4">Paninis et Croque-Monsieur</h2>
           <div className="grid grid-cols-1 gap-2">
-            {commandes.filter(commande => !commande.distribuee && (commande.contenu.includes('Panini') || commande.contenu.includes('Croque-Monsieur'))).slice(0, 10).map((commande, index) => {
+            {commandes.filter(commande => (commande.contenu.includes('Panini') || commande.contenu.includes('Croque-Monsieur'))).slice(0, 10).map((commande, index) => {
               const produitsChauds = commande.contenu.split('//').filter(part => part.includes('Panini') || part.includes('Croque-Monsieur'));
               return produitsChauds.map((produit, idx) => (
                 <div key={`${index}-${idx}`} className="p-2 rounded shadow-lg bg-white bg-opacity-80 text-black" style={{ backgroundColor: commande.color, height: '80px', width: '95%' }}>

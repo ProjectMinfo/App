@@ -1,0 +1,58 @@
+.carte{
+    color: var(--dark_red);
+}
+
+.recherche{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.recherche > input{
+    border: solid 2px var(--dark_red);
+    border-radius: 5px;
+}
+
+.gestion-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 90%;
+}
+
+table{
+    margin: 1%;
+    border-collapse: collapse;
+    overflow-y: auto;
+    text-align: center;
+    overflow: scroll;
+
+}
+table, th, td{
+    border: solid 1px var(--main_red);
+    padding: 3px;
+}
+th,table{
+    border: solid 2px var(--main_red);
+}
+.odd{
+    background-color: #f1cfd6 !important;
+}
+
+hr{
+    border: solid 2px var(--main_red);
+}
+
+#recherche_elem{
+    width: 60%;
+    padding: 4px;
+}
+#recherche_elem:focus{
+    outline: none;
+}
+
+.action{
+    display: flex;
+    justify-content: space-evenly;
+}

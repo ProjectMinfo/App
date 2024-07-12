@@ -37,7 +37,7 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
     }, []);
 
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen) {            
             // Synchroniser tempItem avec l'item actuel chaque fois que le modal s'ouvre
             setTempItem({ ...item });
         }
@@ -97,6 +97,8 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
 
     // Filtrer les ingrédients disponibles qui ne sont pas déjà dans la liste d'ingrédients du plat
     const availableIngredients = listIngredients.filter((ingredient) => {
+        if (!('ingredients' in tempItem)) return ingredient.dispo;
+
         const isInList = (tempItem as Plats).ingredients.some((item) => item.ingredient.id === ingredient.id);
         return !isInList && ingredient.dispo;
     });

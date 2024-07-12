@@ -1,0 +1,167 @@
+.SalleSecu {
+    color: var(--dark_red);
+}
+
+body{
+    text-align: center;
+}
+
+h2{
+    margin: 40px 0;
+    margin-bottom: 24px;
+}
+
+.row{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+input {
+    border: solid 2px var(--dark_red);
+    border-radius: 5px;
+}
+
+.add-btn{
+    width: 50%;
+}
+
+table {
+    margin: 1%;
+    border-collapse: collapse;
+    overflow-y: auto;
+    text-align: center;
+    table-layout: fixed;
+    width: 100%;
+}
+
+table, th, td {
+    border: solid 1px var(--main_red);
+    padding: 3px;
+}
+
+th, table {
+    border: solid 2px var(--main_red);
+}
+
+.odd {
+    background-color: #f1cfd6 !important;
+}
+
+
+.col-mid{
+    width: 40vw;
+}
+
+.titre-tab > td{
+    border: solid 3px black;
+}
+
+.add-releve-div{
+    position: absolute;
+    border:  solid 3px var(--main_red);
+    border-radius: 15px;
+    z-index: 1000;
+    background-color: white;
+    height: 30vh;
+    width: 50vw;
+    left: 25vw;
+    top: 35vh;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.add-releve-div>div input{
+    height: 40px;
+    width: 100px;
+}
+
+#releve_inputs{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.submit-button{
+    width: 50%;
+    height: 48px;
+    margin: 0 auto;
+}
+
+.close-button{
+    position:absolute;
+    right:0;
+    top:0;
+    height:50px;
+    width:50px;
+    background-color: transparent;
+    border: none;
+}
+
+.search-bar{
+    margin-bottom: 16px;
+    width: 50%;
+}
+
+/* Style de la popup */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+}
+
+/* Style pour les liens de confirmation et d'annulation */
+.popup a {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    text-decoration: none;
+    background-color: #FF3547;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Style pour les input */
+.popup input#confirm {
+    background-color: #007BFF;
+    border: #007BFF;
+    color: white;
+    padding: 10px 20px;
+}
+
+.popup input#cancel {
+    background-color: #FF3547;
+    border: #FF3547;
+    color: white;
+    padding: 10px 20px;
+}
+
+.popup > form{
+    text-align: center;
+}
+
+
+@media screen and (max-width: 864px){
+    .row{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .col-mid{
+        width: 90vw;
+    }
+
+    table{
+        font-size: 14px;
+    }
+
+}

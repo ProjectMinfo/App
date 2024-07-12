@@ -1,0 +1,76 @@
+.comptes {
+    color: var(--dark_red);
+}
+
+.recherche {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.recherche > input {
+    border: solid 2px var(--dark_red);
+    border-radius: 5px;
+}
+
+.comptes-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.compte {
+    text-align: center;
+}
+
+.positif {
+    color: green;
+}
+.limite {
+    color: rgb(196, 137, 27);
+}
+
+.negatif {
+    color: var(--main_red);
+}
+
+table {
+    margin: 1%;
+    border-collapse: collapse;
+    overflow-y: auto;
+    width: 80%;
+    text-align: center;
+    table-layout: fixed;
+}
+
+table, th, td {
+    border: solid 1px var(--main_red);
+    padding: 3px;
+}
+
+th, table {
+    border: solid 2px var(--main_red);
+}
+
+hr {
+    border: solid 2px var(--main_red);
+}
+
+#recherche_num_compte {
+    width: 60%;
+    padding: 4px;
+}
+#recherche_num_compte:focus {
+    outline: none;
+}
+
+.odd {
+    background-color: #f1cfd6 !important;
+}
+
+@media screen and (max-width: 864px){
+    table{
+        font-size: 12px;
+    }
+}

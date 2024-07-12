@@ -1,0 +1,74 @@
+.recherche{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.recherche > input{
+    border: solid 2px var(--dark_red);
+    border-radius: 5px;
+}
+
+.stock{
+    color: var(--dark_red);
+}
+
+.donnees{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+h3{
+    text-align: center;
+}
+
+.ingredients, .viande, .extra, .boisson-snack{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+table{
+    margin: 1%;
+    border-collapse: collapse;
+    overflow-y: auto;
+    width: 20vw;
+    text-align: center;
+}
+table, th, td{
+    border: solid 1px var(--main_red);
+    padding: 3px;
+}
+th,table{
+    border: solid 2px var(--main_red);
+}
+.odd{
+    background-color: #f1cfd6 !important;
+}
+
+.actions{
+    display: flex;
+}
+
+hr{
+    border: solid 2px var(--main_red);
+}
+
+@media screen and (max-width: 864px)
+{
+    .donnees{
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    table{
+        width: 80vw;
+    }
+}
+
+/* .article{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+} */

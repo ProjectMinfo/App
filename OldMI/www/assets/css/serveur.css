@@ -1,0 +1,39 @@
+.ServeurContainer{
+    width: 100%;
+}
+.ServeurContainer > span {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.admin-container{
+    grid-area: liens;
+    display: flex;
+    justify-content: center;
+    gap: 10px
+}
+
+.admin-container > a{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    text-decoration: none;
+    border: solid 2px var(--main_red);
+    border-radius: 10px;
+}
+
+.admin-container > a:hover{
+    cursor: pointer;
+    zoom: 110%;
+}
+
+.admin-container > a > img{
+    height: 20vh;
+    width: auto;
+}
+

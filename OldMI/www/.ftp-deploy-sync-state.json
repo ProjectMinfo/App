@@ -1,0 +1,2157 @@
+{
+    "description": "DO NOT DELETE THIS FILE. This file is used to keep track of which files have been synced in the most recent deployment. If you delete this file a resync will need to be done (which can take a while) - read more: https://github.com/SamKirkland/FTP-Deploy-Action",
+    "version": "1.0.0",
+    "generatedTime": 1716751812670,
+    "data": [
+        {
+            "type": "folder",
+            "name": "API"
+        },
+        {
+            "type": "folder",
+            "name": "assets"
+        },
+        {
+            "type": "folder",
+            "name": "includes"
+        },
+        {
+            "type": "file",
+            "name": "index.php",
+            "size": 1287,
+            "hash": "16ea24db4866d7c44639e484c541f7e16ba5c247cf1e87851712769f29df26dc"
+        },
+        {
+            "type": "folder",
+            "name": "pages"
+        },
+        {
+            "type": "file",
+            "name": "API/database.php",
+            "size": 848,
+            "hash": "b50fcd5e72cf6a4c043578d9139f8050534f2f5200d768076a09fe89b7dfccc8"
+        },
+        {
+            "type": "file",
+            "name": "API/functions.php",
+            "size": 13499,
+            "hash": "709e729277c9c7eead6ef0eb5dad250fc2e126776f9656174d81140366a51bfb"
+        },
+        {
+            "type": "file",
+            "name": "API/index.php",
+            "size": 7122,
+            "hash": "0682438403af7de6f19c58ad676964f3417078a183b7205f102dcef4fc87ba0e"
+        },
+        {
+            "type": "folder",
+            "name": "assets/css"
+        },
+        {
+            "type": "file",
+            "name": "assets/favicon.ico",
+            "size": 15086,
+            "hash": "70f0dcae5b5b9bfb423c5ec8cce855c56bca1de011a9442b96db189f88ed9fb7"
+        },
+        {
+            "type": "folder",
+            "name": "assets/fonts"
+        },
+        {
+            "type": "folder",
+            "name": "assets/img"
+        },
+        {
+            "type": "folder",
+            "name": "assets/js"
+        },
+        {
+            "type": "folder",
+            "name": "assets/old"
+        },
+        {
+            "type": "folder",
+            "name": "assets/svg"
+        },
+        {
+            "type": "file",
+            "name": "includes/admin_panel.php",
+            "size": 546,
+            "hash": "7332e476d5b78e80a46ad815958540cb30cac58e7b04f20e5a7f04471e9b34b3"
+        },
+        {
+            "type": "file",
+            "name": "includes/cookies_utils.php",
+            "size": 48,
+            "hash": "683d5c385b01dd61f785c04bfd26b14333592e0baa541dde92b737d29c3495fb"
+        },
+        {
+            "type": "file",
+            "name": "includes/database.php",
+            "size": 854,
+            "hash": "254ef15695e2614a24004f1b3e1b08a2b891d8aef10af5f09f19ddf2f24c1ab1"
+        },
+        {
+            "type": "file",
+            "name": "includes/delete_account.php",
+            "size": 1105,
+            "hash": "e6686ad393ac9d289acac03255713198eebbc74c871c8862e9d32015f91d7143"
+        },
+        {
+            "type": "file",
+            "name": "includes/delete_cookies.php",
+            "size": 622,
+            "hash": "f6e9e615b3b3d4a549b086b852894f4a88ac529773675857175f7a66349b0d14"
+        },
+        {
+            "type": "file",
+            "name": "includes/footer.php",
+            "size": 734,
+            "hash": "a478d54dc0ef92700366879262c5b8644beb540891316dafa5abde3b4207cc1f"
+        },
+        {
+            "type": "folder",
+            "name": "includes/fpdf"
+        },
+        {
+            "type": "file",
+            "name": "includes/functions.php",
+            "size": 12106,
+            "hash": "bc2c3c95c26351146aa063ab1abcf1c55c458c1722c16c83f30b599be87b05e5"
+        },
+        {
+            "type": "file",
+            "name": "includes/header.php",
+            "size": 977,
+            "hash": "9dfcc60edb14e418532bfd43e6b3f3f8f204bdb9afcf1ad3e7532a7d959d657e"
+        },
+        {
+            "type": "file",
+            "name": "includes/index.php",
+            "size": 49,
+            "hash": "e9be4a2424cffa779bfed05731c06f2aae41f21c1098025a0a5c074b5f8e7da9"
+        },
+        {
+            "type": "file",
+            "name": "includes/key.php",
+            "size": 82,
+            "hash": "b1c6556a1ca71ece1a7ee421573ece9c92ba9f80c28198de95d5cd5efc11f2b6"
+        },
+        {
+            "type": "file",
+            "name": "includes/logout.php",
+            "size": 230,
+            "hash": "1766877fef2afb452edbf31f6b710f47f279a7c5196b2d8cbf0dbe8d39708cd9"
+        },
+        {
+            "type": "folder",
+            "name": "includes/phpmailer"
+        },
+        {
+            "type": "folder",
+            "name": "includes/purecaptcha"
+        },
+        {
+            "type": "file",
+            "name": "includes/set_cookies.php",
+            "size": 693,
+            "hash": "773c70c110858209127b8754b43dba4c1171c2a096729e5a9371a5ddc6839e73"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce"
+        },
+        {
+            "type": "folder",
+            "name": "pages/general"
+        },
+        {
+            "type": "file",
+            "name": "pages/index.php",
+            "size": 47,
+            "hash": "b24b7666df77edab24486b3e25ac2429662abf929ad6490f6776e141ece459c2"
+        },
+        {
+            "type": "folder",
+            "name": "pages/admin"
+        },
+        {
+            "type": "folder",
+            "name": "pages/serveurs"
+        },
+        {
+            "type": "folder",
+            "name": "pages/user"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/achats.css",
+            "size": 1540,
+            "hash": "44a6f4bface2648953294c3d7421deb9def5afe11b441ca6a6b60afae80c7e7b"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/admin.css",
+            "size": 1032,
+            "hash": "67e366b15b8b6f0b5afcda255a1cfb51c354200e062162a3b7177ff2bce6d28e"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/affichageCuisine.css",
+            "size": 1678,
+            "hash": "45528bf0ea6dc42647625eaf36c5999d3babcd42c01e44c469b9f83ad59feae4"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/bootstrap-reboot.min.css",
+            "size": 10126,
+            "hash": "7d80ef3f14ad9700827461fe2a77c735b95097c749fafdc88b9365b4bf2f2ddf"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/commandeServeur.css",
+            "size": 23579,
+            "hash": "1e2ce96a03fd913689705b1d31f876620d6e5d72b92afad76e9b2613800a45fd"
+        },
+        {
+            "type": "folder",
+            "name": "assets/css/commandeUser"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/commander.css",
+            "size": 1713,
+            "hash": "1fbe058d35b2a5282dc0fdf0d725ba8966df2790a4bec1f8570e674ae49026dd"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/consultation_comptes.css",
+            "size": 1039,
+            "hash": "63c93ddc0804191a479ff36294678605beac98b71de98034541f8b690bad31cd"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/forms.css",
+            "size": 535,
+            "hash": "223ecb49707c1f2861e41d888d9c29db5c240ffdfd079cfee4dc93bf18643a2d"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/gestion_actus.css",
+            "size": 815,
+            "hash": "4d3e64637bfc40e94751f0ca1622a4b73f4c8817e1110a5162e070187448b927"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/gestion_carte.css",
+            "size": 838,
+            "hash": "5262ed871f7f28a520f7d545c1b1c36113f1cf39701f2b90ad69f9c661f5a501"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/gestion_stock.css",
+            "size": 1073,
+            "hash": "7592de3771dd18001360637f6d5b78a54648f157b0f57524c137fcec45e19582"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/global.css",
+            "size": 5948,
+            "hash": "6ee8c601ee82959be32a7af7fb852231f1d6fa150a004a0d4adba3da0990ade9"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/inscription_connexion.css",
+            "size": 481,
+            "hash": "9c509a5f55ce341c9da030d7fc24209155a5e0c23c036a2db1b55806d28ee9d4"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/planning.css",
+            "size": 1676,
+            "hash": "2376eee0ca9ed56341c9108dd4b8075d587eb751bea18c10d3d9df1b8272d0c2"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/profil.css",
+            "size": 1762,
+            "hash": "a8621f7dbfc909e70d140411221614e8fe2c2d70b9e97a22314baf9cf96c3ec9"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/salle_secu.css",
+            "size": 2535,
+            "hash": "0a5af7f93cde80583f46ac33950ec2f3fd4756ce71b7988be9d6f23db15a837f"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/serveur.css",
+            "size": 653,
+            "hash": "1e9c778f0836048ab1a42e42b9baa39e12de88f079507efa1a87b298170b3364"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/settings.css",
+            "size": 297,
+            "hash": "09f21176441b7d2bc0dc8bbb95c57da667dd49926225517c076c8e2c8cfaa8d1"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/tresorerie.css",
+            "size": 525,
+            "hash": "8d873912e9e02dbf81ee0afd269aa47769e619162e2ceaefa5fc16ca64e61f2c"
+        },
+        {
+            "type": "file",
+            "name": "assets/fonts/Gabarito-VariableFont_wght.ttf",
+            "size": 157256,
+            "hash": "3623c0206c3a7912b3fd3028da005699ec5971c90600d43c58a329eda88334a5"
+        },
+        {
+            "type": "file",
+            "name": "assets/img/BDP.png",
+            "size": 974710,
+            "hash": "eaf93a38aa3d83cd5c8c7afe21eaa8746a7c706062d5bc8bf546b1711e04e3a0"
+        },
+        {
+            "type": "file",
+            "name": "assets/img/Carte1.png",
+            "size": 864685,
+            "hash": "9c7f72262b148fcb47201f86f5d9fdc90e1821d6e41795054a143f417755f039"
+        },
+        {
+            "type": "file",
+            "name": "assets/img/Carte2.png",
+            "size": 3623156,
+            "hash": "234ff7c8b3f8db4b8f7ff38fe37f950cb992776bed3d09feb0549beb135b264e"
+        },
+        {
+            "type": "file",
+            "name": "assets/img/Chtite_faim.png",
+            "size": 71469,
+            "hash": "f41e1ca69cfc69ef5eda2ab60ec31039a062f5db83f2d3e7232a17269520fda3"
+        },
+        {
+            "type": "file",
+            "name": "assets/img/Logo_sans_texte.png",
+            "size": 32036,
+            "hash": "9872dfa54984a2d9c77b09dc3182888c7d345b585df3929db52dc9211636bd97"
+        },
+        {
+            "type": "file",
+            "name": "assets/img/Ptit_quinquin.png",
+            "size": 70469,
+            "hash": "8e4b1b33f81da7c6d5d72e63ca3e8200ef0a0970ea94efebaa6d242d6146c66d"
+        },
+        {
+            "type": "file",
+            "name": "assets/img/Tcho_biloute.png",
+            "size": 77497,
+            "hash": "8946503293a2fe51bfc2fab837d6526a6d5499b119384c6809917210d6353096"
+        },
+        {
+            "type": "file",
+            "name": "assets/js/jquery.min.js",
+            "size": 87533,
+            "hash": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/Cornet.png",
+            "size": 458200,
+            "hash": "224e383b8982a53624ff98c5d939ff91e7e2337167bd036c46a356da96cddd53"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/Frite.png",
+            "size": 84607,
+            "hash": "1d13aaae6b5aaae26e36183808aa67ed5052af44725fac77a593e2d2bb594d55"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/Logo Chti'Mi.png",
+            "size": 655209,
+            "hash": "a766ea522f70cd042711df814af7f5afb6e4d5e1a75180ced521aec334400f63"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/Logo Chti'Mi.svg",
+            "size": 150345,
+            "hash": "e1953e45f750b2fab6317b69eb81972cdb681db39ef89175e9fee741279e7d79"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/Logo.png",
+            "size": 124083,
+            "hash": "032b556c807eabe568649fd4c725962bb7f1abef5f51510e13d788a20b12a70c"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/Logo_sans_texte.png",
+            "size": 87278,
+            "hash": "a6d061da5ad1c814a28022d9c81c832ebb3db69f2593ed1f10cffdc937b16883"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/MiLogo.svg",
+            "size": 150345,
+            "hash": "e1953e45f750b2fab6317b69eb81972cdb681db39ef89175e9fee741279e7d79"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/Noir & Blanc.png",
+            "size": 419807,
+            "hash": "bf8fc32b9e0c022a971879f421a68007db0f2fe45299e344392749e254afc8c8"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/PP insta.png",
+            "size": 826218,
+            "hash": "6c06ef11d3f1a48f313131e9f7bb6782d5c3f877ff8b49da231c5f2641e225ff"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/Sans fond.png",
+            "size": 579720,
+            "hash": "dd39ddb88a2430158b08ab4941f99b37b227e08eb65eb47d32de728272266f29"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/Tampon Chti'Mi.png",
+            "size": 70852,
+            "hash": "6c5cb77c64c2cf965932574dca2dad58b534799d4a0e78c013633a1e1f1b07be"
+        },
+        {
+            "type": "file",
+            "name": "assets/old/Texte.png",
+            "size": 140762,
+            "hash": "1a254caf9765568fccb84986dd5a006cc0680db9d7085f97a24e052c91d2e4ed"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/box-open-solid.svg",
+            "size": 711,
+            "hash": "1c429a4d6186d74f4a7f8d48523a572d31670a1768795f83817f13b04c42c66b"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/box-solid.svg",
+            "size": 430,
+            "hash": "2c171b6e17e0e0366a82341aeed7886d6332027bfd189f97cb0881ef2862422d"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/boxes-packing-solid.svg",
+            "size": 867,
+            "hash": "536155c17d85e3debb178d3a3a9c8bea21bc6181cd391d238957d8f078899110"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/broom-ball-solid.svg",
+            "size": 788,
+            "hash": "09831d814ed9fdc78b599727de0fb8221595224f63d8dc763da5d5d4d171ea14"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/burger-solid.svg",
+            "size": 727,
+            "hash": "101baca986955e73235556ffeae16d766b97abd86335dde3f6aecb845addc176"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/calendar-days-solid.svg",
+            "size": 1060,
+            "hash": "39a4ecac811adc7087e5a93e665f38438d81a589db92e9d3438f04aa2191e53c"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/facebook.svg",
+            "size": 512,
+            "hash": "ad3f6a7546902b413908a7a4601703a4f9fa87a2798a7c8c1a1731c0d9b520d3"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/gear-solid.svg",
+            "size": 1283,
+            "hash": "a5a774a3e059b517c0570552581169ef51c78474b312cfacb099884822c73a65"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/instagram.svg",
+            "size": 1170,
+            "hash": "544f45ef277797fbfd606b6793db6826dc8bf61612aedf3dfc0f5320d2c18be4"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/kitchen-set-solid.svg",
+            "size": 1013,
+            "hash": "6912cf4532ecb353280720e527e41d1c46ffe12941fe84302ded57a8563c69b5"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/money-check-dollar-solid.svg",
+            "size": 1279,
+            "hash": "4a0b40d69b0a977444eb76b0859e1e2d99cb85d76862c1ac9aadb9073b875bc3"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/newspaper-solid.svg",
+            "size": 882,
+            "hash": "c07b5032ecce1889dfd3d2c6595301ed95f6c58287267a8f006cb121d7c0cdfe"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/pen-to-square-solid.svg",
+            "size": 748,
+            "hash": "0e80be2e84eb012f5f3611a2b2c7a31af8e368b93c06dd2001a18868080e617e"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/skull-crossbones-solid.svg",
+            "size": 783,
+            "hash": "d482792876851b5362daaa2a8d7e0213d052956f0fbd906c1eb26e1de51876c3"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/trash-solid.svg",
+            "size": 502,
+            "hash": "b46136af6fc0549d6dcaa936c1ffde496615d2244ed1981acb81fb5b6320d6e2"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/user-pen-solid.svg",
+            "size": 728,
+            "hash": "dfa2d4eecf971211792297cc0a83bd0a87c94e7043d370e8c47e441ad629c50a"
+        },
+        {
+            "type": "file",
+            "name": "assets/svg/wallet-solid.svg",
+            "size": 472,
+            "hash": "8b1d1ca253dd635d6535569450f1fe1becd26c27268f1dd8a7bbb4c9196bb0e0"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/FAQ.htm",
+            "size": 11738,
+            "hash": "613dd7583ae1b3f712b82472bd9ee6333127597ccb4794d879241684da2501f9"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/changelog.htm",
+            "size": 11504,
+            "hash": "f73bd857bc8340b9d2e085d3e455deba69530f7944ac8c28807c32f3dc83c362"
+        },
+        {
+            "type": "folder",
+            "name": "includes/fpdf/doc"
+        },
+        {
+            "type": "folder",
+            "name": "includes/fpdf/font"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/fpdf.css",
+            "size": 1318,
+            "hash": "1642beaa51e53872480869307556a66b7372fd3955d03948d63b0ca4776d955f"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/fpdf.php",
+            "size": 48838,
+            "hash": "9450ffb3d8e51ff5025af50596dfcc21b72dc5d952a4ca98e49bfb67001a2f37"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/install.txt",
+            "size": 568,
+            "hash": "57600578a5938881bb1eeb8a251340554fc00623cb4a8e96bbf683d16a325d20"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/license.txt",
+            "size": 326,
+            "hash": "344597c194a9f7529c8bea52e1b29d584d2a9d053ce72cbd7b1ea8f4f93bb006"
+        },
+        {
+            "type": "folder",
+            "name": "includes/fpdf/makefont"
+        },
+        {
+            "type": "folder",
+            "name": "includes/fpdf/tutorial"
+        },
+        {
+            "type": "file",
+            "name": "includes/phpmailer/DSNConfigurator.php",
+            "size": 6867,
+            "hash": "20f4ac66187ef3c9c5bdee2dbe82e0be76160e254a08b8acda1700ab2a825c99"
+        },
+        {
+            "type": "file",
+            "name": "includes/phpmailer/Exception.php",
+            "size": 1240,
+            "hash": "655e82ae2e40561a4c125115ffd49fb172a5221fa224bcdb10d41bf72eae9a87"
+        },
+        {
+            "type": "file",
+            "name": "includes/phpmailer/OAuth.php",
+            "size": 3774,
+            "hash": "3b272d5f1fd9e185ad8daab260ad0b548a679e351701b6b78f80a6e523f1f961"
+        },
+        {
+            "type": "file",
+            "name": "includes/phpmailer/OAuthTokenProvider.php",
+            "size": 1522,
+            "hash": "322e38b26c529df073d0bff59a94a262d3c02b23885f685a47963d280fafe46d"
+        },
+        {
+            "type": "file",
+            "name": "includes/phpmailer/PHPMailer.php",
+            "size": 179433,
+            "hash": "70242a03c5c460dae2d9d3a246e63d033927ab7559eee5a1edb6df17b9275d9a"
+        },
+        {
+            "type": "file",
+            "name": "includes/phpmailer/POP3.php",
+            "size": 12259,
+            "hash": "d1efaacbb475ce7a6d996d0447173fe2928ee1b44d04dbf2378420f83b14895e"
+        },
+        {
+            "type": "file",
+            "name": "includes/phpmailer/SMTP.php",
+            "size": 47595,
+            "hash": "0b009712fd3386187b1ecee6e5a9d0f05a82306dc3414d4387087cb99666805a"
+        },
+        {
+            "type": "file",
+            "name": "includes/phpmailer/index.php",
+            "size": 49,
+            "hash": "e9be4a2424cffa779bfed05731c06f2aae41f21c1098025a0a5c074b5f8e7da9"
+        },
+        {
+            "type": "file",
+            "name": "includes/purecaptcha/index.php",
+            "size": 49,
+            "hash": "e9be4a2424cffa779bfed05731c06f2aae41f21c1098025a0a5c074b5f8e7da9"
+        },
+        {
+            "type": "file",
+            "name": "includes/purecaptcha/purecaptcha.php",
+            "size": 8124,
+            "hash": "1280b39d3e28f646abc06efe3ae73e34a660e4adfb0377e405fc91e0c1fe3843"
+        },
+        {
+            "type": "file",
+            "name": "includes/purecaptcha/purecaptcha_img.php",
+            "size": 203,
+            "hash": "a416321605bd1e4aa233a85faf8f1af9823cdc6ffdcb3e205472b1fbdd7cd1ea"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/icons"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/langs"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/models"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/plugins"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/skins"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/themes"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/tinymce.min.js",
+            "size": 427883,
+            "hash": "9c4cdc943362d8cbb381128d738bf05c008212001fb3323df30ff08f7258dc45"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/carte.php",
+            "size": 857,
+            "hash": "e46df6cd6ed418aa2a00890b28f3936a2042a85be31cc179d9282156ec5efa2c"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/connexion.php",
+            "size": 2598,
+            "hash": "56ad5fabe58f569e855b9c8355f9e00d75d1cf71bd57918da5a1cdf9b1998591"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/donnees_personnelles.php",
+            "size": 6401,
+            "hash": "eda2ed2c53df02124eceade3d829dbc0913d3688b6f3565aa096bcf890f402a6"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/index.php",
+            "size": 47,
+            "hash": "b24b7666df77edab24486b3e25ac2429662abf929ad6490f6776e141ece459c2"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/inscription.php",
+            "size": 3653,
+            "hash": "5215119bfd23f9acd8116f33ca27ed4f14112bee0867d828bf576548b32a77a2"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/mdp_oublie.php",
+            "size": 2162,
+            "hash": "f0d9d24b52571336681e61f002104b77ca5c5a42043426d496027107fff0fe21"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/mentions.php",
+            "size": 8801,
+            "hash": "d60abd1d5c07526dcada3f7626811a11bacfcd6ae9e29818014dfd3755b7ccc1"
+        },
+        {
+            "type": "folder",
+            "name": "pages/general/requires"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/reset_mdp.php",
+            "size": 3012,
+            "hash": "12edce8101aa05931d3f5662c818f2d0cee0eaa9fdb90e1761626c4466c6298d"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/script_connexion.php",
+            "size": 2716,
+            "hash": "0eaddd8a316d65aff1e2b3a6a1c3d10ca9a2e791357ee85c11cb840906669650"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/script_inscription.php",
+            "size": 4757,
+            "hash": "d6b1c50fd9a499b95cdef39d60a081a2d0b131f0fd7b781a454d08204e42e30d"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/script_reset_mdp.php",
+            "size": 2607,
+            "hash": "487fb568ddc74281d682d868e6cb01cd5774459c6a185bbd47401a2a98df8c0a"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/send_reset_mail.php",
+            "size": 3668,
+            "hash": "87c7da9878f6dae91516838cc7134374d8edfd80acc77df828d0cd5dbd0494c7"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/verif_inscription.js",
+            "size": 320,
+            "hash": "f8a90df69364162341a0a2833dc12de2b6496557a2e5b6d23ea0f7726f76c367"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/achats.js",
+            "size": 2280,
+            "hash": "6fe15570767d53fad3009fe87c63cf0d11128cc99a891c73f8c73f219dfe90cd"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/achats.php",
+            "size": 6947,
+            "hash": "f882421103eabfdfbf035a0b170048e7de63aa97a5b670b1b136184f277ed648"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/add-nettoyage.php",
+            "size": 1074,
+            "hash": "36adcca5caf14ff5e36f995c1dc9e4624bfe4d8b9c9bb3617995e9fe40b1f9ab"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/add-temp.php",
+            "size": 1132,
+            "hash": "ce53735f3d5c633dd744daf6b6e0016649087be53a15a6fe069e90722212950e"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/add_achat.php",
+            "size": 2113,
+            "hash": "38e5882f3c1bd2e37922d25547f66f352513723388f9439368768b0ab8e2716c"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/add_actu.php",
+            "size": 1076,
+            "hash": "cc008206ada82ee3f9d050dd1127dd423108e3f81ffd0ed07bd452be18d3eb9b"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/add_article.php",
+            "size": 1380,
+            "hash": "c025dfebaf1ee3575ccfed34e23589e9f62e89e8ca8f8cf4d58bfd07d7cde514"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/add_carte_elem.php",
+            "size": 1675,
+            "hash": "137e829345cfb834d1447e4046b5a259de8b14b1da1a53def60c07ac9fe7966e"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/admin.php",
+            "size": 2822,
+            "hash": "1955442d310e64c26f0c8dcb1b08a1d0a3daff0934070cb491effee660da0fd0"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/ajout_achat.php",
+            "size": 4675,
+            "hash": "d36d8775b38d6987807710e3635647d90eb1d2d8eb38f6ee31adbcf7aed01bcc"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/ajout_actu.php",
+            "size": 1981,
+            "hash": "065b757551fe8deb77ac39a3e22a29f80eac7626a33b7fdc28620d603c68d42c"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/ajout_carte_elem.js",
+            "size": 5759,
+            "hash": "2a8b85679abfb694ae3398b577a8a1595b0dfc60280c7ff1f0b4a6b444d807dc"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/ajout_carte_elem.php",
+            "size": 5484,
+            "hash": "dad92bef0391cd454d5b0d1695b9e0695eff3e18a03c9e64012d80dafe38aac0"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/ajout_stock.php",
+            "size": 2178,
+            "hash": "2c99a22874ecda0f07cee187a752165062f17f047d68faa365d41d9c4c9ae9a9"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/chercher-ss.js",
+            "size": 2364,
+            "hash": "b59ba90727a2e29878f5bce8d43cf17600b45560af7ab5b187b3a06b186c6c0a"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/chercher.js",
+            "size": 1173,
+            "hash": "551d5ebdef2b9329f7eb01b95d4e471b9c19a739a0a30ddb5c92294a611f1398"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/chercher_achat.js",
+            "size": 2273,
+            "hash": "6292be5c52b208b29be14b5cf02df9498768617ad53335457180c6116da76d50"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/chercher_carte.js",
+            "size": 1117,
+            "hash": "a2632071c8f3d19ee96911e25d5def83d27bb1b8593ff0532b3ac8ad04613f4c"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/chercher_stock.js",
+            "size": 3381,
+            "hash": "f12e7fb5577401111daad52c8612c9ac15a375d1cbc2ce3d105cee3218d82548"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/close_achat.php",
+            "size": 1081,
+            "hash": "f8b67e1a8ece4260b80a5a1500e3688a1f964e83052af3173fd715365de104ea"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/consultation_comptes.php",
+            "size": 3916,
+            "hash": "10e8f974ccae9eca945a0736f5ddbea1b2a0d7e5671e838c1b36ab70c9af5691"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/delete_achat.php",
+            "size": 2066,
+            "hash": "01c1e88de923c819a8432230f8145944eea8b4ddab56a465e1bb89984ea22c32"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/delete_actu.php",
+            "size": 953,
+            "hash": "f81a11f80341d69cc495df332ea64d9e73e094e7c9aa9d4b7da377bdb64b65a8"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/delete_article.php",
+            "size": 965,
+            "hash": "83a4ec774469e35019b2371ac5c81cea88df33ecbc908542eacba237a06923d7"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/delete_elem_carte.php",
+            "size": 956,
+            "hash": "16853b3eb1c6fca6be9865e2528fdd70f92b484ecba9c178fbe54a40ff28ced4"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/gestion_achats_suppress.js",
+            "size": 1249,
+            "hash": "74deb2371edc3c9ad22e85c747b6a4251bfa40b5420aae14a3d09a0ff8857d26"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/gestion_actus.php",
+            "size": 2761,
+            "hash": "118871eabffdc2e99089fa2783724689e4dafaa2cc843dba0510aaa103c9d32f"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/gestion_carte.php",
+            "size": 3821,
+            "hash": "b4df175a2d0240fc63bfd33a6a2c9abd9fd2444cb4cc2bd41953279910ee5880"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/gestion_stock.php",
+            "size": 9128,
+            "hash": "4d1e6ee3a8f9f6a01b6a96e16e286ec9bd555a1fba5ee1e954772fe5a0d687f3"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/gestion_stock_suppress.js",
+            "size": 1126,
+            "hash": "0aab0e6a1f9f80a83a15f026cb1313cb3ce3a1f2d486ad19c892e52aef5d3844"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/index.php",
+            "size": 49,
+            "hash": "e9be4a2424cffa779bfed05731c06f2aae41f21c1098025a0a5c074b5f8e7da9"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/modif_achat.php",
+            "size": 3335,
+            "hash": "b831d202cb81f72341ba6271cc0bb254f1ef1059a0c2e29ce3521728e780a513"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/modif_actu.php",
+            "size": 2682,
+            "hash": "5e1c8e56037d1918f192e82d3994e1253e634d958a3daf2f38da368f52c57e68"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/modif_article.php",
+            "size": 3191,
+            "hash": "bea38fab195b5bccde7757055ebaf9731266accfdade47ffca31209ceb270517"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/modif_carte.js",
+            "size": 12087,
+            "hash": "9c9aa4bfb5439aa23c08e02603551576da2d0b81a5e1c3371e622a28e6a35207"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/modif_carte.php",
+            "size": 4588,
+            "hash": "b9a8fb25c53bce14cfb4fb30f71805b4c95c745a36f043dd8e9805cafee21b93"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/modif_compte.php",
+            "size": 5796,
+            "hash": "155b75439953226c8cdc8c641d3abbe65d66c53c40ab1a1fcf306c584a090df6"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/open_achat.php",
+            "size": 1081,
+            "hash": "f804bb5ec4991c32894213eeedced91e530271884352790653c89cc063807a63"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/perime_achat.php",
+            "size": 1816,
+            "hash": "4533e310c8b041fb9ee561c65456e24a853250efd31976f44253a38dd9f78b3c"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/perime_achat_interface.php",
+            "size": 2565,
+            "hash": "36cba625d57e9dda33685759b130c4c24fbbc31e9b49fec98d21731cb501e02e"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/salle_secu.js",
+            "size": 2081,
+            "hash": "7c72fb8b89e63b07fe64df800113122ae66eb6ebb37489e43822f43f2c93e3da"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/salle_secu.php",
+            "size": 5432,
+            "hash": "3e2ff036ee8cb7a352f316e5e3332973a246f9a392ea9b5b826c94e1b7dcc2bd"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/settings.php",
+            "size": 2784,
+            "hash": "432cb59cd88e03c8352a661373cbf49a4ac0384b33da7b7d151975fb9f038d6b"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/settings_update.php",
+            "size": 1379,
+            "hash": "adc43e662454d8c0e3001f2b053ca61067d7cb2c445f07529322a2a2a516f229"
+        },
+        {
+            "type": "folder",
+            "name": "pages/admin/tresorerie"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/tresorerie.js",
+            "size": 751,
+            "hash": "9f12656f9e305c806c6f7c4ac99417841f8fc227fb96de1bf45ccde2779e5dee"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/tresorerie.php",
+            "size": 4492,
+            "hash": "ccf2e1fd8cdd38d4fbde171e94b38b0396eed502e334d48226da3d46786a07a4"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/update_achat.php",
+            "size": 2363,
+            "hash": "429f26f497ad94960932f3fe0cb4be751dc7a6a34f79e0c4f976ff70b4fb6718"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/update_actu.php",
+            "size": 1210,
+            "hash": "103b2c00394cc512284e020a6c89381f0f37265db02710cb2fa84cc75680d320"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/update_article.php",
+            "size": 1481,
+            "hash": "7a1f28825927fae88967c2486305b5077c4eb8a661ed1467425d82433ab29b64"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/update_carte_elem.php",
+            "size": 1695,
+            "hash": "50738ccd9c34e2b88b3fa0d9a96a172da75bcf96b33ec8e1363a965ca645dec8"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/update_compte.php",
+            "size": 4630,
+            "hash": "815da25c4742ff7b2c6589cc55599167a5456039f6a164bac59e43c4b1be0a3b"
+        },
+        {
+            "type": "folder",
+            "name": "pages/serveurs/JS"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/affichage_cuisine.php",
+            "size": 2883,
+            "hash": "11873684c87527c5f33032077c445b0a4e7ba77faba82ae039876b65a7777b67"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/commandes.php",
+            "size": 27221,
+            "hash": "40b8b63d0fe096029464a4c0968b42d7ce9bca97e312bb30b74c56b62cbdfe2d"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/delete_planning.js",
+            "size": 653,
+            "hash": "fc22e4f10836b90df41f5e299e45ec28f3f75991403235551aca94382826d7e2"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/delete_planning.php",
+            "size": 549,
+            "hash": "9f2b38ca13103e0b8b55b82e4f5b39a06e89e9d00f0afc3176ab4ce25cd8d3cc"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/delete_planning_courses.js",
+            "size": 670,
+            "hash": "4785883aca59c1480d7a60c8b184ed4578e827148c290a39aecec87bfbad9f26"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/delete_planning_courses.php",
+            "size": 538,
+            "hash": "aec8f62605c12fd4770497ff0b769473b09a438c3f2f48d38480c98a3b637f4b"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/fct_planning.php",
+            "size": 13450,
+            "hash": "037f4338318344e631ea71b28b6da6ea011904e4185feb2eccb891ecae04f5a9"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/generatePDF.php",
+            "size": 2475,
+            "hash": "214513eb89814f11aed0802b7e959287dabee4dfac28a4bc5dd8c38a146e9c85"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/gestion_planning.js",
+            "size": 1523,
+            "hash": "7ac92c6d82023759787b4476cb1aab58d026812c4145a3d7aea814bbb66df7dd"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/gestion_planning.php",
+            "size": 1376,
+            "hash": "1712c54433aabf90e580f0d26a825b3d4c4156d3344269b864d64418fbebe22b"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/gestion_planning_admin.js",
+            "size": 2615,
+            "hash": "63ef453e87bbd0efd3d1f0e1d08321800c011b6255a6e53ed4c03cff87982347"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/gestion_planning_admin_courses.js",
+            "size": 2596,
+            "hash": "94f871f246c16b41541c388807ced5a555ac7b5e05c7b571f86d8e9f31868e4d"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/gestion_planning_courses.js",
+            "size": 1478,
+            "hash": "9a4817be2f22fdbbfa0ae5106e9f7e5bf364379e2638d888c977f34424b9a70e"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/gestion_planning_courses.php",
+            "size": 1195,
+            "hash": "281a5192eb1fc6ef0658889b8fea432cb6dec1ce83911e4d54027223f0c0d943"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/get_planning.php",
+            "size": 180,
+            "hash": "45a6a78bbd27fd2cb02507acec69b59247164806b1ca8406f1c0737c93f11799"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/get_planning_courses.php",
+            "size": 180,
+            "hash": "db50d78a711b85cf33470c88be1b5b6f2c902839b297785329742ce4627f41da"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/index.php",
+            "size": 47,
+            "hash": "b24b7666df77edab24486b3e25ac2429662abf929ad6490f6776e141ece459c2"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/planning.js",
+            "size": 1017,
+            "hash": "5ac0d52f1de1e756bf42cda533ae9236fe6b109efc65682a1e3e53ceccaeab0e"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/planning.php",
+            "size": 3861,
+            "hash": "bb6480a2074efe1a67ba584c969e760281b4123210cb51e95af6dc64478a5555"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/serveurs.php",
+            "size": 1730,
+            "hash": "7ea48b0ae9e295e3a9cdb71c31b8d4c9409e055528295e405d4fc2536c57aa9e"
+        },
+        {
+            "type": "file",
+            "name": "pages/user/choosePlat.php",
+            "size": 53764,
+            "hash": "9b59be59eea97340b0c24cb5ee3e840ffe6be6035333974464c3722ab684f017"
+        },
+        {
+            "type": "file",
+            "name": "pages/user/commandeSucces.php",
+            "size": 2614,
+            "hash": "8d0f197ebfbce9c589b9ee07b778ed4bf682c045324028dc107f91da41b3d4a0"
+        },
+        {
+            "type": "file",
+            "name": "pages/user/commander.js",
+            "size": 3178,
+            "hash": "954678b9438e8d6bf87b39ccb42fe385eac5b9b23a37bbd9414e2533dca70cd1"
+        },
+        {
+            "type": "file",
+            "name": "pages/user/commander.php",
+            "size": 4450,
+            "hash": "ebb84d7230f4bf529ab39968e0acae2f2c0baf1887392021a8a55d8b7642a3cd"
+        },
+        {
+            "type": "file",
+            "name": "pages/user/index.php",
+            "size": 47,
+            "hash": "b24b7666df77edab24486b3e25ac2429662abf929ad6490f6776e141ece459c2"
+        },
+        {
+            "type": "file",
+            "name": "pages/user/profil.php",
+            "size": 3972,
+            "hash": "b33c08d691856150bf36fac45bb759c909c639d54e7fa2ecb496f0e9b93a9af2"
+        },
+        {
+            "type": "file",
+            "name": "pages/user/validateCommande.php",
+            "size": 21851,
+            "hash": "b34b29c84aba53cf76e48005597781d80015650c94300f4935e0fffdf99b920d"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/commandeUser/choosePlat.css",
+            "size": 2294,
+            "hash": "0faba81e0e11eec087b4322534aebb9d1dc676b66a9ec13edcf3df4fde6dbded"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/commandeUser/selectmenu.css",
+            "size": 694,
+            "hash": "85b656a8c81979ff4f91c03356cb4c85f35b24765c71f61e503b2af7d7501713"
+        },
+        {
+            "type": "file",
+            "name": "assets/css/commandeUser/validate.css",
+            "size": 580,
+            "hash": "64fb8f626d7c30a570db1a11b9e910f2cd5c078a8293637a37c132e563fec98b"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/courier.php",
+            "size": 432,
+            "hash": "3eeedf5e86a79f27186a5673d9bdcef1182dbc8d3bc309ec2ed2aef85b714fc8"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/courierb.php",
+            "size": 437,
+            "hash": "0b84ad97b245540b9410b0df20583e965f9c7fe420ce5272825bd77bd9062ea9"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/courierbi.php",
+            "size": 444,
+            "hash": "cdad324a23cecc63c867eab0b8456e1edd207e4d00ce29080af2611667c85f45"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/courieri.php",
+            "size": 440,
+            "hash": "3786fc3787ad709ba904d497f7f24da7f512284335178bfafd99c5f167457ce3"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/helvetica.php",
+            "size": 3504,
+            "hash": "254c5044d933a939cc8582dc184a67c23f0c2bbea6922ab1f8c210b83e20a333"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/helveticab.php",
+            "size": 3508,
+            "hash": "6d5da900f8d31e66808e6389579cfa78a8199a9a070c9641ddfa213d39ec2db8"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/helveticabi.php",
+            "size": 3515,
+            "hash": "3a47f8aa1c5941d10ea775e692f7397257212f7507beae4c6ad48bc970636c32"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/helveticai.php",
+            "size": 3512,
+            "hash": "6eb7a38f96c4ee619904b3bcfc94308ff5db2f68b0d666ac795571365edd9c78"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/symbol.php",
+            "size": 4464,
+            "hash": "34a66b876c18c9dc15845e8b78795a1cca872e83f8a49897c23c8fbb0d968604"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/times.php",
+            "size": 3502,
+            "hash": "e3319d094bc724a4c330587e5d0b11833a8e53ddac1d636ba987b0a0b9e17c11"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/timesb.php",
+            "size": 3506,
+            "hash": "7c986c85285c5f17ca6fba75037eb3efa78094a23c3b1986b4e2f8dd139dcf66"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/timesbi.php",
+            "size": 3508,
+            "hash": "f60eabb1a4b9ac89acf2443ae4ec595227d6188ab647f70c3cb413f9f728481e"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/timesi.php",
+            "size": 3501,
+            "hash": "888e20cce6e3c80c492ab900b6d68ef719232d2894d0f135eaef476d15244b95"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/font/zapfdingbats.php",
+            "size": 3518,
+            "hash": "81a7ad3df518a3b358287e593750846e092ba53fb9d0bfc10e308f4e405f26eb"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/__construct.htm",
+            "size": 2204,
+            "hash": "cf6125dea8fe5271df571f45b323f21262e70394406878bf76bdeabdac8cfa0e"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/acceptpagebreak.htm",
+            "size": 1867,
+            "hash": "6aa614ff71f533dc2d1b7338268085865171ac08712d4f4fd228d2f3c3529b58"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/addfont.htm",
+            "size": 2401,
+            "hash": "109913e9231c0e30219aabcb6c876464b31eb6da9dd43d6b732a7378a966ef6e"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/addlink.htm",
+            "size": 885,
+            "hash": "ebc807ef54282602548afe8c4bc120e4e82eb55541249ef741d24480412b3b66"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/addpage.htm",
+            "size": 2300,
+            "hash": "ce69cb8b74733532d589c90cf132dd342f761f2fb0058a1d2cd0767294538d3a"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/aliasnbpages.htm",
+            "size": 1220,
+            "hash": "b6f2118949d3b941e6d476548fa65d6791bb34551a8c324763af7e64a1f751ff"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/cell.htm",
+            "size": 3682,
+            "hash": "985aa300fb59f8464457e5957a8dc82d468debc3f3fa6e946a47e69d8af5b1a5"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/close.htm",
+            "size": 699,
+            "hash": "44ce34806eaeae69744bec5024f239e1fe160369203cbdb68ef4ca08dcc9becd"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/error.htm",
+            "size": 888,
+            "hash": "4088f66ae0ce0af9ebecf8ee66b691002717ae72eaaa01a60e1b7d0c18444c0b"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/footer.htm",
+            "size": 1207,
+            "hash": "5148ff49c0f92b1d6d3bbd063e4836631d5ae907bbf9139ec22330400ac03888"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/getpageheight.htm",
+            "size": 546,
+            "hash": "707476794992b74bd709f9878444a0a2a5474df68da28adb0b1eb878add396a7"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/getpagewidth.htm",
+            "size": 545,
+            "hash": "d76beb454b4c96bb14b50532fffcc4214ebc14d18d3c1aeaf597d2a83c53d3be"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/getstringwidth.htm",
+            "size": 691,
+            "hash": "49c06ce2761a3263514e7567fc0d935e7ef52a63c82178abfba4ceb5161fa594"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/getx.htm",
+            "size": 565,
+            "hash": "6a38394806f7ae0f7cb409d34d1d9fd95cca75868e3225e6d3c69eac4d445726"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/gety.htm",
+            "size": 566,
+            "hash": "9f9ecfe3e4d5933329297deedd9c8666a73cd6964677281f1cff8e5c62fd81d5"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/header.htm",
+            "size": 1194,
+            "hash": "a47db707b93f011292e54be471ac99d480f729cbb869e8af2513d5fff488c798"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/image.htm",
+            "size": 3906,
+            "hash": "86ece16ff1e6e71778984c31b40730af4a0976fe912ee36f1f304f7c8781773d"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/index.htm",
+            "size": 3662,
+            "hash": "e6c3422439c1c8eb94babfd8356c840ec454ad6befbf8aca6b23cecfc5081992"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/line.htm",
+            "size": 910,
+            "hash": "5f84605d58dac8340554fed03ec22c849386bbfddad7aa117bdf11e8419704e4"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/link.htm",
+            "size": 1285,
+            "hash": "3b7cb980bf632e8ec069e408dc3b2a8bb3dd661e377da05fc691f4abf2003ccc"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/ln.htm",
+            "size": 813,
+            "hash": "5df6b70797096b970f172b14321c3b257e47d19f8fedc164e42dd8083658a3da"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/multicell.htm",
+            "size": 2583,
+            "hash": "16e61a56f3e0b0c3d1d07cd076eb4155e938f03f9f144141bd7ba7d8f38176d2"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/output.htm",
+            "size": 2234,
+            "hash": "b002a0de9b61b2dba0e0593dcaacaa57401f9eb75e9ddad3c3d1b6dcf59bf52f"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/pageno.htm",
+            "size": 519,
+            "hash": "a44f6fbb0997c7254dbb76e3e0cffa60297f0cb7f539f3f127c6dcbc84c2784f"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/rect.htm",
+            "size": 1332,
+            "hash": "a1857ce1575753cb502027dcadae981d23e4ac6b2c7fa2376d8650c9db87b0aa"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setauthor.htm",
+            "size": 969,
+            "hash": "b43f523e8c969caabd7617c084b7890619c267ae2bbdef3f3ba9d1d6e43c5b46"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setautopagebreak.htm",
+            "size": 1064,
+            "hash": "a487955e513e6d699a24adc336ad79a446bc63fe0f70a6971261c66ff9b2ba9d"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setcompression.htm",
+            "size": 1036,
+            "hash": "3785f7589157d6c8c2c7957e980504348ac84fb8c0624877aa5aacbc9ae7dfdd"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setcreator.htm",
+            "size": 1044,
+            "hash": "e8eedf7cabee3dd66f1310e2230f6b3750a653c50e10c2f68fece40bdc59cd2f"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setdisplaymode.htm",
+            "size": 1972,
+            "hash": "a18624f7231984d3d3b489c7f3bc489506afafa8e740bbb578fc505ff1559b72"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setdrawcolor.htm",
+            "size": 1358,
+            "hash": "648a02826c30f66229750e42b3ba385323a545bd117bda08cc63ef3c89c202b0"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setfillcolor.htm",
+            "size": 1330,
+            "hash": "8724cd75726cb5ca4a74112278e23054b59caf94deb50b0d3f44e4a83eab9c61"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setfont.htm",
+            "size": 2844,
+            "hash": "984d2f4b1f22e0ef8a6f49fc7a13bcd4a349311823ad5dcbe70314cc46f93b24"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setfontsize.htm",
+            "size": 639,
+            "hash": "c08cf082ba6cd2d9e6a44315089c9f101b8c70d64772971c662608d9f1d4a0e0"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setkeywords.htm",
+            "size": 1039,
+            "hash": "e86d736f751ab60b6a9355faac822f819aab1ad24a1b5648d811cad9db7dd8b8"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setleftmargin.htm",
+            "size": 922,
+            "hash": "afb02a3beb8976cbeb921fd500774e7be897c6a94b41c33648be814e590e0d61"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setlinewidth.htm",
+            "size": 883,
+            "hash": "1d57dde9824857a4eede74bf39000d4e18df059182f36ac78bc40b9606a417f8"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setlink.htm",
+            "size": 1015,
+            "hash": "54245171c02e1ddd47d525f44f48e28f4f0fd1b145433ea478d54058523a7c8f"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setmargins.htm",
+            "size": 1056,
+            "hash": "e85b25ca3e8b91a9986b1ad32bf9218e0da86cd1860d222e9a607aee30411722"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setrightmargin.htm",
+            "size": 841,
+            "hash": "57ef0d1ee1fe37d7ada41e6154764d678d46878d51e4bacde5eb46d3a39f6ba5"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setsubject.htm",
+            "size": 974,
+            "hash": "6d40615778fc1ea5ea46fea0410cf7f7322283b081b8d1fb836b912d97e64f72"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/settextcolor.htm",
+            "size": 1260,
+            "hash": "23a827ef1e402268bc628e91dd224011efbf87d0f8cca45e54bbc9643cf4817c"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/settitle.htm",
+            "size": 956,
+            "hash": "d0e4544200f97d9a792046eec20f22fee604bf0e04866e539194504af9eb18a1"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/settopmargin.htm",
+            "size": 838,
+            "hash": "f2e0b08de5b72b7da2c9e7e65c7702f769b38c70ff909bad29eb8f3f19b50b47"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setx.htm",
+            "size": 792,
+            "hash": "e29c136ed2bc3796175ecb8cfb606462318b193bd81565b4486258c9a7b9aad8"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/setxy.htm",
+            "size": 859,
+            "hash": "e586c383e553e04a7d2b02d280673e0cc34ec9bb63992a307ea1bf631202c597"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/sety.htm",
+            "size": 965,
+            "hash": "324705854a9b9de5d4947b9eaee89f816faf6435aa70883c67861d38163d4300"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/text.htm",
+            "size": 1189,
+            "hash": "b0ccacc60175a64ed9b73c6615be4273ca5378d5728e30a8af4802631ba4b5d4"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/doc/write.htm",
+            "size": 1606,
+            "hash": "f7309a3e3ee925b7133839e6c01f3a944990283706cc123a9a7581081df2ed16"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/cp1250.map",
+            "size": 4546,
+            "hash": "1f066ac80d413996ea573b7b7f5ab538f69935529f694815eaf155f4a487a28e"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/cp1251.map",
+            "size": 4776,
+            "hash": "1ac1898fb1eea72798cd1955671f782350dc583e536a844a20435f2357762868"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/cp1252.map",
+            "size": 4541,
+            "hash": "0e86449f41c6ddb555035043b357cf14b3f62b73b2689d551a011e814268f66d"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/cp1253.map",
+            "size": 4255,
+            "hash": "9deca8de9b942161427810f50d912018ea0d702a5efe4e6643b1efae7d843c63"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/cp1254.map",
+            "size": 4523,
+            "hash": "a315c4702d79764001d9ecb7452b0d9eed1fd15432c440608aed8d18b0bbab4a"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/cp1255.map",
+            "size": 4298,
+            "hash": "76b6ad5b40bd62a92ef1f9e06e2a956a3f3b818815558c59d9980063aba04c2d"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/cp1257.map",
+            "size": 4434,
+            "hash": "ad0a233ec62a1f43905118e2e7b3d68a263576cc53c08b609300add0e46919f7"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/cp1258.map",
+            "size": 4493,
+            "hash": "66bb92568ca7517b27cc8796f8396dac0fa6419d8dcfd6f7c944fcd44759c10d"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/cp874.map",
+            "size": 4263,
+            "hash": "73e1adb50c80d112fe12e0aa2d3bd5d9fc88d385b916637234328d29ddef4b07"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/iso-8859-1.map",
+            "size": 4605,
+            "hash": "4610c0447829ab94d9bd15130f57dc60ac524b79ed5e9c46e04c6b9ff96b5674"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/iso-8859-11.map",
+            "size": 4689,
+            "hash": "a1e0ad79a8dfc00c4d4cad59f6f734403b8d1e4281ec39d0012d8a2d1160cac4"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/iso-8859-16.map",
+            "size": 4625,
+            "hash": "e792b80fa17b08bd9a90d891c0034173c4abfb394e4e2932ee1b06acff5a7fd8"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/iso-8859-15.map",
+            "size": 4579,
+            "hash": "ff13201689af608fb834eb11d4b02a714f24953ebe54d9faff15cad5a41bbeee"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/iso-8859-2.map",
+            "size": 4569,
+            "hash": "4b569d73ac29b3ab5dbd14989e7398d993069cbddcd80a008b1093ca17521ce4"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/iso-8859-5.map",
+            "size": 4719,
+            "hash": "505823fe910cb90831b1ea50037cf8343ef94b7a64112db3118a1b6aa3f5dd6b"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/iso-8859-4.map",
+            "size": 4588,
+            "hash": "3d8b417e076cf51dd610fe5c27e8749a96be7b79854132435b120600c3dd524a"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/iso-8859-7.map",
+            "size": 4430,
+            "hash": "ba728c29fac64d7d9336f9003f659db94235fe3c8487acfcefac0fa774ac5c8f"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/iso-8859-9.map",
+            "size": 4623,
+            "hash": "3bc7fc6710c800c6da91750b0ab57ac0ac60a1222d4003b586372d73a6c81b5f"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/koi8-r.map",
+            "size": 4739,
+            "hash": "770135967b723a1b5a31fc25d90172a40648a8143d92c1a29f5817639108cd9d"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/koi8-u.map",
+            "size": 4739,
+            "hash": "9b765ae7cdf70a88ddcd8782f4c4202315b106e4f73c288c44ae88a05ef73864"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/makefont.php",
+            "size": 10426,
+            "hash": "3f61cf0a07ee9dfcc0c89cfd6d9fe8a44465677515a79e61a4998d66673a3211"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/makefont/ttfparser.php",
+            "size": 17237,
+            "hash": "dba03777a4a4ccab2dd36c83bd9b512100dd886ca7dbbe8896374414db931332"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/20k_c1.txt",
+            "size": 5623,
+            "hash": "83996f4ced78baa5fc485f18c13611ee7481d62f67efbd6dde19a207bc1f34fe"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/20k_c2.txt",
+            "size": 7258,
+            "hash": "900a3f7baa2e1f27a5791a73ef494f1a7aeb14f9a38137a22deedc93c1ca8e89"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/CevicheOne-Regular-Licence.txt",
+            "size": 4425,
+            "hash": "9a33b452a3107542c35fc5fcee80e4d8798c82aca071c2f6f58a0f8dc5ad61fe"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/CevicheOne-Regular.php",
+            "size": 3742,
+            "hash": "305f299d8a0195f4edf53529972ded41ee5e0fff1b1bd87d4a2f5a83c6a474c6"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/CevicheOne-Regular.ttf",
+            "size": 35576,
+            "hash": "8dc6ae995c4f7002390eaf91525a7c7a81ac19160ce83f2ee4b949432ca0492a"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/CevicheOne-Regular.z",
+            "size": 15498,
+            "hash": "ea0b590ede69a13bc5a1c425753367eb78f8254a24ab8d036406c7505e90a399"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/index.htm",
+            "size": 857,
+            "hash": "993dfbfaa6534d60e01e5646061fca697d9fb95cb4b7924b70aa332d43c58284"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/logo.png",
+            "size": 2373,
+            "hash": "8cbba01bc0cfbc2f48967a22cac8353a840493c9076d73ce139d431abb70831b"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/makefont.php",
+            "size": 149,
+            "hash": "1e8986ab8a224c88c64a748e2817be6cb45feb4f78e0dd25dc485b182714cd28"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/pays.txt",
+            "size": 433,
+            "hash": "8a901a05af816f08c55547c23bc1b08031be15ea4d47f44f53d2a260b9358c2d"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto1.htm",
+            "size": 5156,
+            "hash": "9ea74c297c59e1aea1825164e6481874884de8321bc47b760a40a7f6037b31b1"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto1.php",
+            "size": 152,
+            "hash": "6889c0effca6873954815dc9ceef3008108f78f8940cc6e31c4c74de2290f402"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto2.htm",
+            "size": 5802,
+            "hash": "6633f7fdcfbf7c835da3bef6cd661186713f3f24bca09031fe57fd846aa5b40c"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto2.php",
+            "size": 772,
+            "hash": "99c6c87e6a5bf50e6d1bfab212e38e1c5051c7ddbbb1d83d0a4dfcd06df45e9e"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto3.htm",
+            "size": 9170,
+            "hash": "872f17f425273fbf0ee00f85a4028b14ed959e680327680bbbd4a07e9ee227ce"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto4.htm",
+            "size": 9921,
+            "hash": "a49c376960560fd92a92c991ebf82ce967edfa33e87b08898d6c336951533635"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto3.php",
+            "size": 1777,
+            "hash": "527b43d196124252385a75df9ef311fd6a73dbd0a2762299c7aff53117a5b359"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto4.php",
+            "size": 2253,
+            "hash": "b3aae4ba5bd82484fa90c4b3f3b0decf94b2bede89a84fb197c0c782ff7c20d1"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto5.htm",
+            "size": 13151,
+            "hash": "5d723be6f73e916acc9fa2f4173d99616af0ae95af81bdc1a1099619ebf2a648"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto5.php",
+            "size": 2367,
+            "hash": "424e572b4f7e21799ab6515b87d59e71551cbd26e1aa434a4889c3c5b76c5b98"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto6.htm",
+            "size": 12155,
+            "hash": "d6d4cb3e610e3f159f4cd25d2a9445e7d0eeb988f4127e65ab923b9886e33294"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto6.php",
+            "size": 2456,
+            "hash": "c4825c98e703e27da328a7208aa4d356346cfb96bc1467a4f5267c103b93cd52"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto7.htm",
+            "size": 8892,
+            "hash": "5420d3d9aed286f22aa3f451b25f355e5c070dfc31cf00eea0f4cb27dcaedf64"
+        },
+        {
+            "type": "file",
+            "name": "includes/fpdf/tutorial/tuto7.php",
+            "size": 231,
+            "hash": "192dbc7ec58217b23adf8e9b958e230ac3565ec0aec669455d0e4fb52bf6a527"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/icons/default"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/langs/fr_FR.js",
+            "size": 15494,
+            "hash": "94e9e7605c1edcf76e78878646c7d301842f5e1c4d556effa48a0d9e45d435db"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/models/dom"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/plugins/image"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/skins/content"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/skins/ui"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/themes/silver"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/requires/getnumber.php",
+            "size": 544,
+            "hash": "a69a590745d641cfd366b2225132fac2dbfe52925073e022b5efe19e0858766f"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/requires/index.php",
+            "size": 47,
+            "hash": "b24b7666df77edab24486b3e25ac2429662abf929ad6490f6776e141ece459c2"
+        },
+        {
+            "type": "file",
+            "name": "pages/general/requires/verif_inscription.php",
+            "size": 533,
+            "hash": "0739be2b7725800a2883cd7e899d3c9b2e94e7c24e001063c40b926bb226eaed"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/tresorerie/get_extra.php",
+            "size": 2058,
+            "hash": "b7f784c0dfb7d31065cb37314095df857ebbcf034359d7c975c0c3b4e9b6a364"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/tresorerie/get_paiements.php",
+            "size": 4357,
+            "hash": "1f3c5e593d818fe950f4a1c66b042012acd9e25dd1a4e3b08726552a6810c954"
+        },
+        {
+            "type": "file",
+            "name": "pages/admin/tresorerie/index.php",
+            "size": 49,
+            "hash": "e9be4a2424cffa779bfed05731c06f2aae41f21c1098025a0a5c074b5f8e7da9"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/JS/Caisse.js",
+            "size": 7911,
+            "hash": "4442178ba4aea69c50a26cb5cbda6efc0e325aa16963b7a4a840c682614281c8"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/JS/CommandesCuisine.js",
+            "size": 13879,
+            "hash": "fc5f66f632d22ec1f95e7ca7a711749276d70ba6edcdf8cadf200d3d8044e7ad"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/JS/Menu.js",
+            "size": 20971,
+            "hash": "c4421af6b1eb6e4dd66a19b099d700f1653db3755d64389bb3bd7436328744b1"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/JS/MultipleQuantityPlate.js",
+            "size": 11086,
+            "hash": "08dd718033be605f3ddf3a9bdf07bb02c90a422275789f10e26797e899dec75c"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/JS/OnlineCommandes.js",
+            "size": 13219,
+            "hash": "a0777a183157f4d25e87cd31cf8b391d51be4ff28849ff90f88a04ead380db17"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/JS/UniqueQuantityPlate.js",
+            "size": 5197,
+            "hash": "70019603a8e337a8f0b1eaf24beb511e15b1fdb5414e84cc2f430ea2a8ddd012"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/JS/affichageCuisine.js",
+            "size": 9822,
+            "hash": "dd1f3fa777e35471f5d6e010ab3322081a54982d2b2f32a139d72a738a824de4"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/JS/commandes.js",
+            "size": 11683,
+            "hash": "5ec3aa62506c851509d737a3f802263187f98a19906588ea756355021a5c4fd3"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/JS/index.php",
+            "size": 47,
+            "hash": "b24b7666df77edab24486b3e25ac2429662abf929ad6490f6776e141ece459c2"
+        },
+        {
+            "type": "file",
+            "name": "pages/serveurs/JS/paiement.js",
+            "size": 6641,
+            "hash": "1b8959dccfdb23db196f740be3b917e14b8cc04cfaa2e9e87e1ada867a5b99b8"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/icons/default/icons.min.js",
+            "size": 69427,
+            "hash": "df42e91e6e15da0ab50513280cba33c8fb6d4e0fbdb4d8edaf3d39209d8d6d18"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/models/dom/model.min.js",
+            "size": 96665,
+            "hash": "b1e9984ffe85b992433db5cb7e4671e907c033f40fc64de8d86a6fdb83e4989c"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/plugins/image/plugin.min.js",
+            "size": 19547,
+            "hash": "3b62fd28971c368bc4c7a5239b0a630e61427bc2d61c86c70f00eb5ba34f6270"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/skins/content/dark"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/skins/content/default"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/skins/content/document"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/skins/content/writer"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/skins/ui/oxide"
+        },
+        {
+            "type": "folder",
+            "name": "includes/tinymce/skins/ui/oxide-dark"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/themes/silver/theme.min.js",
+            "size": 405904,
+            "hash": "172fec0e4a4822972fc83d19f866536abda04756a34a34adf3baac8c67b48a13"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/content/dark/content.min.css",
+            "size": 1216,
+            "hash": "309da6774e54298a4410ce8b46cf9fad1fdfdc8932b4eae252009183ff99c2e6"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/content/default/content.min.css",
+            "size": 1149,
+            "hash": "245f475b07f8bd8b85aaae5bd67077a237bf85e53185736bb1bc2092aca2b33a"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/content/document/content.min.css",
+            "size": 1248,
+            "hash": "54e93abcfee4eb6acf8bacfad0d967e31d95977d2dcf74b09485608e0f486d9f"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/content/writer/content.min.css",
+            "size": 1170,
+            "hash": "2c73e4adbf51fe1bd75f24e16c46f851e9d789a85fcf5a5ff509fbb46b915b7d"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/ui/oxide/content.inline.min.css",
+            "size": 23430,
+            "hash": "38f7afc990e79b2008232907b0d6e3e6eeeaf8fb7e3d12682a909cd7283239cf"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/ui/oxide/content.min.css",
+            "size": 23489,
+            "hash": "d8ed2dc2506a1aad13dd2c56e7a041348f322ba07d4230330d04834c843df2b5"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/ui/oxide/skin.min.css",
+            "size": 77684,
+            "hash": "55690af62b776258dedec128e9284b40dd1aad012dcbf9df9b2fb3b3b987cdcc"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/ui/oxide/skin.shadowdom.min.css",
+            "size": 508,
+            "hash": "d8a9f2d384edd57a6e04e52cd58bb3f5c4a566da539b08c1eaeb7f918a42c262"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/ui/oxide-dark/content.inline.min.css",
+            "size": 23430,
+            "hash": "38f7afc990e79b2008232907b0d6e3e6eeeaf8fb7e3d12682a909cd7283239cf"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/ui/oxide-dark/content.min.css",
+            "size": 23100,
+            "hash": "2b20f7f06cd3063cd985e4111aa3b506608903530c48a7ebbaa6652acc4fa866"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/ui/oxide-dark/skin.min.css",
+            "size": 77658,
+            "hash": "ccea5a9ca83a933aa6bc149696c895cc0246a2a5fb14677a98df22c6c44a7cac"
+        },
+        {
+            "type": "file",
+            "name": "includes/tinymce/skins/ui/oxide-dark/skin.shadowdom.min.css",
+            "size": 508,
+            "hash": "d8a9f2d384edd57a6e04e52cd58bb3f5c4a566da539b08c1eaeb7f918a42c262"
+        }
+    ]
+}

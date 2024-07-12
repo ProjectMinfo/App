@@ -1,0 +1,24 @@
+.labl > input{ /* HIDE RADIO */
+    visibility: hidden; /* Makes input not-clickable */
+    position: absolute; /* Remove input from document flow */
+}
+
+.labl > input + div{ /* DIV STYLES */
+    cursor:pointer;
+    border:2px solid var(--dark_red);
+}
+.labl > input:checked + div{ /* (RADIO CHECKED) DIV STYLES */
+    background-color: #ffd6bb;
+   
+}
+.hiddenInput{
+    visibility: hidden; /* Makes input not-clickable */
+    position: absolute; /* Remove input from document flow */
+}
+
+.btn_validate{
+    width: 80%;
+    margin: auto;
+    margin-bottom: 50px;
+    display: block;
+}

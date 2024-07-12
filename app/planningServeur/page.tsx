@@ -14,6 +14,7 @@ interface Slot {
   prenom: string | null;
   numPoste: number | null;
   tab: number | null;
+  numCompte: number | null;
 }
 
 interface PlanningCourses {
@@ -41,7 +42,8 @@ const emptySlot: Slot = {
   idPlanning: null,
   prenom: null,
   numPoste: null,
-  tab: null
+  tab: null,
+  numCompte: null
 };
 
 const emptyCourseSlot: PlanningCourses = {
@@ -166,7 +168,8 @@ const PlanningServeur = () => {
         idPlanning: -1,
         prenom: user.prenom,
         numPoste: position === "devant" ? 1 : 2,
-        tab: newTab
+        tab: newTab,
+        numCompte: user.numCompte
       };
       setSlots(newSlots);
       saveSlot(day, position, newSlots[day][position][index], index);
@@ -197,7 +200,7 @@ const PlanningServeur = () => {
       newCourseSlots[day] = {
         id: -1,
         date: getDateFromDay(day, selectedWeek),
-        numCompte: Math.floor(Math.random() * 1000),
+        numCompte: user.numCompte,
         numSemaine: selectedWeek,
         prenom: user.prenom
       };
@@ -231,7 +234,7 @@ const PlanningServeur = () => {
         numSemaine: selectedWeek,
         prenom: slot.prenom,
         tab: slot.tab,
-        numCompte: Math.floor(Math.random() * 1000)
+        numCompte: slot.numCompte,
       };
       console.log('Data being sent to API:', data);
       await postPlanning(data);
@@ -365,7 +368,8 @@ const PlanningServeur = () => {
         idPlanning: -1,
         prenom: selectedCompte.prenom,
         numPoste: selectedPosition === "devant" ? 1 : 2,
-        tab: newTab
+        tab: newTab,
+        numCompte: selectedCompte.numCompte
       };
       setSlots(newSlots);
       saveSlot(selectedDay, selectedPosition, newSlots[selectedDay][selectedPosition][selectedIndex], selectedIndex);

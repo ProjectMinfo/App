@@ -1,0 +1,56 @@
+.actus{
+    color: var(--dark_red);
+}
+
+.recherche{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.recherche > input{
+    border: solid 2px var(--dark_red);
+    border-radius: 5px;
+}
+
+.gestion-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+table{
+    margin: 1%;
+    border-collapse: collapse;
+    overflow-y: auto;
+    width: 80%;
+    text-align: center;
+}
+table, th, td{
+    border: solid 1px var(--main_red);
+    padding: 3px;
+}
+th,table{
+    border: solid 2px var(--main_red);
+}
+.odd{
+    background-color: #f1cfd6 !important;
+}
+
+hr{
+    border: solid 2px var(--main_red);
+}
+
+#recherche_elem{
+    width: 60%;
+    padding: 4px;
+}
+#recherche_elem:focus{
+    outline: none;
+}
+
+.action{
+    display: flex;
+    justify-content: space-evenly;
+}

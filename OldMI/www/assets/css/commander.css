@@ -1,0 +1,112 @@
+.card{
+    width: 20vw;
+    background-color: #eaeaea;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.card:hover{
+    background-color:#ffd6bb;
+}
+
+#form-commande{
+    padding-bottom: 25px;
+}
+
+
+.card-title{
+    text-align: center;
+    color:var(--dark_red);
+    font-size:24px;
+}
+
+.menu-img{
+    width: 200px;
+    height: 200px;
+}
+
+.category{
+    margin-left:20px;
+    margin-right: 20px;
+}
+
+.select-row{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.labl > input{ /* HIDE RADIO */
+    visibility: hidden; /* Makes input not-clickable */
+    position: absolute; /* Remove input from document flow */
+}
+
+.labl > input + div{ /* DIV STYLES */
+    cursor:pointer;
+    border:2px solid transparent;
+}
+.labl > input:checked + div{ /* (RADIO CHECKED) DIV STYLES */
+    background-color: #ffd6bb;
+   
+}
+
+#choose-plate{
+    display: none;
+}
+
+#choose-periph{
+    display: none;
+}
+
+#choose-bonus-plate{
+    display: none;
+}
+
+.card-options{
+    display: none;
+    justify-content: space-evenly;
+}
+
+.grid-select{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+}
+
+.input-container{
+    margin: 50px auto auto;
+    width: 80%;
+    
+    display: block;
+}
+
+#rmk-input{
+    width: 100%;
+    outline: none;
+    border: solid 1px var(--dark_red);
+    resize: none;
+}
+
+#submit-btn{
+    width: 100%;
+    margin: auto;
+}
+
+ #nomenu-category{
+    display: none;
+ }
+
+.col-3{
+    display: grid;
+    grid-template-columns: repeat(3,20vw);
+    align-items: center;
+    column-gap: 10vw;
+    padding-left: 10vw;
+}
+
+.col-3>label{
+    justify-self: center;
+    margin-bottom: 5vw;
+}

@@ -1,0 +1,92 @@
+#MainContainerProfil{
+    width: 98%;
+    height: 98%;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 1fr;
+    padding: 1%;
+    grid-gap: 1%;
+}
+#DataProfilZone, #TransactionZone{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border: solid 2px var(--main_red);
+    border-radius: 8px;
+
+}
+#DataProfilZone div{
+    text-align: left;
+    margin-top: 5px;
+    margin-left: 5px;
+    word-wrap: break-word;
+    width: 100%;
+}
+h3{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-bottom: solid 2px var(--main_red);
+    padding-bottom: 5px;
+}
+.RedZone{
+    color: var(--main_red);
+    font-weight: bold;
+}
+.TraitZone{
+    border-bottom: solid 2px var(--main_red);
+    padding-bottom: 5px;
+}
+.CenterProfil{
+    text-align: center !important;
+    justify-content: center;
+    margin-top: 20px !important;
+}
+.ProfilButton{
+    text-decoration: none;
+    background-color: white;
+    border: solid 2px var(--main_red);
+    padding: 5px;
+    border-radius: 8px;
+    color: var(--main_red);
+}
+.ProfilButton:hover{
+    cursor: pointer;
+    background-color: var(--main_red);
+    color: white;
+}
+.NegMont{
+    color: var(--main_red);
+}
+.PosMont{
+    color: green;
+}
+table{
+    margin: 1%;
+    border-collapse: collapse;
+    overflow-y: auto;
+}
+table, th, td{
+    border: solid 1px var(--main_red);
+    padding: 3px;
+}
+th,table{
+    border: solid 2px var(--main_red);
+}
+#TransactionsProfilTable tr:nth-child(even) {
+    background-color: #f1cfd6 !important;
+}
+
+@media screen and (max-width: 864px)
+{
+    #MainContainerProfil{
+
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+        overflow-y: auto;
+        margin-bottom: 10px;
+    }
+
+    #DataProfilZone{
+        height: 50vh;
+    }
+}

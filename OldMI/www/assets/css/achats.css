@@ -1,0 +1,95 @@
+.achats {
+    color: var(--dark_red);
+}
+
+.recherche {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.recherche > input {
+    border: solid 2px var(--dark_red);
+    border-radius: 5px;
+}
+
+.achats-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+table {
+    margin: 1%;
+    border-collapse: collapse;
+    overflow-y: auto;
+    width: 80%;
+    text-align: center;
+}
+
+table, th, td {
+    border: solid 1px var(--main_red);
+    padding: 3px;
+}
+
+th, table {
+    border: solid 2px var(--main_red);
+}
+
+.odd {
+    background-color: #f1cfd6 !important;
+}
+
+hr {
+    border: solid 2px var(--main_red);
+}
+
+#recherche_lot {
+    width: 60%;
+    padding: 4px;
+}
+#recherche_lot:focus {
+    outline: none;
+}
+
+/* Style de la popup */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+}
+
+/* Style pour les liens de confirmation et d'annulation */
+.popup a {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    text-decoration: none;
+    background-color: #FF3547;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Style pour le lien d'annulation */
+.popup a#cancelDelete {
+    background-color: #007BFF;
+}
+
+#checkboxHideClose{
+    vertical-align: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 864px){
+    table{
+        width: 90vw;
+    }
+}

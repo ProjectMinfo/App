@@ -1,0 +1,46 @@
+.menu-container{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 50px;
+    
+}
+
+.labl{
+    border: 1px solid black;
+    border-radius: 15px;
+}
+
+.menu-item{
+    width: 25vw;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 15px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    height: 100%;
+    text-decoration: none;  
+}
+.text-center{
+    text-align: center;
+}
+
+.menu-img{
+    width: 60%;
+}
+
+.option-list{
+    text-align: left;
+}
+
+/*RESPONSIVE*/
+@media screen and (max-width: 864px){
+    .menu-container{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .menu-item{
+        width: 80%;
+        margin-bottom: 20px;
+    }
+}

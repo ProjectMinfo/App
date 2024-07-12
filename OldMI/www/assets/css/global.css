@@ -1,0 +1,348 @@
+/* Colors */
+:root {
+    --main_red: #b00005;
+    --dark_red: #790003;
+    --main_yellow: #dfc400;
+    --dark_yellow: #e09302;
+    --main_brown: #5b2a00;
+    --dark_brown: #2f1600;
+    --beige: #d29c72;
+}
+
+/* Font */
+@font-face {
+    font-family: 'Gabarito';
+    src: url('../fonts/Gabarito-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* pour l'ensemble de la page */
+* {
+    margin: 0;
+    font-family: 'Gabarito', serif;
+    color: black;
+}
+
+html, body{
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: black;
+}
+
+p {
+    max-width: 100%;
+}
+
+p img {
+    width: 100%;
+    height: auto;
+}
+
+/* pour le header */
+header {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--main_red);
+    color: white;
+    align-items: center;
+    padding: 0.5vw 1vw;
+}
+
+header > .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1.5vw;
+}
+
+header > .logo-container > img {
+    height: 12vh;
+    width: auto;
+}
+
+header > .logo-container > a {
+    font-size: 30px;
+    color: white;
+    text-decoration: none;
+}
+
+header > .links-container {
+    display: flex;
+    gap: 3vw;
+    font-size: 20px;
+}
+
+header > .links-container > a {
+    text-decoration: none;
+    color: white;
+}
+
+/* Footer */
+footer {
+    margin-top: auto; /* place le footer en bas de page */
+    text-align: center;
+    padding-bottom: 0.5%;
+}
+
+footer > a {
+    text-decoration: none;
+}
+
+.success {
+    /* pour un message de succes */
+    color: green;
+}
+
+.error {
+    /* pour un message d'erreur */
+    color: red;
+}
+.mainTitle {
+    color: var(--dark_brown);
+    text-align: center;
+}
+
+/* pour les formulaires */
+.form-container {
+    display: grid;
+    place-items: center;
+    height: 80vh;
+}
+
+.form > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+    border: solid 2px var(--dark_red);
+    border-radius: 10px;
+    padding: 10px;
+}
+.form > form > div {
+    color: var(--main_red);
+}
+.form > form > div > input {
+    width: 30vw;
+    height: 5vh;
+    border: solid 2px var(--dark_brown);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.form > form > a {
+    text-align: center;
+}
+
+.form > .error {
+    text-align: center;
+}
+
+.admin-access {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.admin-access > a {
+    text-decoration: none;
+    padding: 0 8px;
+}
+
+.admin-access > a:hover {
+    text-decoration: underline;
+}
+
+
+.bandeau {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.retour {
+    margin-left: 1%;
+}
+
+/* taille des icones de suppression et edition */
+.open, .close, .warning, .edit, .delete {
+    height: 16px;
+    width: auto;
+}
+
+.action {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+footer a:hover {
+    color: var(--main_red);
+    text-decoration: underline;
+}
+
+/* Partie mentions légales */
+.MentionsMainDiv {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+.MentionsMainDiv div {
+    display: flex;
+    justify-content: center;
+    text-align: left;
+    box-shadow: 10px 5px 5px #f1cfd6;
+    padding: 20px;
+    border-radius: 20px;
+    border: solid 2px var(--main_red);
+    width: 80%;
+    margin: auto;
+    margin-top: 1%; 
+    flex-direction: column;
+}
+.MentionsMainDiv h2 {
+    color: var(--main_red);
+}
+.PetiteZoneMentions {
+    width: 40% !important;
+    font-size: 1.3em !important;
+    text-align: center !important;
+    color: var(--main_red);
+    font-weight: bold;
+}
+.MentionColor {
+    color: var(--main_red);
+}
+
+/* Style pour téléphones */
+@media screen and (min-width:200px) and (max-width:1280px) /* affichage pour smartphones et tablettes */
+{   
+    header > .logo-container > img {
+        height: 10vh;
+        width: auto;
+    }
+    
+    header > .logo-container > a {
+        font-size: 15px;
+    }
+
+    header > .links-container {
+        display: flex;
+        gap: 3vw;
+        font-size: 15px;
+    }
+
+    .form-container {
+        display: grid;
+        grid-template-rows: 1fr 1fr 0.5fr;
+        grid-template-areas: "."
+                             "form"
+                             ".";
+        height: 60vh;
+    }
+
+    .form {
+        grid-area: form;
+    }
+
+    .form > form > input {
+        width: 60vw;
+        height: 5vh;
+        border: solid 2px var(--dark_brown);
+        border-radius: 10px;
+    }
+}
+
+.btn {
+    background-color: var(--dark_red);
+    color: white;
+    border: none;
+    height: 50px;
+    border-radius: 10px;
+    transition: 300ms;
+}
+
+.btn:hover {
+    transition: 300ms;
+    background-color: var(--main_red);
+    cursor: pointer;
+}
+
+.text-center { /* le nom parle de lui même */
+    text-align: center;
+}
+
+.block {
+    display: block;
+}
+
+.mt { /*ajoute de la marge en haut*/
+    margin-top: 50px;   
+}
+
+.mb { /*ajoute de la marge en bas*/
+    margin-bottom:50px;
+}
+
+.w-80 {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#ZoneCarte {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+#ZoneCarte > img {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    padding: auto;
+    margin-top: 20px;
+    border-radius: 20px;
+    border: solid 2px var(--main_red);
+    box-shadow: 10px 5px 5px #f1cfd6;
+}
+.MentionsMainDiv > div > p > a {
+    text-decoration: none;
+    color: var(--main_red);
+}
+.MentionsMainDiv > div > p > a:hover {
+    text-decoration: underline;
+}
+
+#ajoutelemCarte {
+    height: 100%;
+}
+
+@media screen and (max-width: 864px)
+{
+    #ZoneCarte > img {
+        width: 80%;
+    }
+    header {
+        flex-direction: column;
+    }
+    header > .links-container {
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+    }
+}
+
+.EVENTCSS {
+    background-color: rgb(167, 121, 34) !important;
+}

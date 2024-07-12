@@ -1,0 +1,1131 @@
+body{
+    width: 100%;
+    height: 100%;
+}
+/*Container principal de la page, tout est dans un form afin de traiter l'envoie des données par la suite*/
+    #MainContainer{
+    width: 98%;
+    height: 95%;
+    margin: 1%;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr 3fr;
+    grid-template-rows: 1fr 6fr 8fr;
+    grid-gap: 10px;
+    overflow-y: hidden;
+}
+
+
+
+
+
+
+
+/*Champ Nom*/
+#NameInputDiv{
+    grid-column: 1 /span 3;
+    grid-row: 1;
+    width: 100% - 4px;
+    height: 100%- 8px;
+    border: var(--main_red) 4px solid;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#NameInputDiv label{
+    background-color: var(--main_red);
+    height: 100%;
+    width: 30%;
+    color:white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#NameInputDiv input{
+    border: none;
+    height: 100%;
+    width: 70%;
+}
+
+/*Champ Bouton Est_Serveur ou NON*/
+.GreenToogle{
+    background-color: green !important;
+}
+#BontonServeur{
+    background-color: var(--main_red);
+    color: white;
+    border : none;
+}
+#BontonServeur:hover{
+    cursor: pointer;
+}
+
+/*Champ Liste des menus*/
+#MenuLstMain{
+    grid-column: 1;
+    grid-row: 2;
+    width: calc(100% - 4px);
+    height: calc(100% - 8px);
+    border: var(--main_red) 4px solid;
+}
+#MenuTxt, #PaiementTxt{
+    height : calc(15% - 4px);
+    text-align: center;
+    border-bottom: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#Menulst{
+    width: 100%;
+    height: 85%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+.MenuButton{
+    background-color: var(--main_red);
+    margin: 5px;
+    color: white;
+    border: solid 2px var(--main_red)
+}
+.MenuButton:hover, .PlatButton:hover, .IngredientButton:hover, #BaguetteValideButton:hover, #ValidButtonSandwich:hover, .QuantiteButton:hover, .SamePlate:hover, #ValidationMultiple:hover{
+    background-color: white;
+    color: var(--main_red);
+    cursor: pointer;
+}
+
+/*Liste des plats*/
+#PlatLstMain{
+    grid-column: 2 / span 2 ;
+    grid-row: 2;
+    width: calc(100% - 8px);
+    height: calc(100% - 8px);
+    border: var(--main_red) 4px solid;
+}
+#PlatTxt{
+    height : calc(15% - 4px);
+    text-align: center;
+    border-bottom: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#Platlst{
+    width: 100%;
+    height: 85%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr ;
+}
+.PlatButton{
+    background-color: var(--main_red);
+    margin: 5px;
+    color: white;
+    border: solid 2px var(--main_red)
+}
+
+/*Liste des autres*/
+#AutreLstMain{
+    grid-column: 4 ;
+    grid-row: 2;
+    width: calc(100% - 4px);
+    height: calc(100% - 8px);
+    border: var(--main_red) 4px solid;
+}
+#AutreTxt{
+    height : calc(15% - 4px);
+    text-align: center;
+    border-bottom: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#Autrelst{
+    width: 100%;
+    height: 85%;
+    display: grid;
+    grid-template-columns:  1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+}
+
+.Out{
+    background-color: black !important;
+    border-color: black !important;
+}
+.Out:hover{
+    background-color: white !important;
+    color: black !important;
+}
+
+.AlertStock{
+    background-color: var(--dark_red) !important;
+    border-color: var(--dark_red) !important;
+}
+.AlertStock:hover{
+    background-color: white !important;
+    color: var(--dark_red) !important;
+}
+
+/*Liste des snacks*/
+#SnackLstMain{
+    grid-column: 1 / span 2 ;
+    grid-row: 3;
+    width: calc(100% - 4px);
+    height: calc(100% - 8px);
+    border: var(--main_red) 4px solid;
+}
+#SnackTxt{
+    height : calc(15% - 4px);
+    text-align: center;
+    border-bottom: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#Snacklst{
+    width: 100%;
+    height: 85%;
+    display: grid;
+    grid-template-columns:  1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr ;
+}
+
+/*Liste des boissons*/
+#BoissonLstMain{
+    grid-column: 3 / span 2 ;
+    grid-row: 3;
+    width: calc(100% - 4px);
+    height: calc(100% - 8px);
+    border: var(--main_red) 4px solid;
+}
+#BoissonTxt{
+    height : calc(15% - 4px);
+    text-align: center;
+    border-bottom: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#Boissonlst{
+    width: 100%;
+    height: 85%;
+    display: grid;
+    grid-template-columns:  1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr ;
+}
+
+/* Récap à droite*/
+#RecapMain{
+    grid-column: 5 ;
+    grid-row: 1 / span 3;
+    width: calc(80% - 4px);
+    height: calc(100% - 8px);
+    border: var(--main_red) 4px solid;
+    border-radius: 20px;
+    margin: 0 10%;
+
+    
+}
+#RecapTxt{
+    height : calc(5% - 4px);
+    text-align: center;
+    border-bottom: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#RecapLst{
+    width: 100%;
+    height: 85%;
+    display: block;
+    overflow-y:auto;
+
+}
+#RecapFooter{
+    height : calc(10% - 4px);
+    text-align: center;
+    border-top: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*Cases sur le téléphone*/
+.case {
+    position: relative;
+    width: calc(100% - 20px);
+    border: var(--main_red) 2px solid;
+
+    margin: 5px;
+  }
+  
+  .caseTitle {
+    height: calc(5% - 4px);
+    text-align: center;
+    border-bottom: var(--main_red) 2px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box; /* Inclure la taille de la bordure dans le calcul de la largeur */
+  }
+  
+  .closebutton {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: calc(5% - 4px);
+    margin-right: 4px; /* Ajustement de la marge pour éviter le chevauchement */
+    cursor: pointer;
+  }
+  
+  .closebutton i, #closebuttonDwich i{
+    color: red;
+    font-weight: bold;
+  }
+
+#ValidButton, #ValidButtonSandwich, #BaguetteValideButton{
+    background-color: var(--main_red);
+    color: white;
+    border: solid 4px var(--main_red);
+    border-radius: 20px;
+    padding: 5px;
+    margin-right: 20px;
+}
+#ValidButton:hover{
+    cursor: pointer;
+    background-color: white;
+    color: var(--main_red);
+}
+#ValidButtonSandwich{
+    margin-right: 0px
+}
+#PriceZone{
+    color: var(--main_red);
+    border: solid 4px var(--main_red);
+    padding: 5px;
+}
+
+/*Partie Pop-UP*/
+#SandwichMenu, #MultipleMenu, #MenusMenu, #CompteAccess, #PaiementMenu, #CurrentCommandesMenu, #EditCommandeMenu, #OnlineCommandeMenu, #ValidOnlineCommandeMenu, #BaguetteAmountMenu{
+    display: none;
+    z-index: 5;
+  }
+  .modal-back {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba( 0, 0, 0, .65 )
+  }
+  .modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background: white;
+    transform: translate(-50%, -50%);
+    border: solid 4px var(--main_red);
+    border-radius: 20px;
+  }
+
+
+#SandwichContainer{
+    width: 60%;
+    height: 90%;   
+}
+#EditCommandeContainer{
+    width: 60%;
+    height: 90%;   
+}
+#ValidOnlineCommandeContainer{
+    width: 60%;
+    height: 90%; 
+}
+#MultipleContainer{
+    width: 80%;
+    height: 90%;
+}
+#MenuContainer{
+    width: 70%;
+    height: 90%;
+}
+
+#CompteAccessContainer{
+    width: 70%;
+    height: 90%;
+}
+
+#Content{
+    display: grid;
+    grid-template-columns: 3fr 7fr 7fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    height: 85%;
+}
+#Contenu{
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 3fr 1fr;
+    height: 90%;
+}
+#CompositionMenulst{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 3fr;
+    height: 75%;
+    grid-gap: 10px;
+    padding: 10px;
+    overflow-y: auto;
+}
+#CompositionMenulst > div{
+    width: calc(100% - 4px);
+    height: calc(100% - 8px);
+    border: var(--main_red) 4px solid;
+}
+#FirstLstTxt, #SecondLstTxt, #ThirdLstTxt, #FourthLstTxt, #CompteTxt, #EditCommandeTxt, #ValidOnlineCommandTxt, #BaguetteAmountTxt{    
+    height : calc(10% - 10px);
+    text-align: center;
+    border-bottom: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+}
+#FirstLst, #SecondLst, #ThirdLst, #FourthLst{    
+    height : calc(90% - 10px);
+}
+.InMenuButton{
+    background-color: var(--main_red);
+    color: white;
+    margin: 3px;
+    padding: 8px;
+    border: solid 1px var(--main_red);
+}
+.InMenuButton:hover{
+    background-color: white;
+    color: var(--main_red);
+    cursor: pointer;
+}
+#QuantityDIV{
+    grid-column: 1;
+    grid-row: 1; 
+}
+#SameDIV{
+    grid-column: 1;
+    grid-row: 2; 
+}
+#ValidationMultiple{
+    grid-column: 1;
+    grid-row: 3;
+    text-align: center;
+    border: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+    background-color: var(--main_red);
+    width: 80%;
+    color: white;
+    margin-left: 10%;
+    
+}
+#FirstChoicePlate{
+    grid-column: 2;
+    grid-row: 1 / span 3; 
+}
+#SecondChoicePlate{
+    grid-column: 3;
+    grid-row: 1 / span 3; 
+}
+
+#QuantityDIV, #SameDIV{
+    width: calc(100% - 28px);
+    height: 75%;
+    margin: 10px;
+    border-left: var(--main_red) 4px solid;
+    border-right: var(--main_red) 4px solid;
+    border-bottom: var(--main_red) 4px solid;
+}
+
+#SandwichText, #MultipleMenuTxt, #MenuTxt{
+    height : calc(10% - 10px);
+    text-align: center;
+    border-bottom: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+}
+#SandwichLst, #FirstChoicePlate, #SecondChoicePlate{
+    width: calc(100% - 28px);
+    display: grid;
+    grid-template-columns:  1fr;
+    grid-template-rows: 2fr 2fr 1fr ;
+    margin: 5px;
+    border-left: var(--main_red) 4px solid;
+    border-right: var(--main_red) 4px solid;
+    border-bottom: var(--main_red) 4px solid;
+
+
+    
+}
+#FirstChoicePlate, #SecondChoicePlate{
+    height: 100%;
+}
+
+#SandwichFooter{
+
+    text-align: center;
+    border-top: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.Txtmenu{
+    height : calc(20% - 4px);
+    text-align: center;
+    border-bottom: var(--main_red) 4px solid;
+    border-top: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#Viandelst, #ingredientlst{
+    width: 100%;
+    height: calc(80% - 4px);
+    display: grid;
+    grid-template-columns:  1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr ;
+}
+#Extralst{
+    width: 100%;
+    height: calc(80% - 4px);
+    display: grid;
+    grid-template-columns:  1fr 1fr 1fr ;
+    grid-template-rows: 1fr 1fr ;
+}
+.IngredientButton{
+    background-color: var(--main_red);
+    margin: 5px;
+    color: white;
+    border: solid 2px var(--main_red)
+}
+#closebuttonDwich {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px;
+    height: calc(5% - 4px);
+    margin-right: 4px; /* Ajustement de la marge pour éviter le chevauchement */
+    cursor: pointer;
+  }
+
+.SelectedIngredient, .SelectPaiement, .SelectPaiementOnline, .SelectedQuantity, .SamePlateSelected, .FirstSelectedIngredient, .SecondSelectedIngredient, .SelectedPlate, .SelectedSnack{
+    background-color: green !important;
+    border-color: green !important;
+}
+.SelectPaiement, .SelectPaiementOnline{
+    color:white !important;
+}
+.SelectedIngredient:hover, .SelectPaiement:hover,.SelectPaiementOnline:hover, .SelectedQuantity:hover, .SamePlateSelected:hover, .FirstSelectedIngredient:hover, .SecondSelectedIngredient:hover, .SelectedPlate:hover, .SelectedSnack:hover{
+    background-color: white !important;
+    color: green !important;
+}
+
+
+#Quantity, #Same{
+    height: 80%;
+    width: 100%;
+}
+.QuantiteButton, .SamePlate{
+    background-color: var(--main_red);
+    margin: 5px;
+    color: white;
+    border: solid 2px var(--main_red);
+    height: calc(100% - 14px);
+    width: calc(50% - 14px);
+}
+
+.ResearchZone{
+    border-bottom: solid 5px var(--main_red);
+    width: calc(100% - 20px);
+    height: 5%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+}
+.ResearchZone i{
+    color: var(--main_red);
+}
+
+.ResearchByNum{
+    display: flex;
+    width: 90%;
+    height: 80%;
+}
+.ReseachByNumBar{
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: solid 2px var(--main_red);
+    padding: 1px;
+    width: 50%;
+    height: 100%;
+}
+#searchByNum, #searchByName{
+    background-color: white;
+    border: none;
+    width: 100%;
+    color: var(--main_red);
+}
+#searchByNum:focus, #searchByName:focus{
+    outline: none;
+}
+.SearchNumButtonDiv{
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: solid 2px var(--main_red);
+    padding: 1px;
+    width: 40%;
+    height: 100%;
+    margin-left: 5%;
+    overflow: hidden;
+}
+#SearchByNumButton{
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border: none;
+    font-size: 80%;
+    color: var(--main_red);
+}
+#SearchByNumButton:hover{
+    background-color: var(--main_red);
+    color: white;
+    cursor: pointer;
+}
+.SearchNumButtonDiv:hover{
+    background-color: var(--main_red);
+}
+.ReseachByNameBar{
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: solid 2px var(--main_red);
+    padding: 1px;
+    width: 90%;
+    height: 80%;
+}
+.MainCZone{
+    width: 100%;
+    height: 75%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.MainCZone > div{
+    padding: 10px;
+}
+.NameCZone, .SoldeCZone{
+    margin-top: 1%;
+}
+.TableauC{
+    border: 2px solid var(--main_red);
+    border-collapse : collapse;
+    text-align: center;
+}
+td{
+    border: solid 2px var(--main_red);
+    padding: 5px;
+}
+th{
+    padding: 10px;
+}
+
+#BackZone{
+    position: absolute;
+    width: calc(45% - 4px);
+    height: 15%;
+    overflow-y: auto;
+}
+.proposition{
+    display: flex;
+    background-color: white;
+    text-align: center;
+    border: 2px var(--main_red) solid;
+}
+.proposition:hover{
+    cursor: pointer;
+}
+
+#PaiementContainer{
+    width: 50%;
+    height: 70%;
+}
+#BaguetteAmountContainer{
+    width: 50%;
+    height: 70%;
+    text-align: center;
+}
+#PaiementMainDiv{
+    width: 100%;
+    height: 85%;
+}
+#MoyenPaiement{
+    display: flex;
+    justify-content: center;
+    height: 30%;
+    width: 100%;
+    align-items: center;
+}
+.TypePaiementCommande {
+    margin: 0 5px; /* Ajouter un espace de 5 pixels entre les boutons */
+    width: 15%;
+    height: 70%;
+    color: var(--main_red);
+    border: solid 2px var(--main_red);
+    background-color: white;
+    
+}
+.TypePaiementCommande:hover{
+    color: white;
+    background-color: var(--main_red);
+    cursor: pointer;
+}
+.TypePaiementCommande > i {
+    color: black;
+}
+#totalPaiement{
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+}
+#CommZonePaiement{
+    display: flex;
+    justify-content: center;
+    height: 30%;
+}
+#CommentaireArea{
+    width: 80%;
+    height: 100%;
+    resize: none;
+    border: solid 2px var(--main_red);
+    border-radius: 8px;
+    padding: 5px;
+}
+#CommentaireArea:focus{
+    outline: none;
+}
+#ValidZonePaiement{
+    display: flex;
+    justify-content: center;
+    height: 10%;
+    margin-top: 20px;
+}
+#ValidationPaiement{
+    width: 20%;
+    height: 100%;
+    border: solid 2px var(--main_red);
+    border-radius: 8px;
+    padding: 5px;
+    background-color: white;
+    color: var(--main_red);
+}
+#ValidationPaiement:hover{
+    background-color: var(--main_red);
+    color: white;
+    cursor: pointer;
+}
+
+/*Zone de consultation des commandes en cuisine*/
+
+#CurrentCommandesContainer, #OnlineCommandeContainer{
+    width: 95%;
+    height: 95%;
+}
+#CurrentCommandeTxt, #OnlineCommandeTxt{
+    height : calc(5% - 10px);
+    text-align: center;
+    border-bottom: var(--main_red) 4px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+}
+#CurrentCommandeRecherche{
+    width: 100%;
+    height: 10%;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    border-bottom: solid 4px var(--main_red);
+}
+#CurrentCommandeSearchBarZone, #CurrentCommandeCheckZone{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; 
+}
+#CurrentCommandeSearchBar, #NameCommandeInput, #OnlineCommandeRechercheBar, #NameCommandeOnlineInput{
+    width: 70%;
+    height: 30%;
+    text-align: center;
+    border: solid 2px var(--main_red);
+}
+#CurrentCommandeSearchBar:focus, #NameCommandeInput:focus, #OnlineCommandeRechercheBar:focus, #NameCommandeOnlineInput:focus{
+    outline: none;
+}
+#CurrentCommandeCheckZone label{
+    color: var(--main_red);
+    margin-left: 5px;
+}
+#NameCommandeInput, #NameCommandeOnlineInput{
+    margin-left: 10px;
+}
+
+#CurrentCommandeContenu, #OnlineCommandeContenu{
+    width: calc(100% - 10px);
+    height: 80%;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.BlocCommande{
+    white-space: pre;
+}
+.BlocCommande, .BlocCommandeOnline {
+    border: 2px solid var(--main_red);
+    margin-top: 4px;
+}
+
+.ligneCommande {
+    display: flex;
+    width: 100%;
+}
+  
+.colonneCommande {
+    border: 1px solid black;
+    padding: 3px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.CommandeLeftZone{
+    width: 20%;
+}
+.CommandeZoneText{
+    width: 80%;
+}
+
+.ValidCommandeButton{
+    color: green;
+}
+.DenyCommandeButton{
+    color: red;
+}
+.ChangeButtonCommande{
+    margin-left: 5px;
+}
+.ChangeButtonCommande:hover{
+    cursor: pointer;
+    zoom: 110%;
+}
+
+#OnlineCommandeRecherche{
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: solid 2px var(--main_red);
+}
+
+
+.BleuPastel{
+    background-color: #bde0ff !important;
+}
+.OrangePastel{
+    background-color: #ffddbd !important;
+}
+.VertPastel{
+    background-color: #e4f1cb !important;
+}
+.RosePastel{
+    background-color: #fd97ac !important;
+}
+.VioletPastel{
+    background-color: #dbbdff !important;
+}
+.CyanPastel{
+    background-color: #bdf7ff !important;
+}
+.JaunePastel{
+    background-color: #ffeb94 !important;
+}
+
+
+.LateCommande{
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+}
+
+#EditCommandeNameDiv, #ValidOnlineCommandeNameDiv{
+    width: 100%;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.EditCommandeOutDiv, .EditCommandeOnlineOutDiv{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+
+}
+
+#EditCommandeOutArea, #EditCommandeInArea, #EditCommandeCommentaire, #EditCommandeOnlineOutArea, #EditCommandeOnlineInArea, #EditCommandeOnlineCommentaire{
+    width: 80%;
+    height: 100%;
+    resize: none;
+    border: solid 2px var(--main_red);
+    border-radius: 8px;
+    padding: 5px;
+    margin-left: 10px;
+}
+.CenterDivZone{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.DivAreaCommande{
+    height: 70%;
+}
+.DivAreaTexte{
+    font-size: 1em;
+}
+
+#ValidCommandEdit, #ValidCommandOnlineEdit{
+    width: 20%;
+    border: solid 2px var(--main_red);
+    padding: 5px;
+    background-color: white;
+    color: var(--main_red);
+    margin: 0 auto;
+    border-radius: 8px;
+}
+#ValidCommandEdit:hover, #ValidCommandOnlineEdit:hover{
+    background-color: var(--main_red);
+    color: white;
+    cursor: pointer;
+}
+#WarningTextBaguettes{
+    color: var(--main_red);
+    margin-top: 1%;
+}
+.DivBaguetteAmount{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5%;
+}
+.InputBaguette{
+    border: solid 2px var(--main_red);
+    margin-top: 5px;
+    padding: 3px;
+}
+.InputBaguette:focus{
+    outline: none;
+}
+
+
+
+
+
+/*Responsive Part*/
+@media screen and (max-width: 1200px)
+{
+    #SandwichContainer{
+        width: 70%;
+    }
+    #MainContainer{
+        width: 97%;
+        height: 95%;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 2fr 0.01fr;
+
+        grid-template-rows: 1fr 6fr 12fr 20fr;
+        grid-gap: 10px;
+        
+    }
+    #RecapMain{
+        grid-column: 1 / span 4 ;
+        grid-row: 4; 
+    }
+    body{
+        width: 100%;
+        height: auto;
+        padding-bottom: 20px;
+    }
+    #Snacklst{
+        grid-template-columns:  1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr ;
+    }
+    #Platlst{
+        grid-template-columns: 1fr 1fr ;
+        grid-template-rows: 1fr 1fr 1fr 1fr;
+    }
+
+    #Viandelst, #ingredientlst{
+        width: 100%;
+        height: calc(80% - 4px);
+        display: grid;
+        grid-template-columns:  1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr ;
+    }
+}
+
+@media screen and (max-width: 864px)
+{
+    #CompositionMenulst{
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 3fr 3fr;
+        height: 75%;
+    }
+    
+    #MainContainer{
+        width: 97%;
+        height: 95%;    
+        display: grid;
+        grid-template-columns: 1fr 1fr 0.03fr;
+
+        grid-template-rows: 1fr 6fr 6fr 12fr 12fr 20fr;
+        grid-gap: 10px;
+        
+    }
+    #RecapMain{
+        grid-column: 1 / span 2;
+        grid-row: 6; 
+    }
+    #AutreLstMain{
+        grid-column: 1 ;
+        grid-row: 3;
+    }
+    #BontonServeur{
+        grid-column: 2 ;
+        grid-row: 3;
+    }
+    #SnackLstMain{
+        grid-column: 1 / span 2 ;
+        grid-row: 4;
+    }
+    #BoissonLstMain{
+        grid-column: 1 / span 2 ;
+        grid-row: 5;
+    }
+    #Content{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 5fr 5fr;
+        height: calc(85% - 30px);
+        overflow-y: scroll;
+        padding: 15px;
+        padding-top: 5px;
+        grid-gap: 20px;
+    }
+
+    #QuantityDIV{
+        grid-column: 1 ;
+        grid-row: 1;
+        margin: 0;
+        margin-top: 10px;
+        height: 100%;
+        width: 100%;
+    }
+    #SameDIV{
+        grid-column: 2 ;
+        grid-row: 1;
+        margin: 0;
+        margin-top: 10px;
+        height: 100%;
+        width: 100%;
+    }
+    #ValidationMultiple{
+        grid-column: 3 ;
+        grid-row: 1;
+        margin: 0;
+        margin-top: 10px;
+        height: calc(80% - 2px);
+        width: 100%;
+    }
+    #FirstChoicePlate{
+        grid-column: 1 / span 3 ;
+        grid-row: 2;
+        
+    }
+    #SecondChoicePlate{
+        margin-top: 20px;
+        grid-column: 1 / span 3 ;
+        grid-row: 3;
+    }
+
+    #Viandelst, #ingredientlst{
+        width: 100%;
+        height: calc(80% - 4px);
+        display: grid;
+        grid-template-columns:  1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr ;
+    }
+
+    .ResearchZone{
+        height: calc(10% + 20px);
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 1fr;
+        grid-gap: 10px;
+        padding: 2px;
+        width: calc(100% - 4px);
+    }
+    .MainCZone{
+    height: 68%;
+    }
+    .MainCZone > div{
+        padding: 5px;
+    }
+
+    #BackZone{
+        width: calc(90% - 4px);
+    }
+    .TypePaiementCommande {
+        width: 30%;
+        margin: 0 2px;
+        font-size: 0.7em;
+    }
+    .DivAreaTexte{
+        font-size: 0.7em;
+    }
+    #ValidOnlineCommandeContainer{
+        width: 90%;
+        height: 90%; 
+    }
+    #BaguetteAmountContainer{
+        width: 90%;
+        height: 70%;
+    }
+
+}
+
+@media screen and (max-width: 1060px)
+{
+    #Viandelst, #ingredientlst{
+        width: 100%;
+        height: calc(80% - 4px);
+        display: grid;
+        grid-template-columns:  1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr ;
+    }
+}
+

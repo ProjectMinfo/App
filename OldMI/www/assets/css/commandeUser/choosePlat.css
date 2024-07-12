@@ -1,0 +1,153 @@
+.text-center{
+    text-align: center;
+}
+
+.plats-container{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap : 25px;
+  
+}
+
+.platSancks-conatiner{
+    grid-template-columns: repeat(2,1fr);
+    margin-top: 20px;
+}
+
+
+.plat-item{
+    display: block;
+    margin: auto;
+    width: 20vw;
+    margin-top: 0;
+    border:  solid black 1px;
+    text-align: center;
+}
+
+.option-div{
+    display: none;
+}
+
+.option-div>p{
+    margin: 0;
+}
+
+.hiddenCheckbox{ /* HIDE RADIO */
+    visibility: hidden; /* Makes input not-clickable */
+    position: absolute; /* Remove input from document flow */
+}
+
+.labl > input{ /* HIDE RADIO */
+    visibility: hidden; /* Makes input not-clickable */
+    position: absolute; /* Remove input from document flow */
+}
+
+.labl > input + div{ /* DIV STYLES */
+    cursor:pointer;
+    border:2px solid transparent;
+}
+.labl > input:checked + div{ /* (RADIO CHECKED) DIV STYLES */
+    background-color: #ffd6bb;
+   
+}
+
+.plat-title{
+    color: var(--dark_red);
+}
+
+.labl-ing:hover{
+    color: var(--main_red);
+}
+
+.subTitle{
+    color: var(--dark_red);
+}
+
+.headCategory{
+    margin-bottom: 25px;
+    margin-top: 25px;
+}
+
+.btnValider{
+
+    display: block;
+    width: 80%;
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.ingredients-list{
+    display: flex;
+}
+
+.SecondIngredientList{
+    display: none;
+}
+
+.FirstIngredientList{
+    width: 100%;
+}
+
+.comment-div{
+    width: 80%;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.comment-div > textarea{
+    width: 100%;
+}
+
+.snack-2{
+    display: none;
+}
+
+#snacksContainer{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#snacksContainer >div{
+    width: 45%;
+   
+}
+
+/* RESPONSIVE */
+
+@media screen and (max-width: 864px){
+    .plats-container{
+        grid-template-columns: repeat(1,1fr);
+        gap: 10px;    
+    }
+
+    .platSancks-conatiner{
+        grid-template-columns: repeat(2,1fr);
+        margin-top: 20px;
+        width: 100vw;
+    }
+
+    .plat-item{
+        display: block;
+        margin: auto;
+        width: 80%;
+        margin-top: 0;
+        border:  solid black 1px;
+        text-align: center;
+    }
+
+    .snack-2{
+        display: none;
+    }
+
+    .ingDiv>div{
+        margin-bottom: 8px;
+    }
+
+    #snacksContainer{
+        display: block;
+        width: 100vw;
+    }
+
+   
+}
