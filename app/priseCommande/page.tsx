@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
 import { getBoissons, getEventMode, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
@@ -7,7 +7,6 @@ import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/in
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from '@/components/paiement';
 import { Card, CardHeader, CardBody } from '@nextui-org/react';
-import { prepareCommande } from '@/config/logic';
 import ListeComptesModal from '@/components/listeCompteModal';
 import ListeCommandeModal from '@/components/listeCommandeModal';
 import { RecapComponent } from '@/components/CommandeCompos';
@@ -120,7 +119,7 @@ export default function ChatPage() {
       setEventMode(fetchedEventMode);
     }
     fetchData();
-  }, []);
+  }, [repas]);
 
   // Gestion des réponses du modal pour les plats
   useEffect(() => {
@@ -144,8 +143,7 @@ export default function ChatPage() {
         setCurrentStep(getNextStep({ type: "plat" }, nextRepas));
       }
     }
-  }, [modalResponse]);
-
+  }, [modalResponse, currentPlat, repas, allViandes]);
 
   useEffect(() => {
     if (listIngredients) {
@@ -163,7 +161,7 @@ export default function ChatPage() {
 
 
   // Ajout des items dans le repas
-  const handleSetRepasItem = (type: keyof NewRepas, item: AllType) => {
+  const handleSetRepasItem = useCallback((type: keyof NewRepas, item: AllType) => {
     const newRepas: NewRepas = { ...repas };
 
     switch (item.type) {
@@ -178,7 +176,7 @@ export default function ChatPage() {
       case "plat":
         if (!isMenuDone) {
           newRepas.remainingPlats -= 1;
-          const platInMenu = item;
+          const platInMenu = { ...item, id: Date.now() }; // Assign a unique id using Date.now()
           platInMenu.plat.prix = 0;
           platInMenu.plat.prixServeur = 0;
           platInMenu.menuId = currentMenuId;
@@ -186,14 +184,17 @@ export default function ChatPage() {
           setIsModalOpen(true);
         }
         else {
-          setCurrentPlat(item);  // Set the current plat before opening the modal
+          console.log("plat", item);
+
+          const platItem = { ...item, id: Date.now() }; // Assign a unique id using Date.now()
+          setCurrentPlat(platItem);  // Set the current plat before opening the modal
           setIsModalOpen(true);
         }
         break;
       case "snack":
         if (!isMenuDone) {
           newRepas.remainingPerifs -= 1;
-          const snackInMenu = item
+          const snackInMenu = { ...item, id: Date.now() }; // Assign a unique id using Date.now()
           snackInMenu.snack.prix = 0;
           snackInMenu.snack.prixServeur = 0;
           snackInMenu.menuId = currentMenuId;
@@ -201,32 +202,34 @@ export default function ChatPage() {
           newRepas.snack.push(snackInMenu);
         }
         else {
-          newRepas.snack.push(item);
+          const snackItem = { ...item, id: Date.now() }; // Assign a unique id using Date.now()
+          newRepas.snack.push(snackItem);
         }
         break;
       case "boisson":
         if (!isMenuDone) {
           newRepas.remainingPerifs -= 1;
-          const boissonInMenu = item
+          const boissonInMenu = { ...item, id: Date.now() }; // Assign a unique id using Date.now()
           boissonInMenu.boisson.prix = 0;
           boissonInMenu.boisson.prixServeur = 0;
           boissonInMenu.menuId = currentMenuId;
-
           newRepas.boisson.push(boissonInMenu);
         }
         else {
-          newRepas.boisson.push(item);
+          const boissonItem = { ...item, id: Date.now() }; // Assign a unique id using Date.now()
+          newRepas.boisson.push(boissonItem);
         }
         break;
     }
 
-    if (newRepas.menu.length > 0 && newRepas.remainingPlats === 0 && newRepas.remainingPerifs === 0) {
+    // Check if the menu is complete
+    if (newRepas.remainingPlats <= 0 && newRepas.remainingPerifs <= 0) {
       setIsMenuDone(true);
     }
 
     setRepas(newRepas);
     setCurrentStep(getNextStep(item, newRepas));
-  };
+  }, [repas]);
 
   const getNextStep = (item: AllType, repas: NewRepas): string => {
     if (repas.remainingPlats > 0) {
@@ -298,12 +301,15 @@ export default function ChatPage() {
 
   function ChatOption({ setRepas, type, items }: { setRepas: (item: AllType) => void, type: keyof NewRepas, items: AllType[] }) {
     const id = Math.floor(Math.random() * 1000) + 1;
-    const options = items.map((item) => ({ id: id, type: type, [type]: item }));
+    // créer une copie de "items" pour ne pas modifier l'original
+    const newItems = [...items];
+    const options = newItems.map((item) => ({ id: id, type: type, [type]: item }));
+
+    console.log("options", options);
+
 
     return (
       <ChatLayout
-        who="Lancelot"
-        mainSentence="C'est noté ! Et avec quoi ?"
         buttons={options}
         setRepas={setRepas}
       />
@@ -374,7 +380,7 @@ export default function ChatPage() {
     );
   }
 
-  function ChatLayout({ who, mainSentence, buttons, setRepas }: { who: string, mainSentence: string, buttons: AllType[] | OtherOption[], setRepas: (choice: AllType | OtherOption) => void }) {
+  function ChatLayout({ buttons, setRepas }: { who: string, mainSentence: string, buttons: AllType[] | OtherOption[], setRepas: (choice: AllType | OtherOption) => void }) {
     const [buttonClicked, setButtonClicked] = useState<boolean>(false);
 
     const handleButtonClick = (choice: AllType | OtherOption) => {
@@ -522,7 +528,7 @@ export default function ChatPage() {
                 setIsModalOpen(false);
                 setModalResponse(values);
               }}
-              options={{ "ingredients": listIngredients, "viandes": listViandes, "currentPlat": currentPlat }}  // Pass the current plat to the modal
+              options={{ "ingredients": listIngredients, "viandes": listViandes, "currentPlat": {...currentPlat} }}  // Pass the current plat to the modal
             />
 
           </div>

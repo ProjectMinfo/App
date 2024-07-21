@@ -1,6 +1,7 @@
 import json
 from pymongo import MongoClient
 import pymongo
+from datetime import datetime
 
 # Chemin vers ton fichier JSON
 json_file_path = './maisoseminitel_mysql_db.json'
@@ -39,6 +40,11 @@ def CompteMigration():
     print("Migration de la collection 'comptes' terminée avec succès!")
             
 
+def dateConvertionAchat(date):
+    if date is None:
+        return None
+    return datetime.strptime(date, "%Y-%m-%d")
+
 def AchatMigration():
     # Lire le fichier JSON et extraire les données de la table "achats"
     with open(json_file_path, 'r', encoding='utf-8') as file:
@@ -50,17 +56,17 @@ def AchatMigration():
         db.achats.delete_many({})
         for achat in achats_data:
             db.achats.insert_one({
-                "idAchat" : int(achat['id_achat']),
-                "categorie" : int(achat['categorie']),
-                "dateFermeture" : achat['date_fermeture'],
-                "dateOuverture" : achat['date_ouverture'],
-                "dlc" : achat['dlc'],
-                "etat" : int(achat['etat']),
-                "idProduit" : int(achat['id_produit']),
-                "nbPortions" : int(achat['nb_portions']),
-                "nomArticle" : achat['nom_article'],
-                "numlot" : achat['num_lot'],
-                "qtePerimee" : int(achat['qte_perimee']),
+                "idAchat": int(achat['id_achat']),
+                "categorie": int(achat['categorie']),
+                "dateFermeture": dateConvertionAchat(achat.get('date_fermeture')),
+                "dateOuverture": dateConvertionAchat(achat.get('date_ouverture')),
+                "dlc": dateConvertionAchat(achat.get('dlc')),
+                "etat": int(achat['etat']),
+                "idProduit": int(achat['id_produit']),
+                "nbPortions": int(achat['nb_portions']),
+                "nomArticle": achat['nom_article'],
+                "numLot": achat['num_lot'],
+                "qtePerimee": int(achat['qte_perimee']),
             })
     
     print("Migration de la collection 'achats' terminée avec succès!")
@@ -179,7 +185,8 @@ def TemperaturesMigration():
         for temperatures in temperatures_data:
             db.temperatures.insert_one({
                 "temperatureId" : int(temperatures['temperature_id']),
-                "date" : temperatures['date'],
+                "date" : (datetime.strptime(temperatures['date'], "%Y-%m-%d %H:%M:%S").isoformat()+ "Z"),
+                "nomMembre" : temperatures['NomMembre'],
                 "tmp1": int(temperatures['tmp1']),
                 "tmp2": int(temperatures['tmp2']),
                 "tmp3": 0,
@@ -188,7 +195,7 @@ def TemperaturesMigration():
     print("Migration de la collection 'temperatures' terminée avec succès!")
 
 # CompteMigration()
-# AchatMigration()
+AchatMigration()
 # ArticleMigration()
 # NettoyageMigration()
 # PlanningMigration()

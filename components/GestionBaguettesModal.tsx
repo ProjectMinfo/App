@@ -39,7 +39,7 @@ export default function GestionBaguetteModal({ isOpen, onClose, nbBaguette, nbAl
 
     return (
         <>
-            <Modal isOpen={isOpen} className="max-w-xl">
+            <Modal isOpen={isOpen} className="max-w-xl" onClose={() => onClose(nbBaguette, nbAllBaguette)}>
                 <ModalContent>
                     <ModalHeader>Gestion des Baguettes</ModalHeader>
                     <ModalBody className="gap-6 mb-5">

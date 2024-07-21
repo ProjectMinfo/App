@@ -7,6 +7,7 @@ import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader, Divider, Input, Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/react";
 import { getUser, postEditCompte } from "@/config/api";
 import ListeComptesModal from "./listeCompteModal";
+import { redirect } from "next/navigation";
 
 type NewMenus = {
   id: number;
@@ -279,11 +280,15 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
         postEditCompte(currentAccount);
       }
       prepareCommande(repas, allViandes, true, prixCommande, currentComment, currentAccount);
-      console.log("Commande Compte MI prête à être payée");
+      // console.log("Commande Compte MI prête à être payée");
     }
     if (currentStep === 1 && typePaiement === 2) {
       prepareCommande(repas, allViandes, false, prixCommande, currentComment, currentAccount);
-      console.log("Commande Comptoir prête à être payée");
+      // console.log("Commande Comptoir prête à être payée");
+    }
+
+    if (currentStep === 1 && serveurView) {
+      redirect("/priseCommande");
     }
   }, [currentStep, typePaiement]);
 
@@ -303,7 +308,7 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
 
       {currentStep === 0 && serveurView && (
         choixServeur()
-      )}
+      )}        
 
       {currentStep === 1 && typePaiement === 1 && (
         <Card className="w-full p-4">

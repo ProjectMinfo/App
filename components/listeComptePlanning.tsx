@@ -8,9 +8,10 @@ interface ListeComptesModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUserSelect: (compte: Comptes) => void;
+  access?: number;
 }
 
-export default function ListeComptesModal({ isOpen, onClose, onUserSelect }: ListeComptesModalProps) {
+export default function ListeComptesModal({ isOpen, onClose, onUserSelect, access }: ListeComptesModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [allComptes, setAllComptes] = useState<Comptes[]>([]);
   const [filteredComptes, setFilteredComptes] = useState<Comptes[]>([]);
@@ -74,6 +75,9 @@ export default function ListeComptesModal({ isOpen, onClose, onUserSelect }: Lis
     if (query.length < 2) {
       setFilteredComptes([]);
       return;
+    }
+    if (access) {
+      setAllComptes(allComptes.filter(compte => compte.acces > 0));
     }
     setFilteredComptes(
       allComptes.filter(compte =>

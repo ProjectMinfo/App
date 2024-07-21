@@ -118,15 +118,15 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
                         />
                         <div className="flex justify-between">
                             <Switch
-                                isSelected={updatedItem.dispo}
+                                isSelected={tempItem.dispo}
                                 onChange={(e) => handleChange('dispo', e.target.checked)}
                             >
                                 Disponible
                             </Switch>
 
-                            {'event' in updatedItem && (
+                            {'event' in tempItem && (
                                 <Switch
-                                    isSelected={updatedItem.event}
+                                    isSelected={tempItem.event}
                                     onChange={(e) => handleChange('event', e.target.checked)}
                                 >
                                     Evenement

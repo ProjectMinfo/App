@@ -16,7 +16,7 @@ export default function GestionPlats() {
       setPlats(fetchedPlats);
     }
     fetchPlats();
-  }, []);
+  }, [plats]);
 
   
 

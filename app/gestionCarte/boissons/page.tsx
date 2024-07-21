@@ -16,7 +16,7 @@ export default function GestionBoissons() {
       setBoissons(fetchedBoissons);
     }
     fetchBoissons();
-  }, []);
+  }, [boissons]);
 
   // Filtrer les boissons en fonction de la recherche
   const filteredBoissons = boissons.filter((boisson) =>

@@ -627,13 +627,13 @@ export default function GestionAchatsPage() {
         )}
       </div>
 
-      <div>{(
+      {/* <div>{(
         isAfficherLesAchatsConsommes
           ? <Button onClick={onClearOldAchatsOpen} color={"danger"} style={{ whiteSpace: 'nowrap' }}>
             Archiver les anciens achats
           </Button>
           : null)
-      }</div>
+      }</div> */}
 
       <ClearOldAchatsModal
         isOpen={isClearOldAchatsModalOpen}

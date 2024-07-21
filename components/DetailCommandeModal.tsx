@@ -75,6 +75,8 @@ export default function DetailCommandeModal({ isOpen, onClose, options }: Detail
 
 
   const getPossibleItems = () => {
+    console.log(options.currentPlat);
+    
     const listIngredients: Ingredients[] = [];
     options.currentPlat.plat.ingredients.forEach((element) => {
       const ingredient = options.ingredients.find((ingredient) => ingredient.nom === element.ingredient.nom);

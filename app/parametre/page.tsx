@@ -1,10 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import FileUpload from '@/components/FileUpload';
-import { getEventMode, postEventMode, postLimitOrderTaking, postOrderStatus, getSettingById, getOrderHours, postOrderHours, getColor, postColor } from "@/config/api"; // Importer les fonctions API
-import { Button, Card, CardBody, CardHeader, Divider, Input, Switch, TimeInput } from '@nextui-org/react';
+import { getEventMode, postEventMode, postOrderStatus, getSettingById, getOrderHours, postOrderHours, getColor, postColor, postName } from "@/config/api"; // Importer les fonctions API
+import { Button, Card, CardBody, CardHeader, Divider, Input, Switch } from '@nextui-org/react';
 import FileUploadLogo from '@/components/FileUploadLogo';
-import FileUploadEvent from '@/components/FileUploadEvent';
 
 const Settings = () => {
   const [eventMode, setEventMode] = useState(false);
@@ -13,6 +12,7 @@ const Settings = () => {
   const [closingTime, setClosingTime] = useState('20:00');
 
   const [colorSelected, setColorSelected] = useState('#cc2a24');
+  const [nameSelected, setNameSelected] = useState("Chti'Mi");
 
 
 
@@ -32,17 +32,20 @@ const Settings = () => {
         console.error('Error fetching settings:', error);
       }
     };
-    async function fetchColor() {
-      try {
-        const color: [] = await getColor();
-        if (typeof window !== 'undefined') {
-          setColorSelected(color[0].couleur.toLowerCase());
-        }
-      } catch (error) {
-        console.error('Error fetching color:', error);
-      }
+    async function fetchCustoms() {
+      fetch("https://minfoapi.fly.dev/settings/str/Nom")
+      .then((res) => res.text())
+      .then((nom) => setNameSelected(nom))
+      .catch((error) => console.error(error));
+
+    fetch("https://minfoapi.fly.dev/settings/str/Couleur")
+      .then((res) => res.text())
+      .then((color) => setColorSelected(color))
+      .catch((error) => console.error(error));
+
     }
-    fetchColor();
+
+    fetchCustoms();
     fetchSettings();
   }, []);
 
@@ -110,16 +113,18 @@ const Settings = () => {
     } catch (error) {
       console.error('Error updating color:', error);
     }
+    try {
+      await postName(nameSelected);
+    } catch (error) {
+      console.error('Error updating name:', error);
+    }
+
 
     console.log('Event Mode:', eventMode);
     console.log('Order Taking:', orderTaking);
     console.log('Opening Time:', openingTime);
     console.log('Closing Time:', closingTime);
     console.log('Color:', colorSelected);
-
-
-
-
   };
 
   return (
@@ -166,10 +171,20 @@ const Settings = () => {
         </Card>
         <Card className="mb-6">
           <CardHeader>
-            <h3 className="text-lg font-medium mb-2">Personalisation</h3>
+            <h3 className="text-lg font-medium">Personalisation</h3>
           </CardHeader>
           <CardBody>
-            <h4 className="text-lg font-medium mb-2">Couleur du site</h4>
+          <h4 className="text-lg font-medium mb-2">Nom de l'asso</h4>
+            <Input
+              type="text"
+              value={nameSelected}
+              variant="faded"
+              size='sm'
+              className="w-32"
+              onChange={(e) => setNameSelected(e.target.value)}
+            />
+
+            <h4 className="text-lg font-medium my-2">Couleur du site</h4>
             <Input
               type="color"
               value={colorSelected}

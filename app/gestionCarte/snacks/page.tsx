@@ -16,7 +16,7 @@ export default function GestionSnacks() {
       setSnacks(fetchedSnacks);
     }
     fetchSnacks();
-  }, []);
+  }, [snacks]);
 
   // Filtrer les snacks en fonction de la recherche
   const filteredSnacks = snacks.filter((snack) =>

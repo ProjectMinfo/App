@@ -16,7 +16,7 @@ export default function GestionIngredients() {
       setIngredients(fetchedIngredients);
     }
     fetchIngredients();
-  }, []);
+  }, [ingredients]);
 
   // Filtrer les ingredients en fonction de la recherche
   const filteredIngredients = ingredients.filter((snack) =>

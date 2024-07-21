@@ -62,10 +62,8 @@ const CommandesCuisine = () => {
   }, []);
 
   const colors = [
-    '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF8333',
+    '#FF5733', '#33FF57', '#33AFFF', '#FF33A1', '#FF8333',
     '#33FFF5', '#F5FF33', '#8D33FF', '#33FF8D', '#FF3385',
-    // '#FF5733CC', '#33FF57CC', '#3357FFCC', '#FF33A1CC', '#FF8333CC',
-    // '#33FFF5CC', '#F5FF33CC', '#8D33FFCC', '#33FF8DCC', '#FF3385CC'
   ];
 
   const generateRandomColor = (id: number) => {
@@ -112,10 +110,10 @@ const CommandesCuisine = () => {
             {commandes.filter(commande => (commande.contenu.includes('Sandwich') || commande.contenu.includes('Hot-Dog'))).slice(0, 10).map((commande, index) => {
               const produitsFroids = commande.contenu.split('//').filter(part => part.includes('Sandwich') || part.includes('Hot-Dog'));
               return produitsFroids.map((produit, idx) => (
-                <div key={`${index}-${idx}`} className="p-2 rounded shadow-lg bg-white bg-opacity-80 text-black" style={{ backgroundColor: commande.color, height: '80px', width: '95%' }}>
-                  <h3 className="text-md font-semibold truncate">{commande.nom}</h3>
-                  <p className="text-sm mt-1 truncate">{produit}</p>
-                  <p className="text-xs text-black mt-1 truncate">{commande.commentaire}</p>
+                <div key={`${index}-${idx}`} className="p-2 rounded shadow-lg text-black" style={{ backgroundColor: commande.color, width: '95%' }}>
+                  <h3 className="text-md truncate">{commande.nom}</h3>
+                  <p className="text-md font-semibold truncate">{produit}</p>
+                  <p className="text-sm text-black truncate">{ commande.commentaire.includes("::") ? commande.commentaire.split('::')[1] : commande.commentaire}</p>
                 </div>
               ));
             })}
@@ -127,10 +125,10 @@ const CommandesCuisine = () => {
             {commandes.filter(commande => (commande.contenu.includes('Panini') || commande.contenu.includes('Croque-Monsieur'))).slice(0, 10).map((commande, index) => {
               const produitsChauds = commande.contenu.split('//').filter(part => part.includes('Panini') || part.includes('Croque-Monsieur'));
               return produitsChauds.map((produit, idx) => (
-                <div key={`${index}-${idx}`} className="p-2 rounded shadow-lg bg-white bg-opacity-80 text-black" style={{ backgroundColor: commande.color, height: '80px', width: '95%' }}>
-                  <h3 className="text-md font-semibold truncate">{commande.nom}</h3>
-                  <p className="text-sm mt-1 truncate">{produit}</p>
-                  <p className="text-xs text-black mt-1 truncate">{commande.commentaire}</p>
+                <div key={`${index}-${idx}`} className="p-2 rounded shadow-lg text-black" style={{ backgroundColor: commande.color, width: '95%' }}>
+                  <h3 className="text-md truncate">{commande.nom}</h3>
+                  <p className="text-md font-semibold truncate">{produit}</p>
+                  <p className="text-sm text-black truncate">{commande.commentaire.includes("::") ? commande.commentaire.split('::')[1] : commande.commentaire}</p>
                 </div>
               ));
             })}

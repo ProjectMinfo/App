@@ -16,7 +16,7 @@ export default function GestionMenus() {
       setMenus(fetchedMenus);
     }
     fetchMenus();
-  }, []);
+  }, [menus]);
 
   
 

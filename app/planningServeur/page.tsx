@@ -88,6 +88,14 @@ const PlanningServeur = () => {
   const [selectedPosition, setSelectedPosition] = useState<"devant" | "derriere" | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
+  const [isOpenDelete, setOpenDelete] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+
+  const [currentDay, setCurrentDay] = useState<Day | null>(null);
+  const [currentPosition, setCurrentPosition] = useState<"devant" | "derriere" | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const userAccess = window.localStorage.getItem("userAccess");
@@ -177,20 +185,35 @@ const PlanningServeur = () => {
   };
 
   const handleDesinscription = async (day: Day, position: "devant" | "derriere", index: number) => {
-    const slotToRemove = slots[day][position][index];
-    if (slotToRemove.idPlanning) {
-      try {
-        await deletePlanning(slotToRemove.idPlanning);
-        const newSlots = deepCopy(slots);
-        newSlots[day][position][index] = emptySlot;
-        setSlots(newSlots);
-        fetchSlots(); // Fetch slots after deleting
-      } catch (error) {
-        console.error("Erreur lors de la suppression du slot :", error);
-        setError("Erreur lors de la suppression du slot");
+    setOpenDelete(true);
+    setCurrentDay(day);
+    setCurrentPosition(position);
+    setCurrentIndex(index);
+  };
+
+  useEffect(() => {
+    if (deleteConfirm) {
+      const slotToRemove = slots[currentDay][currentPosition][currentIndex];
+      if (slotToRemove.idPlanning) {
+        const deleteSlot = async () => {
+          try {
+            await deletePlanning(slotToRemove.idPlanning);
+            const newSlots = deepCopy(slots);
+            newSlots[currentDay][currentPosition][currentIndex] = emptySlot;
+            setSlots(newSlots);
+            fetchSlots(); // Fetch slots after deleting
+          } catch (error) {
+            console.error("Erreur lors de la suppression du slot :", error);
+            setError("Erreur lors de la suppression du slot");
+          }
+        };
+        deleteSlot();
       }
     }
-  };
+    setOpenDelete(false);
+    setDeleteConfirm(false);
+  }, [deleteConfirm]);
+
 
   const handleInscriptionCourse = (day: Day) => {
     if (courseSlots[day].prenom) {
@@ -542,7 +565,26 @@ const PlanningServeur = () => {
         isOpen={showUserModal}
         onClose={() => setShowUserModal(false)}
         onUserSelect={handleUserSelect}
+        access={2}
       />
+
+      <Modal isOpen={isOpenDelete} isDismissable={false} isKeyboardDismissDisabled={true}>
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Vous êtes sûr de vouloir supprimer ?</ModalHeader>
+              <ModalFooter>
+                <Button color="primary" variant="light" onPress={() => setOpenDelete(false)}>
+                  Non
+                </Button>
+                <Button color="danger" onPress={() => setDeleteConfirm(true)}>
+                  Oui
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 };

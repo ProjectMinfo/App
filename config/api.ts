@@ -905,3 +905,17 @@ export const postColor = async (couleur: string) => {
     throw error;
   }
 };
+
+export const postName = async (nom: string) => {
+  try {
+    const response = await api.post("/settings/nom", {
+      id: 0,
+      nom: nom,
+      type: "Nom",
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating name:", error);
+    throw error;
+  }
+}

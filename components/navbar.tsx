@@ -195,17 +195,28 @@ const Navbarr = () => {
               </div>
             )}
 
-            <div className={isActive('/connexion')}>
-              <Link href="/connexion" onClick={handleLinkClick}>
-                Connexion
-              </Link>
-            </div>
+
+            {userAccess >= 0 ?
+              <div className={isActive('/deconnexion')}>
+                <Link href="/deconnexion" onClick={handleLinkClick}>
+                  Déconnexion
+                </Link>
+              </div>
+              :
+              <div className={isActive('/connexion')}>
+                <Link href="/connexion" onClick={handleLinkClick}>
+                  Connnexion
+                </Link>
+              </div>
+            }
+
+
 
             <div className="flex items-center justify-center">
               <ThemeSwitch />
             </div>
             <div className="absolute bottom-0 text-sm">
-              <Link href="https://maisonisen.fr/pages/general/mentions.php" target="_blank">
+              <Link href="/mentions">
                 Mentions légales
               </Link>
             </div>

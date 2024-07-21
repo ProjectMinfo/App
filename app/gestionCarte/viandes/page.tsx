@@ -16,7 +16,7 @@ export default function GestionViandes() {
       setViandes(fetchedViandes);
     }
     fetchViandes();
-  }, []);
+  }, [viandes]);
 
   // Filtrer les viandes en fonction de la recherche
   const filteredViandes = viandes.filter((viande) =>
