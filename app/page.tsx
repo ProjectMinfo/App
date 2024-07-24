@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { deleteEvent, getAllEvent, getEventImage, postEvent } from '@/config/api';
+import { deleteEvent, getAllEvent, getEventImage, postEvent, postLogin } from '@/config/api';
 import FileUploadEvent from '@/components/FileUploadEvent';
 import {
   Button,
@@ -43,6 +43,20 @@ export default function Home() {
       userAccess = user.acces;
 
       window.localStorage.setItem("userAccess", userAccess);
+    }
+
+    const userEmail = window.localStorage.getItem("email");
+    const userPassword = window.localStorage.getItem("password");
+
+    if (userEmail === null || userPassword === null) {
+      const login = { "email": userEmail, "mdp": userPassword };
+      const fetchLogin =  postLogin(login);
+
+      fetchLogin.then((response) => {
+        if (window.localStorage.getItem('token') == null && response.token == null){
+          window.location.href = '/connexion';
+        } 
+      });
     }
   }
 

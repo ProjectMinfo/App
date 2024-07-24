@@ -178,10 +178,9 @@ export function RecapComponent({ repas, handleDeleteItem, isServeur}: Recapitula
                                     </div>
                                 </p>
                                 <ul>
-                                    {plat.plat.ingredients.map((currentIngredient: IngredientsInPlat) => (
+                                    {plat.plat.ingredients.map((currentIngredient: any) => (
                                         <li className="text-default-500" key={currentIngredient.nom} >{currentIngredient.nom}</li>
                                     ))}
-
                                 </ul>
                             </CardBody>
                         ))

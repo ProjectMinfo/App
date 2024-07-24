@@ -45,6 +45,7 @@ def dateConvertionAchat(date):
         return None
     return datetime.strptime(date, "%Y-%m-%d")
 
+
 def AchatMigration():
     # Lire le fichier JSON et extraire les données de la table "achats"
     with open(json_file_path, 'r', encoding='utf-8') as file:
@@ -72,7 +73,7 @@ def AchatMigration():
     print("Migration de la collection 'achats' terminée avec succès!")
 
 
-def ArticleMigration():
+def ArticleQteMigration():
     # Lire le fichier JSON et extraire les données de la table "articles"
     with open(json_file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -87,7 +88,7 @@ def ArticleMigration():
                     {"$set": {"quantite": int(article['qte'])}}
                 )
             if article["TypeIngredient"] == "2":
-                db.ingredients.update_many(
+                db.ingredientsExtras.update_many(
                     {"nom": article['nom']},
                     {"$set": {"quantite": int(article['qte'])}}
                 )
@@ -107,6 +108,64 @@ def ArticleMigration():
                 )
     
     print("Migration des collections 'ingredients', 'viandes', 'boissons' et 'snacks' terminée avec succès!")
+
+
+def ArticleAllMigration():
+    # Lire le fichier JSON et extraire les données de la table "articles"
+    with open(json_file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+        articles_data = next((table['data'] for table in data if table['type'] == 'table' and table['name'] == 'articles'), None)
+
+    # Supprimer les collections existantes
+    db.ingredients.delete_many({})
+    db.ingredientsExtras.delete_many({})
+    db.viandes.delete_many({})
+
+    # Insérer les données dans la collection MongoDB
+    if articles_data:
+        for article in articles_data:
+            if article["TypeIngredient"] == "0":
+                db.ingredients.insert_many([
+                    {
+                        "nom": article['nom'],
+                        "quantite": int(article['qte']),
+                        "id": int(article['id_article']),
+                        "commentaire": article['commentaire'],
+                        "dispo": True,
+                    }
+                ])
+            if article["TypeIngredient"] == "2":
+                db.ingredientsExtras.insert_many([
+                    {
+                        "nom": article['nom'],
+                        "quantite": int(article['qte']),
+                        "id": int(article['id_article']),
+                        "commentaire": article['commentaire'],
+                        "dispo": True,
+                    }
+                ])
+            if article["TypeIngredient"] == "1":
+                db.viandes.insert_many([
+                    {
+                        "nom": article['nom'],
+                        "quantite": int(article['qte']),
+                        "id": int(article['id_article']),
+                        "commentaire": article['commentaire'],
+                        "dispo": True,
+                    }
+                ])
+            if article["TypeIngredient"] == "3":
+                db.boissons.update_many(
+                    {"nom": article['nom']},
+                    {"$set": {"quantite": int(article['qte'])}}
+                )
+                db.snacks.update_many(
+                    {"nom": article['nom']},
+                    {"$set": {"quantite": int(article['qte'])}}
+                )
+    
+    print("Migration des collections 'ingredients', 'viandes', 'boissons' et 'snacks' terminée avec succès!")
+
 
 
 def NettoyageMigration():
@@ -195,8 +254,9 @@ def TemperaturesMigration():
     print("Migration de la collection 'temperatures' terminée avec succès!")
 
 # CompteMigration()
-AchatMigration()
-# ArticleMigration()
+# AchatMigration()
+# ArticleQteMigration()
+ArticleAllMigration()
 # NettoyageMigration()
 # PlanningMigration()
 # PlanningCoursesMigration()

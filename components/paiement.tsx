@@ -61,8 +61,8 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
   const [isLoading, setIsLoading] = useState(true);
   const [prixCommande, setPrixCommande] = useState(0);
 
-  // 1 = compteMi / 2 = comptoir
-  const [typePaiement, setTypePaiement] = useState(0);
+  // 0 = compteMi / 2 = comptoir      (1 = CB / 2 = Espèce)
+  const [typePaiement, setTypePaiement] = useState(1);
 
   const [currentComment, setCurrentComment] = useState("");
 
@@ -134,7 +134,7 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
                 isDisabled={Boolean(prixCommande > currentAccount.montant)}
                 className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
                 onClick={() => {
-                  setTypePaiement(1);
+                  setTypePaiement(0);
                   setCurrentStep(1);
                 }}
               >
@@ -174,7 +174,7 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
       nom: nom,
       prenom: "",
       montant: 0,
-      numCompte: -1,
+      numCompte: 0,
       acces: 0,
       email: "",
       mdp: "",
@@ -232,7 +232,7 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
                     <Button className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
                       isDisabled={Boolean(prixCommande > currentAccount.montant)}
                       onClick={() => {
-                        setTypePaiement(1);
+                        setTypePaiement(0);
                         setCurrentStep(1);
                       }}
                     >
@@ -274,7 +274,7 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
 
 
   useEffect(() => {
-    if (currentStep === 1 && typePaiement === 1) {
+    if (currentStep === 1 && typePaiement === 0) {
       if (currentAccount) {
         currentAccount.montant -= prixCommande;
         postEditCompte(currentAccount);
@@ -310,7 +310,7 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
         choixServeur()
       )}        
 
-      {currentStep === 1 && typePaiement === 1 && (
+      {currentStep === 1 && typePaiement === 0 && (
         <Card className="w-full p-4">
           {(serveurView === undefined || !serveurView) ? (
             <CardBody className="flex flex-col items-center justify-center gap-4">

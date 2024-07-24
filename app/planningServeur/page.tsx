@@ -423,7 +423,7 @@ const PlanningServeur = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Object.entries(slots).map(([day, daySlots]) => (
             <div key={day} className="border p-4 rounded-lg">
-              <h2 className="text-xl font-bold mb-2">{day}</h2>
+              <h2 className="text-xl font-bold mb-2">{getDateStringFromDay(day,selectedWeek)}</h2>
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
@@ -462,7 +462,7 @@ const PlanningServeur = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Object.entries(courseSlots).map(([day, slot]) => (
             <div key={day} className="border p-4 rounded-lg">
-              <h2 className="text-xl font-bold mb-2">{day}</h2>
+              <h2 className="text-xl font-bold mb-2">{getDateStringFromDay(day,selectedWeek)}</h2>
               <div
                 className={`border p-2 cursor-pointer ${slot.prenom ? "bg-white hover:bg-red-500 text-black" : "bg-red-500 hover:bg-white hover:text-black"}`}
                 onClick={() => handleInscriptionCourse(day as Day)}
@@ -622,6 +622,14 @@ function getDateFromDay(day: Day, selectedWeek: number): string {
   const daysToAdd = (selectedWeek - 1) * 7 + ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"].indexOf(day);
   const date = new Date(firstDayOfYear.setDate(firstDayOfYear.getDate() + daysToAdd));
   return date.toLocaleDateString('fr-FR');
+}
+
+function getDateStringFromDay(day: string, selectedWeek: number): string {
+  const currentYear = new Date().getFullYear();
+  const firstDayOfYear = new Date(currentYear, 0, 1);
+  const daysToAdd = (selectedWeek - 1) * 7 + ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"].indexOf(day);
+  const date = new Date(firstDayOfYear.setDate(firstDayOfYear.getDate() + daysToAdd));
+  return day +" " + date.getDate() + "/" + (date.getMonth() + 1);
 }
 
 export default PlanningServeur;

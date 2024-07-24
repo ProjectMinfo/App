@@ -1,8 +1,9 @@
 'use client';
-import { getBoissons, getCommande, getComptes, getSnacks, postCommande } from "@/config/api";
+import { deleteCommande, getBoissons, getCommande, getComptes, getSnacks, postCommande } from "@/config/api";
 import { NewCommandes } from "@/types";
 import { Modal, ModalBody, ModalHeader, Table, TableHeader, TableRow, TableCell, TableBody, TableColumn, ModalContent, Input, Button, Card, CardHeader, CardBody, Divider, ModalFooter } from "@nextui-org/react";
 import { useState, useEffect } from "react";
+import TypePaiementModal from "./TypePaiementModal";
 
 interface ListeCommandeModalProps {
     isOpen: boolean;
@@ -14,15 +15,21 @@ type NamedCommande = NewCommandes & { nom: string };
 export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeModalProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredCommandes, setFilteredCommandes] = useState<NamedCommande[]>([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [isModalPayeeOpen, setIsModalPayeeOpen] = useState(false);
     const [isModalPeriphOpen, setIsModalPeriphOpen] = useState(false);
+    const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
 
     const [commandeBoisson, setCommandeBoisson] = useState<any>();
     const [commandeSnack, setCommandeSnack] = useState<any>();
 
     const [commandes, setCommandes] = useState<NamedCommande[]>([]);
     const [currentCommande, setCurrentCommande] = useState<NamedCommande | null>(null);
+
+    const [oldCommandes, setOldCommandes] = useState<boolean>(false);
+
+    const [typePaiement, setTypePaiement] = useState<number>(0);
+    // 0 = Compte | 1 = CB | 2 = Espèce
 
     const toDate = (dateNumber: number) => {
         const date = new Date(Number(dateNumber));
@@ -60,6 +67,9 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
 
     useEffect(() => {
         if (commandes.length > 0) {
+            if (oldCommandes) {
+                return setFilteredCommandes(commandes.sort((a, b) => b.date.$date.$numberLong - a.date.$date.$numberLong));
+            }
             const query = searchQuery.toLowerCase();
             setFilteredCommandes(
                 commandes.filter(
@@ -72,7 +82,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                 )
             );
         }
-    }, [searchQuery, commandes]);
+    }, [searchQuery, commandes, oldCommandes]);
 
 
     function handlePeripheriques(commande: NamedCommande) {
@@ -104,33 +114,53 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
     }
 
 
+    function chooseTypePaiement() {
+        setIsModalPayeeOpen(true);
+    }
 
-    function handleCommandePayee(commande: NamedCommande) {
-        const newCommande = { ...commande, payee: true };
-        const sendCommande = { ...newCommande };
-        delete sendCommande.nom;
+    useEffect(() => {
+        if (typePaiement) {
+            handleCommandePayee(currentCommande, typePaiement);
+        }
+    }, [typePaiement]);
+
+
+
+
+    function handleCommandePayee(commande: NamedCommande, typePaiement: number) {
+        const newCommande = { ...commande };
+        const sendCommande = { ...newCommande, payee: true, typePaiement : typePaiement};
+        // console.log(sendCommande);
+        
         postCommande(sendCommande);
 
-        setCommandes(commandes.map((c) => c.id === commande.id ? newCommande : c));
+        setCommandes(commandes.map((c) => c.id === sendCommande.id ? sendCommande : c));
     }
 
     function handleCommandeDistribuee(commande: NamedCommande) {
-        const newCommande = { ...commande, distribuee: true };
-        const sendCommande = { ...newCommande };
-        delete sendCommande.nom;
+        const newCommande = { ...commande};
+        const sendCommande = { ...newCommande, distribuee: true };
         postCommande(sendCommande);
 
-        setCommandes(commandes.map((c) => c.id === commande.id ? newCommande : c));
+        setCommandes(commandes.map((c) => c.id === sendCommande.id ? sendCommande : c));
     }
 
     function handlePeriphDonne() {
-        const commande = currentCommande;
-        const newCommande = { ...commande, periphDonne: true };
-        const sendCommande = { ...newCommande };
-        delete sendCommande.nom;
+        const newCommande = { ...currentCommande};
+        const sendCommande = { ...newCommande, periphDonne: true };
         postCommande(sendCommande);
 
-        setCommandes(commandes.map((c) => c.id === commande.id ? newCommande : c));
+        setCommandes(commandes.map((c) => c.id === sendCommande.id ? sendCommande : c));
+    }
+
+    function handleDeleteCommande() {
+        setIsModalDeleteOpen(false);
+        const commande = currentCommande;
+        const sendCommande = { ...commande };
+        
+        deleteCommande(sendCommande.id);
+
+        setCommandes(commandes.filter((c) => c.id !== commande.id));
     }
 
     function modalPeriph(commande: NamedCommande) {
@@ -144,12 +174,20 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
         setIsModalPeriphOpen(false);
     }
 
+    function validateDeleteCommande(commande : NamedCommande) {
+        setCurrentCommande(commande);
+        setIsModalDeleteOpen(true);
+    }
+
 
     return (
         <>
             <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl">
                 <ModalContent>
-                    <ModalHeader>Commande en cours</ModalHeader>
+                    <ModalHeader className="flex items-center gap-5">
+                        <div>Commande en cours</div>
+                        <Button variant="flat" onClick={() => setOldCommandes(!oldCommandes)}>Anciennes commandes</Button>
+                    </ModalHeader>
                     <ModalBody>
                         <Input
                             placeholder="Rechercher une commande (Nom, Prénom ou Numéro de commande)"
@@ -179,11 +217,14 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                                             <Button color="warning" variant="flat" onClick={() => modalPeriph(commande)}>
                                                 Périph
                                             </Button>
-                                            <Button color="success" variant="flat" isDisabled={commande.payee} onClick={() => handleCommandePayee(commande)}>
+                                            <Button color="success" variant="flat" isDisabled={commande.payee} onClick={() => {chooseTypePaiement();setCurrentCommande(commande);}}>
                                                 Payée
                                             </Button>
                                             <Button color="primary" variant="flat" onClick={() => handleCommandeDistribuee(commande)} isDisabled={!commande.payee}>
                                                 Distribuée
+                                            </Button>
+                                            <Button color="danger" variant="flat" onClick={() => validateDeleteCommande(commande)} isDisabled={commande.distribuee}>
+                                                Annuler
                                             </Button>
                                         </TableCell>
                                     </TableRow>
@@ -255,6 +296,29 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                     </ModalContent>
                 </Modal>
             )}
+
+            <Modal isOpen={isModalDeleteOpen} isDismissable={false} isKeyboardDismissDisabled={true}>
+                <ModalContent>
+                    {() => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">Vous êtes sûr de vouloir supprimer ?</ModalHeader>
+                            <ModalFooter>
+                                <Button color="primary" variant="light" onPress={() => setIsModalDeleteOpen(false)}>
+                                    Non
+                                </Button>
+                                <Button color="danger" onPress={() => handleDeleteCommande()}>
+                                    Oui
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+
+            <TypePaiementModal isOpen={isModalPayeeOpen} onClose={(typePaiement) => {
+                setTypePaiement(typePaiement);
+                setIsModalPayeeOpen(false);
+            }} />
         </>
     );
 }

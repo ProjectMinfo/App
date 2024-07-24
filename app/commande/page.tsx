@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
-import { getBoissons, getEventMode, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
+import { getBoissons, getEventMode, getIngredients, getIngredientsExtras, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
 import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from '@/components/paiement';
@@ -56,6 +56,7 @@ export default function ChatPage() {
   const [listMenus, setListMenus] = useState<Menus[]>([]);
   const [listPlats, setListPlats] = useState<Plats[]>([]);
   const [listIngredients, setIngredients] = useState<Ingredients[] | Viandes[]>([]);
+  const [listExtras, setExtras] = useState<Ingredients[]>([]);
   const [listViandes, setViandes] = useState<Viandes[]>([]);
   const [listSnacks, setListSnacks] = useState<Snacks[]>([]);
   const [listBoissons, setListBoissons] = useState<Boissons[]>([]);
@@ -84,9 +85,10 @@ export default function ChatPage() {
   // Fetch data
   useEffect(() => {
     async function fetchData() {
-      const [fetchedMenus, fetchedPlats, fetchedIngredients, fetchedViandes, fetchedSnacks, fetchedBoissons, fetchedEventMode] = await Promise.all([
+      const [fetchedMenus, fetchedPlats, fetchedExtras, fetchedIngredients, fetchedViandes, fetchedSnacks, fetchedBoissons, fetchedEventMode] = await Promise.all([
         getMenus(),
         getPlats(),
+        getIngredientsExtras(),
         getIngredients(),
         getViandes(),
         getSnacks(),
@@ -95,6 +97,7 @@ export default function ChatPage() {
       ]);
       setListMenus(fetchedMenus);
       setListPlats(fetchedPlats);
+      setExtras(fetchedExtras);
       setIngredients(fetchedIngredients);
       setViandes(fetchedViandes);
       setListSnacks(fetchedSnacks);
@@ -107,9 +110,11 @@ export default function ChatPage() {
   // Gestion des réponses du modal pour les plats
   useEffect(() => {
 
-    if (modalResponse && modalResponse.viandes && modalResponse.ingredients) {
+    if (modalResponse && modalResponse.viandes && modalResponse.ingredients && modalResponse.extras) {
       const nextRepas = { ...repas };
-      const resultIngredients = [...modalResponse.ingredients, ...modalResponse.viandes];
+      console.log(modalResponse);
+      
+      const resultIngredients = [...modalResponse.ingredients, ...modalResponse.viandes, ...modalResponse.extras];
 
       const newPlat = { ...currentPlat }; // Make a copy of the currentPlat object
 
@@ -437,7 +442,7 @@ export default function ChatPage() {
                 setIsModalOpen(false);
                 setModalResponse(values);
               }}
-              options={{ "ingredients": listIngredients, "viandes": listViandes, "currentPlat": currentPlat }}  // Pass the current plat to the modal
+              options={{ "ingredients": listIngredients, "extras" : listExtras,  "viandes": listViandes, "currentPlat": currentPlat }}  // Pass the current plat to the modal
             />
           </div>
         </div>

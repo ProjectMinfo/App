@@ -27,7 +27,7 @@ export default function ListeComptesModal({ isOpen, onClose, serveurView }: List
             setComptes(fetchedComptes);
         }
         fetchComptes();
-    }, []);
+    }, [isModalOpen]);
 
     function onEditOpen(user: Comptes) {
         setCurrentUser(user);
@@ -68,7 +68,7 @@ export default function ListeComptesModal({ isOpen, onClose, serveurView }: List
         };
 
         fetchData();
-    }, []);
+    }, [isModalOpen]);
 
     useEffect(() => {
         const query = searchQuery.toLowerCase();

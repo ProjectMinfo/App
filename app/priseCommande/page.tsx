@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
-import { getBoissons, getEventMode, getIngredients, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
+import { getBoissons, getEventMode, getIngredients, getIngredientsExtras, getMenus, getPlats, getSnacks, getViandes } from "@/config/api";
 import { Ingredients, Menus, Plats, Snacks, Boissons, Viandes } from "@/types/index";
 import DetailCommandeModal from "@/components/DetailCommandeModal";
 import Paiement from '@/components/paiement';
@@ -63,6 +63,7 @@ export default function ChatPage() {
   const [listViandes, setViandes] = useState<Viandes[]>([]);
   const [listSnacks, setListSnacks] = useState<Snacks[]>([]);
   const [listBoissons, setListBoissons] = useState<Boissons[]>([]);
+  const [listExtras, setListExtras] = useState<Ingredients[]>([]);
 
   const [allBaguetteId, setAllBaguetteId] = useState<Ingredients>();
   const [newBaguetteId, setNewBaguetteId] = useState<Ingredients>();
@@ -101,9 +102,10 @@ export default function ChatPage() {
   // Fetch data
   useEffect(() => {
     async function fetchData() {
-      const [fetchedMenus, fetchedPlats, fetchedIngredients, fetchedViandes, fetchedSnacks, fetchedBoissons, fetchedEventMode] = await Promise.all([
+      const [fetchedMenus, fetchedPlats, fetchedExtras, fetchedIngredients, fetchedViandes, fetchedSnacks, fetchedBoissons, fetchedEventMode] = await Promise.all([
         getMenus(),
         getPlats(),
+        getIngredientsExtras(),
         getIngredients(),
         getViandes(),
         getSnacks(),
@@ -112,6 +114,7 @@ export default function ChatPage() {
       ]);
       setListMenus(fetchedMenus);
       setListPlats(fetchedPlats);
+      setListExtras(fetchedExtras);
       setIngredients(fetchedIngredients);
       setViandes(fetchedViandes);
       setListSnacks(fetchedSnacks);
@@ -123,10 +126,12 @@ export default function ChatPage() {
 
   // Gestion des réponses du modal pour les plats
   useEffect(() => {
-    if (modalResponse && modalResponse.viandes && modalResponse.ingredients) {
+    if (modalResponse && modalResponse.viandes && modalResponse.ingredients && modalResponse.extras) {
       const nextRepas = { ...repas };
-      const resultIngredients = [...modalResponse.ingredients, ...modalResponse.viandes];
+      const resultIngredients = [...modalResponse.ingredients, ...modalResponse.viandes, ...modalResponse.extras];
 
+      // console.log(resultIngredients);
+      
       const newPlat = { ...currentPlat }; // Make a copy of the currentPlat object
 
       if (newPlat.plat) {
@@ -143,7 +148,7 @@ export default function ChatPage() {
         setCurrentStep(getNextStep({ type: "plat" }, nextRepas));
       }
     }
-  }, [modalResponse, currentPlat, repas, allViandes]);
+  }, [modalResponse]);
 
   useEffect(() => {
     if (listIngredients) {
@@ -184,8 +189,6 @@ export default function ChatPage() {
           setIsModalOpen(true);
         }
         else {
-          console.log("plat", item);
-
           const platItem = { ...item, id: Date.now() }; // Assign a unique id using Date.now()
           setCurrentPlat(platItem);  // Set the current plat before opening the modal
           setIsModalOpen(true);
@@ -305,7 +308,7 @@ export default function ChatPage() {
     const newItems = [...items];
     const options = newItems.map((item) => ({ id: id, type: type, [type]: item }));
 
-    console.log("options", options);
+    // console.log("options", options);
 
 
     return (
@@ -528,7 +531,7 @@ export default function ChatPage() {
                 setIsModalOpen(false);
                 setModalResponse(values);
               }}
-              options={{ "ingredients": listIngredients, "viandes": listViandes, "currentPlat": {...currentPlat} }}  // Pass the current plat to the modal
+              options={{ "ingredients": listIngredients, "extras": listExtras, "viandes": listViandes, "currentPlat": {...currentPlat} }}  // Pass the current plat to the modal
             />
 
           </div>

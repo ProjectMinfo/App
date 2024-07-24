@@ -310,6 +310,52 @@ export const deleteIngredients = async (id: number) => {
   }
 };
 
+// Fonctions pour IngredientsExtras
+
+export const getIngredientsExtras = async () => {
+  try {
+    const response = await api.get("/ingredients-extras");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ingredients:", error);
+    throw error;
+  }
+};
+
+export const getIngredientExtrasById = async (id: number) => {
+  try {
+    const response = await api.get(`/ingredients-extras/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ingeredients :", error);
+    throw error;
+  }
+};
+
+export const postIngredientsExtras = async (data: any) => {
+  try {
+    const response = await api.post("/ingredients-extras", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error posting ingredients:", error);
+    throw error;
+  }
+};
+
+export const deleteIngredientsExtras = async (id: number) => {
+  try {
+    const response = await api.delete(`/ingredients-extras/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting ingredients:", error);
+    throw error;
+  }
+};
+
 // Fonctions pour Menus
 export const postSnacks = async (data: any) => {
   try {
@@ -401,6 +447,16 @@ export const postCommande = async (data: any) => {
     return response.data;
   } catch (error) {
     console.error("Error posting commande:", error);
+    throw error;
+  }
+};
+
+export const deleteCommande = async (id: number) => {
+  try {
+    const response = await api.delete(`/commandes/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting commande:", error);
     throw error;
   }
 };
