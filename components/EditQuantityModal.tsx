@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
+import { Ingredients, Viandes, Snacks, Boissons } from "@/types";
+
+type AllTypes = Ingredients | Viandes | Snacks | Boissons;
 
 interface EditQuantityModalProps {
   isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (quantity: number) => void;
-  currentQuantity: number;
+  onClose: (quantite: string) => void;
+  ingredient: AllTypes | null;
 }
 
-export default function EditQuantityModal({ isOpen, onClose, onSubmit, currentQuantity }: EditQuantityModalProps) {
-  const [quantity, setQuantity] = useState<string>(currentQuantity.toString());
+export default function EditQuantityModal({ isOpen, onClose, ingredient }: EditQuantityModalProps) {
+  const [quantity, setQuantity] = useState<string>("");
 
   useEffect(() => {
-    setQuantity(currentQuantity.toString());
-  }, [currentQuantity]);
+    if (ingredient)
+    setQuantity(ingredient.quantite.toString());
+  }, [ingredient]);
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuantity(event.target.value);
   };
 
   const handleSubmit = () => {
-    onSubmit(Number(quantity));
-    onClose();
+    onClose(quantity);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} placement="top-center">
+    <Modal isOpen={isOpen} placement="top-center" onClose={ () => onClose("") }>
       <ModalContent>
         <>
           <ModalHeader>Modifier la quantité</ModalHeader>
@@ -40,7 +42,7 @@ export default function EditQuantityModal({ isOpen, onClose, onSubmit, currentQu
             />
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onClose}>Annuler</Button>
+            <Button onClick={ () => onClose("") }>Annuler</Button>
             <Button onClick={handleSubmit}>Valider</Button>
           </ModalFooter>
         </>
