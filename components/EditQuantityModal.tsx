@@ -27,7 +27,7 @@ export default function EditQuantityModal({ isOpen, onClose, ingredient }: EditQ
   };
 
   return (
-    <Modal isOpen={isOpen} placement="top-center" onClose={ () => onClose("") }>
+    <Modal isOpen={isOpen} onClose={ () => onClose("") }>
       <ModalContent>
         <>
           <ModalHeader>Modifier la quantité</ModalHeader>
