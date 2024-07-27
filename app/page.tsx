@@ -48,7 +48,7 @@ export default function Home() {
     const userEmail = window.localStorage.getItem("email");
     const userPassword = window.localStorage.getItem("password");
 
-    if (userEmail === null || userPassword === null) {
+    // if (userEmail === null || userPassword === null) {
       const login = { "email": userEmail, "mdp": userPassword };
       const fetchLogin =  postLogin(login);
 
@@ -57,7 +57,7 @@ export default function Home() {
           window.location.href = '/connexion';
         } 
       });
-    }
+    // }
   }
 
   useEffect(() => {

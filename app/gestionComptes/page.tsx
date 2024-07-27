@@ -66,16 +66,19 @@ export default function GestionComptePage() {
     setCurrentUser(null);
   };
 
-  const onSubmit = async (nom: string, prenom: string, montant: number, acces: number) => {
+  const onSubmit = async (userCompte: Comptes) => {
+
     // Modification sur l'utilisateur
     if (currentUser && comptes) {
-      const editedListeUtilisateurs = comptes.map((compte) =>
-        compte.numCompte === currentUser.numCompte ? { ...compte, nom, prenom, montant, acces } : compte
-      );
+
+      const editedListeUtilisateurs = comptes.find((compte) => compte.numCompte === currentUser.numCompte) ?
+        comptes.map((compte) =>
+          compte.numCompte === currentUser.numCompte ? { ...userCompte } : compte
+        ) : [...comptes, userCompte];
       setComptes(editedListeUtilisateurs);
 
       // Mettre à jour l'utilisateur courant avec les nouvelles données avant de l'envoyer à l'API
-      const updatedUser = { ...currentUser, nom, prenom, montant, acces };
+      const updatedUser = { ...userCompte };
 
       try {
         await postEditCompte(updatedUser); // Appel à l'API pour enregistrer les modifications
@@ -120,7 +123,7 @@ export default function GestionComptePage() {
         return (
           <div className="flex flex-col">
             <p className={`text-bold text-sm capitalize ${colorSolde(cellValue as number)}`}>
-            {typeof cellValue === 'number' ? parseFloat(cellValue.toFixed(2)).toFixed(2) : cellValue} €
+              {typeof cellValue === 'number' ? parseFloat(cellValue.toFixed(2)).toFixed(2) : cellValue} €
             </p>
           </div>
         );
@@ -195,10 +198,7 @@ export default function GestionComptePage() {
           isOpen={isModalOpen}
           onClose={onEditClose}
           onSubmit={onSubmit}
-          currentName={currentUser.nom}
-          currentFirstname={currentUser.prenom}
-          currentSolde={currentUser.montant}
-          currentAccess={currentUser.acces}
+          userCompte={currentUser}
         />
       )}
     </div>

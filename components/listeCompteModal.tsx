@@ -39,27 +39,27 @@ export default function ListeComptesModal({ isOpen, onClose, serveurView }: List
         setCurrentUser(null);
     };
 
-    const onSubmit = async (nom: string, prenom: string, montant: number, acces: number) => {
+    const onSubmit = async (userCompte : Comptes) => {
         // Modification sur l'utilisateur
         if (currentUser && comptes) {
-            const editedListeUtilisateurs = comptes.map((compte) =>
-                compte.numCompte === currentUser.numCompte ? { ...compte, nom, prenom, montant } : compte
-            );
-            setComptes(editedListeUtilisateurs);
-
-            // Mettre à jour l'utilisateur courant avec les nouvelles données avant de l'envoyer à l'API
-            const updatedUser = { ...currentUser, nom, prenom, montant };
-
-            try {
-                await postEditCompte(updatedUser); // Appel à l'API pour enregistrer les modifications
-                console.log("User updated successfully in the API");
-            }
-            catch (error) {
-                console.error("Error updating user:", error);
-            }
+          const editedListeUtilisateurs = comptes.map((compte) =>
+            compte.numCompte === currentUser.numCompte ? { ...userCompte } : compte
+          );
+          setComptes(editedListeUtilisateurs);
+    
+          // Mettre à jour l'utilisateur courant avec les nouvelles données avant de l'envoyer à l'API
+          const updatedUser = { ...userCompte };
+    
+          try {
+            await postEditCompte(updatedUser); // Appel à l'API pour enregistrer les modifications
+            console.log("User updated successfully in the API");
+          }
+          catch (error) {
+            console.error("Error updating user:", error);
+          }
         }
         onEditClose();
-    };
+      };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -170,11 +170,7 @@ export default function ListeComptesModal({ isOpen, onClose, serveurView }: List
                     isOpen={isModalOpen}
                     onClose={onEditClose}
                     onSubmit={onSubmit}
-                    currentName={currentUser.nom}
-                    currentFirstname={currentUser.prenom}
-                    currentSolde={parseFloat(currentUser.montant.toFixed(2))}
-                    currentAccess={currentUser.acces}
-                    serveurAccess={true}
+                    userCompte={currentUser}
                 />
             )}
         </>
