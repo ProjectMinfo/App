@@ -53,9 +53,10 @@ type PaiementProps = {
   repas: NewRepas;
   allViandes: Viandes[];
   serveurView: boolean;
+  prixServeur: boolean;
 };
 
-export default function Paiement({ repas, allViandes, serveurView }: PaiementProps) {
+export default function Paiement({ repas, allViandes, serveurView, prixServeur }: PaiementProps) {
   const [currentAccount, setCurrentAccount] = useState<Comptes>();
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,17 +77,54 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
 
   function calculPrix() {
     let total = 0;
+    let totalHD = 0;    // Hot Dog
+    let totalCM = 0;    // Croque Monsieur
     repas.menu.forEach(menu => {
-      total += menu.menu.prix;
+      if (prixServeur) {
+        total += menu.menu.prixServeur;
+      }
+      else {
+        total += menu.menu.prix;
+      }
     });
     repas.plat.forEach(plat => {
-      total += plat.plat.prix;
+      if (plat.plat.nom === "Hot-Dog") {
+        totalHD += 1;
+        if (totalHD === 2) {
+          total -= 0.1;
+          totalHD = 0;
+        }
+      }
+      if (plat.plat.nom === "Croque-Monsieur") {
+        totalCM += 1;
+        if (totalCM === 2) {
+          total -= 0.1;
+          totalCM = 0;
+        }
+      }
+
+      if (prixServeur) {
+        total += plat.plat.prixServeur;
+      }
+      else {
+        total += plat.plat.prix;
+      }
     });
     repas.snack.forEach(snack => {
-      total += snack.snack.prix;
+      if (prixServeur) {
+        total += snack.snack.prixServeur;
+      }
+      else {
+        total += snack.snack.prix;
+      }
     });
     repas.boisson.forEach(boisson => {
-      total += boisson.boisson.prix;
+      if (prixServeur) {
+        total += boisson.boisson.prixServeur;
+      }
+      else {
+        total += boisson.boisson.prix;
+      }
     });
 
     setPrixCommande(total);

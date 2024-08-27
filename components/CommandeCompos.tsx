@@ -1,5 +1,5 @@
 import { Menus, Plats, Snacks, Boissons } from "@/types";
-import { Card, CardHeader, Divider, CardBody } from "@nextui-org/react";
+import { Card, CardHeader, Divider, CardBody, Button } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
 // Type Definitions
@@ -48,13 +48,16 @@ interface RecapitulatifProps {
     repas: NewRepas;
     isServeur: boolean;
     handleDeleteItem: (type: keyof NewRepas, item: AllType) => void;
+    handleAddItem: (type: keyof NewRepas, item: AllType) => void;
 }
 
-export function RecapComponent({ repas, handleDeleteItem, isServeur}: RecapitulatifProps) {
+export function RecapComponent({ repas, handleDeleteItem, isServeur, handleAddItem }: RecapitulatifProps) {
     const [prixTotal, setPrixTotal] = useState<number>(0.0);
 
     useEffect(() => {
         let total = 0;
+        let totalHD = 0;    // Hot Dog
+        let totalCM = 0;    // Croque Monsieur
         repas.menu.forEach(menu => {
             if (isServeur) {
                 total += menu.menu.prixServeur;
@@ -64,6 +67,21 @@ export function RecapComponent({ repas, handleDeleteItem, isServeur}: Recapitula
             }
         });
         repas.plat.forEach(plat => {
+            if (plat.plat.nom === "Hot-Dog") {
+                totalHD += 1;
+                if (totalHD === 2) {
+                    total -= 0.1;
+                    totalHD = 0;
+                }
+            }
+            if (plat.plat.nom === "Croque-Monsieur") {
+                totalCM += 1;
+                if (totalCM === 2) {
+                    total -= 0.1;
+                    totalCM = 0;
+                }
+            }
+
             if (isServeur) {
                 total += plat.plat.prixServeur;
             }
@@ -115,15 +133,15 @@ export function RecapComponent({ repas, handleDeleteItem, isServeur}: Recapitula
                                                     e.preventDefault();
                                                     handleDeleteItem("menu", menu);
                                                 }}
-                                                className="text-link"
+                                                className="text-link hover:text-red-500"
                                             >
                                                 {menu.menu.nom}
                                             </a>
                                             {index < repas.menu.length - 1 ? ", " : ""}
                                         </span>
                                         <span className="ml-auto">
-                                            { isServeur? menu.menu.prixServeur.toFixed(2) :
-                                            menu.menu.prix.toFixed(2)}
+                                            {isServeur ? menu.menu.prixServeur.toFixed(2) :
+                                                menu.menu.prix.toFixed(2)}
                                         </span>
                                     </div>
                                 ))
@@ -165,15 +183,18 @@ export function RecapComponent({ repas, handleDeleteItem, isServeur}: Recapitula
                                                     e.preventDefault();
                                                     handleDeleteItem("plat", plat);
                                                 }}
-                                                className="text-link"
+                                                className="text-link hover:text-red-500"
                                             >
                                                 {plat.plat.nom}
                                             </a>
                                             {index < repas.plat.length - 1 ? ", " : ""}
                                         </span>
+                                        <Button className="ml-2 h-[30px]" isIconOnly onClick={() => { handleAddItem("plat", plat) }}>
+                                            +1
+                                        </Button>
                                         <span className="ml-auto">
-                                            {isServeur? plat.plat.prixServeur.toFixed(2) :
-                                            plat.plat.prix.toFixed(2)}
+                                            {isServeur ? plat.plat.prixServeur.toFixed(2) :
+                                                plat.plat.prix.toFixed(2)}
                                         </span>
                                     </div>
                                 </p>
@@ -218,15 +239,18 @@ export function RecapComponent({ repas, handleDeleteItem, isServeur}: Recapitula
                                                     e.preventDefault();
                                                     handleDeleteItem("snack", snack);
                                                 }}
-                                                className="text-link"
+                                                className="text-link hover:text-red-500"
                                             >
                                                 {snack.snack.nom}
                                             </a>
                                             {/* {index < repas.snack.length - 1 ? ", " : ""} */}
                                         </span>
+                                        <Button className="ml-2 h-[30px]" isIconOnly onClick={() => { handleAddItem("snack", snack) }}>
+                                            +1
+                                        </Button>
                                         <span className="ml-auto">
-                                            { isServeur? snack.snack.prixServeur.toFixed(2) :
-                                            snack.snack.prix.toFixed(2)}
+                                            {isServeur ? snack.snack.prixServeur.toFixed(2) :
+                                                snack.snack.prix.toFixed(2)}
                                         </span>
                                     </div>
                                 ))
@@ -257,15 +281,18 @@ export function RecapComponent({ repas, handleDeleteItem, isServeur}: Recapitula
                                                     e.preventDefault();
                                                     handleDeleteItem("boisson", boisson);
                                                 }}
-                                                className="text-link"
+                                                className="text-link hover:text-red-500"
                                             >
                                                 {boisson.boisson.nom}
                                             </a>
                                             {/* {index < repas.boisson.length - 1 ? ", " : ""} */}
                                         </span>
+                                        <Button className="ml-2 h-[30px]" isIconOnly onClick={() => { handleAddItem("boisson", boisson) }}>
+                                            +1
+                                        </Button>
                                         <span className="ml-auto">
                                             {isServeur ? boisson.boisson.prixServeur.toFixed(2) :
-                                            boisson.boisson.prix.toFixed(2)}
+                                                boisson.boisson.prix.toFixed(2)}
                                         </span>
                                     </div>
                                 ))

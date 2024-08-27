@@ -247,7 +247,7 @@ export default function ChatPage() {
     const itemIndex = newRepas[type].findIndex((currentItem) => currentItem.id === item.id);
 
     if (type === "menu") {
-      console.log("delete menu");
+      // console.log("delete menu");
 
       const currentItem = item as NewMenus;
 
@@ -266,6 +266,14 @@ export default function ChatPage() {
       });
     }
 
+    setRepas(newRepas);
+    setCurrentStep(getNextStep(item, newRepas));
+  }
+
+  function handleAddItem(type: keyof NewRepas, item: AllType) {
+    const newRepas: NewRepas = { ...repas };
+    item.id = Date.now();
+    newRepas[type].push(item);
     setRepas(newRepas);
     setCurrentStep(getNextStep(item, newRepas));
   }
@@ -378,7 +386,7 @@ export default function ChatPage() {
 
     return (
       <div>
-        <Paiement repas={repas} allViandes={allViandes} serveurView={true} />
+        <Paiement repas={repas} allViandes={allViandes} serveurView={true} prixServeur={serveur} />
       </div>
     );
   }
@@ -524,7 +532,7 @@ export default function ChatPage() {
           <div className="w-1 border-r-2 mx-2"></div>
 
           <div className="flex-1 m-4 justify-end text-right max-md:grid max-md:justify-center">
-            <RecapComponent handleDeleteItem={handleDeleteItem} repas={repas} isServeur={serveur} />
+            <RecapComponent handleDeleteItem={handleDeleteItem} repas={repas} isServeur={serveur} handleAddItem={handleAddItem} />
             <DetailCommandeModal
               isOpen={isModalOpen}
               onClose={(values: { viandes: Viandes[], ingredients: Ingredients[] }) => {
