@@ -210,7 +210,7 @@ export default function ChatPage() {
         }
         break;
       case "boisson":
-        if (!isMenuDone) {
+        if (!isMenuDone && !/red[-\s]?bull/i.test(item.boisson.nom)) {
           newRepas.remainingPerifs -= 1;
           const boissonInMenu = { ...item, id: Date.now() }; // Assign a unique id using Date.now()
           boissonInMenu.boisson.prix = 0;

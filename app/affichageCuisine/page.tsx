@@ -9,7 +9,7 @@ const CommandesCuisine = () => {
   const [commandes, setCommandes] = useState<ColoredCommande[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(true);
 
   const toDate = (dateNumber: number) => {
     const date = new Date(Number(dateNumber));
@@ -80,10 +80,15 @@ const CommandesCuisine = () => {
       }
     }
   };
-
+  useEffect(() => {
+    toggleFullscreen();
+  } , []);
+  
   if (loading) {
     return <div>Chargement...</div>;
   }
+
+
 
   return (
     <div className={`flex flex-col h-screen overflow-hidden max-w-full ${isFullscreen ? "fixed top-0 left-0 w-full h-full bg-white z-50" : ""}`}>
