@@ -131,7 +131,7 @@ function getAllNom(repas: NewRepas, allViandes: Viandes[]) {
 
 
 
-export async function prepareCommande(repas: NewRepas, allViandes: Viandes[], payer: boolean, prix: number, comment : string, userCompte : Comptes) {
+export async function prepareCommande(repas: NewRepas, allViandes: Viandes[], payer: boolean, prix: number, comment : string, userCompte : Comptes, typePaiement : number) {
 
     const dataPrepared = aggregateQuantities(repas, allViandes, await getPlats().then((data) => data));
     const dataContenu = getAllNom(repas, allViandes);
@@ -149,7 +149,7 @@ export async function prepareCommande(repas: NewRepas, allViandes: Viandes[], pa
         "date": { "$date": inputDate },
         "distribuee": false,
         "prix": prix,
-        "typePaiement": 1,
+        "typePaiement": typePaiement,
         "commentaire": commentaire,
         "ingredients": dataPrepared.ingredients,
         "viandes": dataPrepared.viandes,

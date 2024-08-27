@@ -465,3 +465,26 @@ export async function getCollectionTendance(
   const sorted = new Map<string, Map<string, number>>(mapArray);
   return sorted;
 }
+
+
+export function regrouperCommandes(commandes: NewCommandes[], dateDebut: Date, dateFin: Date) {
+  const groupedData = {
+    0: { count: 0, totalBenefit: 0 },
+    1: { count: 0, totalBenefit: 0 },
+    2: { count: 0, totalBenefit: 0 },
+  };
+
+  commandes
+    .filter((commande) => {
+      const dateCommande = new Date(parseInt(commande.date.$date.$numberLong));
+      
+      return dateCommande >= dateDebut && dateCommande <= dateFin;
+    })
+    .forEach((commande) => {
+      const { typePaiement, prix } = commande;
+      groupedData[typePaiement].count += 1;
+      groupedData[typePaiement].totalBenefit += prix;
+    });
+
+  return groupedData;
+}

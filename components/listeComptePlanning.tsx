@@ -29,10 +29,6 @@ export default function ListeComptesModal({ isOpen, onClose, onUserSelect, acces
     fetchComptes();
   }, []);
 
-  function onEditOpen(user: Comptes) {
-    setCurrentUser(user);
-    setIsModalOpen(true);
-  };
 
   const onEditClose = () => {
     setIsModalOpen(false);

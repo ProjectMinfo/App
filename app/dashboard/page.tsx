@@ -37,6 +37,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  DatePicker,
   Select,
   SelectItem,
   Tab,
@@ -52,6 +53,7 @@ import {
   getDate,
   getTemperaturesByTimeFrame,
   TimeFrame,
+  regrouperCommandes
 } from "@/app/dashboard/logic";
 
 // Register Chart.js components
@@ -92,6 +94,11 @@ const Dashboard = () => {
   const [collectionType, setCollectionType] = useState<CollectionType>(
     CollectionType.Ingredients
   );
+
+
+  const [dateDebutCommande, setDateDebutCommande] = useState<Date>(new Date('2023-01-01'));
+  const [dateFinCommande, setDateFinCommande] = useState<Date>(new Date('2025-12-31'));
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -282,6 +289,38 @@ const Dashboard = () => {
     formatTendanceData(viandesTendances)
   );
 
+  // -- Nouveau graphique pour les commandes et le bénéfice total par type de paiement --
+  const paiementData = regrouperCommandes(commandes, dateDebutCommande, dateFinCommande);
+  
+  const labelsPaiement = ['Paiement Compte MI', 'Paiement CB', 'Paiement Espèces'];
+  const dataPaiement = {
+    labels: labelsPaiement,
+    datasets: [
+      {
+        label: 'Nombre de Commandes',
+        data: [
+          paiementData[0].count,
+          paiementData[1].count,
+          paiementData[2].count,
+        ],
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Bénéfice Total',
+        data: [
+          paiementData[0].totalBenefit,
+          paiementData[1].totalBenefit,
+          paiementData[2].totalBenefit,
+        ],
+        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+        borderColor: 'rgba(153, 102, 255, 1)',
+        borderWidth: 1,
+      }
+    ]
+  };
+
   return (
     <>
       <div className="grid grid-cols-6 gap-4">
@@ -404,6 +443,21 @@ const Dashboard = () => {
               </CardBody>
             </Tab>
           </Tabs>
+        </Card>
+        <Card className="col-span-6 p-2">
+          <div className="flex  flex-row justify-center items-center gap-10">
+          <DatePicker 
+            label="Date de début"
+            granularity="day"
+            onChange={(e) => setDateDebutCommande( new Date(`${e.year}-${e.month}-${e.day}`) )}
+          />
+          <DatePicker 
+            label="Date de fin"
+            granularity="day"
+            onChange={(e) => setDateFinCommande( new Date(`${e.year}-${e.month}-${e.day}`) )}
+          />
+          </div>
+          <Bar data={dataPaiement} />
         </Card>
       </div>
     </>

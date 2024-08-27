@@ -1,11 +1,11 @@
 'use client';
-import { Card, Button, useDisclosure, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react';
+import { Card, Button, Modal, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react';
 import { Menus, Boissons, Plats, Snacks, Ingredients, Viandes } from '@/types/index';
 import { EditIcon } from '@/public/EditIcon';
 import { TrashIcon } from '@/public/TrashIcon';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import EditCarteModal from './EditCarteModal';
-import { getIngredientById, getIngredients, getViandes, deleteBoissons, deleteIngredients, deleteMenus, deletePlats, deleteSnacks, deleteViandes, postBoissons, postIngredients, postMenus, postPlats, postSnacks, postViandes } from '@/config/api';
+import { deleteBoissons, deleteIngredients, deleteMenus, deletePlats, deleteSnacks, deleteViandes, postBoissons, postIngredients, postMenus, postPlats, postSnacks, postViandes } from '@/config/api';
 
 type MenuItem = Menus | Boissons | Plats | Snacks | Ingredients | Viandes;
 interface ModifyCardProps {

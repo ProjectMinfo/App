@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Modal, Input, ModalHeader, ModalBody, ModalFooter, ModalContent, Switch } from '@nextui-org/react';
 import { Menus, Boissons, Plats, Snacks, Ingredients, Viandes } from '@/types/index';
-import { TrashIcon } from '@/public/TrashIcon';
 import { getIngredients, getViandes } from '@/config/api';
 
 type MenuItem = Menus | Boissons | Plats | Snacks | Ingredients | Viandes;
@@ -14,7 +13,6 @@ interface EditModalProps {
 }
 
 export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditModalProps) {
-    const [updatedItem, setUpdatedItem] = useState<MenuItem>({ ...item });
     const [tempItem, setTempItem] = useState<MenuItem>({ ...item }); // State temporaire pour les modifications non sauvegardées
     const [listIngredients, setListIngredients] = useState<Ingredients[]>([]);
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -55,7 +53,6 @@ export default function EditCarteModal({ item, isOpen, onClose, onSave }: EditMo
 
     const handleSave = () => {
         onSave(tempItem); // Sauvegarder les modifications faites dans tempItem
-        setUpdatedItem(tempItem); // Mettre à jour updatedItem avec les modifications sauvegardées
         onClose();
     };
 

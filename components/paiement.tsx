@@ -61,8 +61,8 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
   const [isLoading, setIsLoading] = useState(true);
   const [prixCommande, setPrixCommande] = useState(0);
 
-  // 0 = compteMi / 2 = comptoir      (1 = CB / 2 = Espèce)
-  const [typePaiement, setTypePaiement] = useState(1);
+  // 0 = compteMi /  (1 = CB / 2 = Espèce)
+  const [typePaiement, setTypePaiement] = useState(-1);
 
   const [currentComment, setCurrentComment] = useState("");
 
@@ -150,7 +150,7 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
                   </p>
                 </>
               )}
-              <Button
+              {/* <Button
                 className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
                 onClick={() => {
                   setTypePaiement(2);
@@ -158,7 +158,27 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
                 }}
               >
                 Payer au comptoir
-              </Button>
+              </Button> */}
+              <div className="flex flex-row items-center justify-center gap-4">
+                <Button
+                  className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
+                  onClick={() => {
+                    setTypePaiement(1);
+                    setCurrentStep(1);
+                  }}
+                >
+                  Payer en CB
+                </Button>
+                <Button
+                  className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
+                  onClick={() => {
+                    setTypePaiement(2);
+                    setCurrentStep(1);
+                  }}
+                >
+                  Payer en espèce
+                </Button>
+              </div>
             </CardBody>
           </>
         )}
@@ -170,7 +190,7 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
     setIsModalNoAcc(false);
 
     const nom = userName;
-    const newCompte : Comptes = {
+    const newCompte: Comptes = {
       nom: nom,
       prenom: "",
       montant: 0,
@@ -238,15 +258,35 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
                     >
                       Payer avec le compte de {currentAccount.prenom}
                     </Button>
-                    <Button
-                      className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
-                      onClick={() => {
-                        setTypePaiement(2);
-                        setCurrentStep(1);
-                      }}
-                    >
-                      Payer au comptoir
-                    </Button>
+                    {/* <Button
+                className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
+                onClick={() => {
+                  setTypePaiement(2);
+                  setCurrentStep(1);
+                }}
+              >
+                Payer au comptoir
+              </Button> */}
+                    <div className="flex flex-row items-center justify-center gap-4">
+                      <Button
+                        className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
+                        onClick={() => {
+                          setTypePaiement(1);
+                          setCurrentStep(1);
+                        }}
+                      >
+                        Payer en CB
+                      </Button>
+                      <Button
+                        className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
+                        onClick={() => {
+                          setTypePaiement(2);
+                          setCurrentStep(1);
+                        }}
+                      >
+                        Payer en espèce
+                      </Button>
+                    </div>
                   </>
                 )}
               </CardBody>
@@ -279,11 +319,11 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
         currentAccount.montant -= prixCommande;
         postEditCompte(currentAccount);
       }
-      prepareCommande(repas, allViandes, true, prixCommande, currentComment, currentAccount);
+      prepareCommande(repas, allViandes, true, prixCommande, currentComment, currentAccount, typePaiement);
       // console.log("Commande Compte MI prête à être payée");
     }
-    if (currentStep === 1 && typePaiement === 2) {
-      prepareCommande(repas, allViandes, false, prixCommande, currentComment, currentAccount);
+    if (currentStep === 1 && typePaiement > 0) {
+      prepareCommande(repas, allViandes, false, prixCommande, currentComment, currentAccount, typePaiement);
       // console.log("Commande Comptoir prête à être payée");
     }
 
@@ -308,7 +348,7 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
 
       {currentStep === 0 && serveurView && (
         choixServeur()
-      )}        
+      )}
 
       {currentStep === 1 && typePaiement === 0 && (
         <Card className="w-full p-4">
@@ -344,7 +384,7 @@ export default function Paiement({ repas, allViandes, serveurView }: PaiementPro
       )}
 
 
-      {currentStep === 1 && typePaiement === 2 && (
+      {currentStep === 1 && typePaiement > 0 && (
         <Card className="w-full p-4">
           <div className="flex flex-col items-center justify-center gap-4">
             <p>

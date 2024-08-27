@@ -1,13 +1,12 @@
 'use client';
 import React, { useState, useEffect } from "react";
 import { getCommande, getComptes } from "@/config/api";
-import { NewCommandes, Comptes } from "@/types";
+import { NewCommandes } from "@/types";
 
 type ColoredCommande = NewCommandes & { color: string } & { nom: string };
 
 const CommandesCuisine = () => {
   const [commandes, setCommandes] = useState<ColoredCommande[]>([]);
-  const [clients, setClients] = useState<Comptes[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -43,7 +42,6 @@ const CommandesCuisine = () => {
           )
 
         setCommandes(resultCommandes);
-        setClients(comptes);
       } catch (error) {
         console.error("Erreur lors de la récupération des commandes ou des comptes :", error);
       } finally {
@@ -113,7 +111,7 @@ const CommandesCuisine = () => {
                 <div key={`${index}-${idx}`} className="p-2 rounded shadow-lg text-black" style={{ backgroundColor: commande.color, width: '95%' }}>
                   <h3 className="text-md truncate">{commande.nom}</h3>
                   <p className="text-md font-semibold truncate">{produit}</p>
-                  <p className="text-sm text-black truncate">{ commande.commentaire.includes("::") ? commande.commentaire.split('::')[1] : commande.commentaire}</p>
+                  <p className="text-sm text-black truncate">{commande.commentaire.includes("::") ? commande.commentaire.split('::')[1] : commande.commentaire}</p>
                 </div>
               ));
             })}

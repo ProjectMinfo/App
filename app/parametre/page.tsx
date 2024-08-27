@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import FileUpload from '@/components/FileUpload';
-import { getEventMode, postEventMode, postOrderStatus, getSettingById, getOrderHours, postOrderHours, getColor, postColor, postName } from "@/config/api"; // Importer les fonctions API
+import { getEventMode, postEventMode, postOrderStatus, getSettingById, getOrderHours, postOrderHours, postColor, postName } from "@/config/api"; // Importer les fonctions API
 import { Button, Card, CardBody, CardHeader, Divider, Input, Switch } from '@nextui-org/react';
 import FileUploadLogo from '@/components/FileUploadLogo';
 

@@ -1,6 +1,6 @@
 'use client';
-import React, { Key, useState, useEffect } from "react";
-import { Button, Card, Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Tooltip, Input } from "@nextui-org/react";
+import React, { useState, useEffect } from "react";
+import { Button, Chip, Checkbox, Table, TableBody, TableHeader, TableColumn, TableRow, TableCell, Input } from "@nextui-org/react";
 import { getAchats, postEditAchat, deleteAchats, insertManyAchats } from "@/config/api";
 import { FaShoppingCart } from "react-icons/fa";
 import { SlSocialDropbox } from "react-icons/sl";
@@ -128,7 +128,6 @@ export default function GestionAchatsPage() {
   const [currentAchat, setCurrentAchat] = useState<Achat | null>(null);
   const [achats, setAchats] = useState<Achat[]>([]);
   const [searchTerm, setSearchTerm] = useState(""); // État pour stocker le terme de recherche
-  const [currentAchatIndex, setCurrentAchatIndex] = useState<number>();
   const [isAfficherLesAchatsConsommes, setIsAfficherLesAchatsConsommes] = useState<boolean>(false)
   const [visibleConsommeCount, setVisibleConsommeCount] = useState(50);
 
@@ -230,7 +229,6 @@ export default function GestionAchatsPage() {
   // EDIT //
 
   const onEditOpen = (achat: Achat, indexAchat: number) => {
-    setCurrentAchatIndex(indexAchat);
     setCurrentAchat(achat);
     setIsEditModalOpen(true);
   };
@@ -336,10 +334,6 @@ export default function GestionAchatsPage() {
 
 
   // SUPPRIMER DEFINITIVEMENT LES ACHATS FERME DEPUIS PLUS DE 6 MOIS //
-
-  const onClearOldAchatsOpen = () => {
-    setIsClearOldAchatsModalOpen(true);
-  };
 
   const onClearOldAchatsClose = () => {
     setIsClearOldAchatsModalOpen(false);

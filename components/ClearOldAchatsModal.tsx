@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import React from "react";
+import { Modal, ModalContent, ModalHeader, ModalFooter, Button } from "@nextui-org/react";
 
 
 interface ClearOldAchatsModalProps {

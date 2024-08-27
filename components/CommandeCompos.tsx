@@ -1,4 +1,4 @@
-import { Menus, Plats, Snacks, Boissons, Ingredients } from "@/types";
+import { Menus, Plats, Snacks, Boissons } from "@/types";
 import { Card, CardHeader, Divider, CardBody } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 

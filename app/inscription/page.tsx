@@ -158,40 +158,6 @@ function UserInput({ userInput, onInputChange, onSendClick, placeholder, step }:
   );
 }
 
-function SchoolSelection({ onSelectSchool }: { onSelectSchool: (school: string) => void }) {
-  const schools = ["ISEN", "HEI", "ISA", "Autre"];
-  return (
-    <div className="flex flex-col gap-8 items-end">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="justify-end">
-          <div className="flex gap-5">
-            <div className="flex flex-col gap-1 items-start justify-center">
-              <h4 className="text-small font-semibold leading-none text-default-600">Toi</h4>
-            </div>
-            <Avatar isBordered radius="full" size="md" src="" />
-          </div>
-        </CardHeader>
-        <CardBody className="px-3 py-0 text-default-400 text-center">
-          <p>
-            Veuillez sélectionner votre école:
-          </p>
-        </CardBody>
-        <CardFooter className="gap-3 justify-center">
-          <div className="flex gap-2">
-            <div className="flex gap-2">
-              {schools.map(school => (
-                <Button key={school} onPress={() => onSelectSchool(school)}>
-                  {school}
-                </Button>
-              ))}
-            </div>
-          </div>
-        </CardFooter>
-      </Card>
-    </div>
-  );
-}
-
 export default function InscriptionPage() {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([
