@@ -30,7 +30,8 @@ const CommandesCuisine = () => {
           .map((commande: ColoredCommande) => ({
             ...commande,
             color: generateRandomColor(commande.id),
-            nom: comptes.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.nom || commande.commentaire.split("::")[0] || "Inconnu",
+            nom: comptes.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.prenom || commande.commentaire.split("::")[0] || "Inconnu",
+            commentaire: commande.commentaire.split("::")[1] || "",
           }))
           .filter(
             (commande: ColoredCommande) => {
@@ -81,9 +82,11 @@ const CommandesCuisine = () => {
     }
   };
   useEffect(() => {
-    toggleFullscreen();
-  } , []);
-  
+    setInterval(() => {
+      toggleFullscreen();
+    }, 1000);
+  }, []);
+
   if (loading) {
     return <div>Chargement...</div>;
   }

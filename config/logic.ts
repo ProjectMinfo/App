@@ -140,7 +140,7 @@ export async function prepareCommande(repas: NewRepas, allViandes: Viandes[], pa
     // const numCompte = parseInt(window.localStorage.getItem("numCompte") || "0");
 
     const numCompte = userCompte.numCompte;
-    const commentaire = (numCompte == -1 ? userCompte.nom + ":: " + comment : comment) ;
+    const commentaire = (numCompte == 0 ? userCompte.nom + ":: " + comment : comment) ;
 
     const commande: NewCommandes = {
         "id": -1,

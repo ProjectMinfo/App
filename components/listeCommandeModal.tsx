@@ -45,17 +45,39 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
             try {
                 const fetchedCommandes = await getCommande();
                 const fetchedCompte = await getComptes();
-                // console.log(fetchedCommandes[fetchedCommandes.length - 1]);
-
                 const resultCommandes: NamedCommande[] = fetchedCommandes
-                    // .filter((commande: NamedCommande) => commande.contenu)
-                    .map((commande: NamedCommande) => ({
-                        ...commande,
-                        nom: fetchedCompte.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.nom || commande.commentaire.split("::")[0] || "Inconnu",
-                        commentaire: commande.commentaire,
-                    }));
 
-                // console.log(resultCommandes[resultCommandes.length - 1]);
+                    
+
+                    // .filter((commande: NamedCommande) => commande.contenu) // Filtre les commandes sans contenu
+                    .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id) // Trie les commandes par ordre décroissant d'ID
+                    .slice(0, 100) // Prend les 100 premières commandes
+
+                    // .map((commande: NamedCommande) => ({
+                    //     ...commande,
+                    //     nom: fetchedCompte.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte)?.prenom || commande.commentaire.split("::")[0] || "Inconnu",
+                    //     commentaire: commande.commentaire.split("::")[1] || "",
+                    // }));
+
+                    .map((commande: NamedCommande) => {
+                        if (commande.numCompte > 0) {
+                            const client = fetchedCompte.find((client: { numCompte: number; }) => client.numCompte === commande.numCompte);
+                            const prenom = client?.prenom || "";
+                            const nom = client?.nom || "";
+                            return ({
+                                ...commande,
+                                nom: prenom + " " + nom.charAt(0),
+                                commentaire: commande.commentaire.split("::")[1],
+                            });
+                        } else {
+                            return ({
+                                ...commande,
+                                nom: commande.commentaire.split("::")[0] || "Inconnu",
+                                commentaire: commande.commentaire.split("::")[1] || "",
+                            });
+                        }
+                    });
+
                 setCommandes(resultCommandes);
             } catch (error) {
                 console.error("Erreur lors de la récupération des commandes ou des commandes :", error);
@@ -129,16 +151,16 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
 
     function handleCommandePayee(commande: NamedCommande, typePaiement: number) {
         const newCommande = { ...commande };
-        const sendCommande = { ...newCommande, payee: true, typePaiement : typePaiement};
+        const sendCommande = { ...newCommande, payee: true, typePaiement: typePaiement };
         // console.log(sendCommande);
-        
+
         postCommande(sendCommande);
 
         setCommandes(commandes.map((c) => c.id === sendCommande.id ? sendCommande : c));
     }
 
     function handleCommandeDistribuee(commande: NamedCommande) {
-        const newCommande = { ...commande};
+        const newCommande = { ...commande };
         const sendCommande = { ...newCommande, distribuee: true };
         postCommande(sendCommande);
 
@@ -146,7 +168,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
     }
 
     function handlePeriphDonne() {
-        const newCommande = { ...currentCommande};
+        const newCommande = { ...currentCommande };
         const sendCommande = { ...newCommande, periphDonne: true };
         postCommande(sendCommande);
 
@@ -157,7 +179,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
         setIsModalDeleteOpen(false);
         const commande = currentCommande;
         const sendCommande = { ...commande };
-        
+
         deleteCommande(sendCommande.id);
 
         setCommandes(commandes.filter((c) => c.id !== commande.id));
@@ -174,7 +196,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
         setIsModalPeriphOpen(false);
     }
 
-    function validateDeleteCommande(commande : NamedCommande) {
+    function validateDeleteCommande(commande: NamedCommande) {
         setCurrentCommande(commande);
         setIsModalDeleteOpen(true);
     }
@@ -217,7 +239,7 @@ export default function ListeCommandeModal({ isOpen, onClose }: ListeCommandeMod
                                             <Button color="warning" variant="flat" onClick={() => modalPeriph(commande)}>
                                                 Périph
                                             </Button>
-                                            <Button color="success" variant="flat" isDisabled={commande.payee} onClick={() => {chooseTypePaiement();setCurrentCommande(commande);}}>
+                                            <Button color="success" variant="flat" isDisabled={commande.payee} onClick={() => { chooseTypePaiement(); setCurrentCommande(commande); }}>
                                                 Payée
                                             </Button>
                                             <Button color="primary" variant="flat" onClick={() => handleCommandeDistribuee(commande)} isDisabled={!commande.payee}>

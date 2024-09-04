@@ -1,3 +1,7 @@
+Options -Indexes
+
+DirectoryIndex index.html /index.html
+
 RewriteEngine On
 
   ## www -> no-www

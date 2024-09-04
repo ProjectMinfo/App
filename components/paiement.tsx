@@ -296,16 +296,18 @@ export default function Paiement({ repas, allViandes, serveurView, prixServeur }
                     >
                       Payer avec le compte de {currentAccount.prenom}
                     </Button>
-                    {/* <Button
-                className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
-                onClick={() => {
-                  setTypePaiement(2);
-                  setCurrentStep(1);
-                }}
-              >
-                Payer au comptoir
-              </Button> */}
-                    <div className="flex flex-row items-center justify-center gap-4">
+                    <Button
+                      className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
+                      onClick={() => {
+                        setTypePaiement(1);
+                        setCurrentStep(1);
+                      }}
+                    >
+                      Payer au comptoir
+                    </Button>
+                    <div className="text-xs text-center">Choix CB/Espèce dans liste des commandes</div>
+
+                    {/* <div className="flex flex-row items-center justify-center gap-4">
                       <Button
                         className={buttonStyles({ variant: "bordered", radius: "full", size: "lg" })}
                         onClick={() => {
@@ -324,7 +326,7 @@ export default function Paiement({ repas, allViandes, serveurView, prixServeur }
                       >
                         Payer en espèce
                       </Button>
-                    </div>
+                    </div> */}
                   </>
                 )}
               </CardBody>

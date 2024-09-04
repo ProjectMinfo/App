@@ -254,13 +254,13 @@ def TemperaturesMigration():
     print("Migration de la collection 'temperatures' terminée avec succès!")
 
 # CompteMigration()
-# AchatMigration()
-# ArticleQteMigration()
+AchatMigration()
+ArticleQteMigration()
 ArticleAllMigration()
-# NettoyageMigration()
-# PlanningMigration()
-# PlanningCoursesMigration()
-# TemperaturesMigration()
+NettoyageMigration()
+PlanningMigration()
+PlanningCoursesMigration()
+TemperaturesMigration()
 
 
 # Fermer la connexion MongoDB

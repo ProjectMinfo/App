@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardBody, Divider } from "@nextui-org/react";
 import { title } from "@/components/primitives";
 
-import GestionMenus from "./menus/page";
-import GestionPlats from "./plats/page";
-import GestionSnacks from "./snacks/page";
-import GestionBoissons from "./boissons/page";
-import GestionIngredients from "./ingredients/page";
-import GestionViandes from "./viandes/page";
+import GestionMenus from "./menus";
+import GestionPlats from "./plats";
+import GestionSnacks from "./snacks";
+import GestionBoissons from "./boissons";
+import GestionIngredients from "./ingredients";
+import GestionViandes from "./viandes";
 import EditCarteModal from "@/components/EditCarteModal";
 import { Boissons, Ingredients, Menus, Plats, Snacks, Viandes } from "@/types";
 import { postMenus, postPlats, postBoissons, postSnacks, postIngredients, postViandes } from "@/config/api";
@@ -17,7 +17,10 @@ type MenuItem = Menus | Boissons | Plats | Snacks | Ingredients | Viandes;
 
 export default function App() {
   const [selectedPage, setSelectedPage] = useState<React.ReactElement | null>(null);
+  const [selectedPageName, setSelectedPageName] = useState<string | null>(null);
   const [modalData, setModalData] = useState<{ item: MenuItem; type: string } | null>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const actions = [
     { nom: "Menus", page: <GestionMenus /> },
@@ -44,8 +47,8 @@ export default function App() {
     }
   };
 
-  function newItems(page: React.ReactElement) {
-    if (page && page.type.name && page.type.name === "GestionMenus") {
+  function newItems(page: React.ReactElement) {    
+    if (page && selectedPageName === "Menus") {
       const newMenu: Menus = {
         event: false,
         dispo: true,
@@ -58,7 +61,7 @@ export default function App() {
         quantiteBoisson: 0,
       };
       setModalData({ item: newMenu, type: "menu" });
-    } else if (page && page.type.name && page.type.name === "GestionPlats") {
+    } else if (page && selectedPageName === "Plats") {
       const newPlats: Plats = {
         event: false,
         dispo: true,
@@ -70,7 +73,7 @@ export default function App() {
         ingredients: [],
       };
       setModalData({ item: newPlats, type: "plat" });
-    } else if (page && page.type.name && page.type.name === "GestionSnacks") {
+    } else if (page && selectedPageName === "Snacks") {
       const newSnacks: Snacks = {
         dispo: true,
         id: -1,
@@ -80,7 +83,7 @@ export default function App() {
         prixServeur: 0,
       };
       setModalData({ item: newSnacks, type: "snack" });
-    } else if (page && page.type.name && page.type.name === "GestionBoissons") {
+    } else if (page && selectedPageName === "Boissons") {
       const newBoissons: Boissons = {
         dispo: true,
         id: -1,
@@ -90,7 +93,7 @@ export default function App() {
         prixServeur: 0,
       };
       setModalData({ item: newBoissons, type: "boisson" });
-    } else if (page && page.type.name && page.type.name === "GestionIngredients") {
+    } else if (page && selectedPageName === "Ingrédients") {
       const newIngredients: Ingredients = {
         commentaire: "",
         dispo: true,
@@ -99,7 +102,7 @@ export default function App() {
         quantite: 0,
       };
       setModalData({ item: newIngredients, type: "ingredient" });
-    } else if (page && page.type.name && page.type.name === "GestionViandes") {
+    } else if (page && selectedPageName === "Viandes") {
       const newViandes: Viandes = {
         commentaire: "",
         dispo: true,
@@ -118,7 +121,7 @@ export default function App() {
           <h1 className={title()}>Modifier la carte</h1>
           {selectedPage && (
             <div className="flex justify-center items-center gap-8">
-              <Card className="flex flex-col mt-2 w-[100%] max-w-[100px]" isPressable onPress={() => newItems(selectedPage)}>
+              <Card className="flex flex-col mt-2 w-[100%] max-w-[100px]" isPressable onPress={() => {newItems(selectedPage); setIsModalOpen(true);}}>
                 <CardHeader className="justify-center">
                   <p className="text-lg">Ajouter</p>
                 </CardHeader>
@@ -143,7 +146,7 @@ export default function App() {
               <Card
                 key={action.nom}
                 isPressable
-                onPress={() => setSelectedPage(action.page)}
+                onPress={() => {setSelectedPage(action.page); setSelectedPageName(action.nom)}}
               >
                 <CardHeader className="justify-center">
                   <p className="text-lg">{action.nom}</p>
@@ -162,11 +165,12 @@ export default function App() {
       {modalData && (
         <EditCarteModal
           item={modalData.item}
-          isOpen={true}
-          onClose={() => setModalData(null)}
+          isOpen={isModalOpen}
+          onClose={() => {setModalData(null) ; setIsModalOpen(false)}}
           onSave={(updatedItem: MenuItem) => {
             handleSave(updatedItem, modalData.type);
             setModalData(null);
+            setIsModalOpen(false);
           }}
         />
       )}
